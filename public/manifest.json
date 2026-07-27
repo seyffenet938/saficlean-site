@@ -1,0 +1,16 @@
+{
+  "name": "SafiClean — Nettoyage textile à domicile",
+  "short_name": "SafiClean",
+  "description": "Expert en nettoyage textile à domicile en Île-de-France",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#3B9FC2",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
