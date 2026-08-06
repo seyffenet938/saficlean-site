@@ -1,45 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const tarifs = [
-  {
-    type: "Fauteuil",
-    price: 45,
-    description: "1 place, club, bergere...",
-    popular: false,
-  },
-  {
-    type: "Canape 2 places",
-    price: 69,
-    description: "Jusqu'a 160 cm de large",
-    popular: false,
-  },
-  {
-    type: "Canape 3 places",
-    price: 79,
-    description: "Jusqu'a 220 cm de large",
-    popular: true,
-  },
-  {
-    type: "Canape d'angle (4-5 places)",
-    price: 119,
-    description: "Forme L, modulable",
-    popular: false,
-  },
-  {
-    type: "Canape XXL (6+ places)",
-    price: 159,
-    description: "Grand angle, panoramique",
-    popular: false,
-  },
-  {
-    type: "Chaise",
-    price: 20,
-    description: "Salle a manger, bureau...",
-    popular: false,
-  },
-]
+import { CANAPE_TARIFS as tarifs, formatPrice } from "@/lib/pricing"
 
 const inclus = [
   "Aspiration complete",
@@ -84,7 +46,7 @@ export function TarifsCanape() {
                 </span>
               )}
               <p className="mt-2 text-sm font-medium text-foreground">{t.type}</p>
-              <p className="mt-2 text-3xl font-bold text-primary">{t.price}€</p>
+              <p className="mt-2 text-3xl font-bold text-primary">{formatPrice(t.price)}</p>
               <p className="mt-1 text-xs text-muted-foreground">{t.description}</p>
             </div>
           ))}

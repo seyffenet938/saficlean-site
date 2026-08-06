@@ -1,14 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const tarifs = [
-  { type: "Matelas bebe", recto: 40, rectoVerso: 55, description: "60x120, 70x140 cm" },
-  { type: "Matelas 1 place", recto: 49, rectoVerso: 69, description: "90x190, 90x200 cm", popular: true },
-  { type: "Matelas 2 places", recto: 55, rectoVerso: 75, description: "140x190, 140x200 cm" },
-  { type: "Queen / King Size", recto: 69, rectoVerso: 89, description: "160x200, 180x200 cm" },
-  { type: "Matelas XXL", recto: 120, rectoVerso: 150, description: "200x200 cm et plus" },
-]
+import { MATELAS_TARIFS as tarifs, formatPrice } from "@/lib/pricing"
 
 const inclus = [
   "Aspiration profonde",
@@ -65,10 +58,10 @@ export function TarifsMatelas() {
                     </div>
                   </td>
                   <td className="px-4 py-4 text-center">
-                    <span className="text-xl font-bold text-primary">{t.recto}€</span>
+                    <span className="text-xl font-bold text-primary">{formatPrice(t.recto)}</span>
                   </td>
                   <td className="px-4 py-4 text-center">
-                    <span className="text-xl font-bold text-primary">{t.rectoVerso}€</span>
+                    <span className="text-xl font-bold text-primary">{formatPrice(t.rectoVerso)}</span>
                   </td>
                 </tr>
               ))}

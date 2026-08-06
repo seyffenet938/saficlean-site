@@ -1,50 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const formules = [
-  {
-    name: "Essentiel Interieur",
-    price: 50,
-    popular: false,
-    items: [
-      "Aspiration complete sieges/sols/coffre",
-      "Nettoyage plastiques + tableau de bord",
-      "Vitres interieures",
-    ],
-  },
-  {
-    name: "Shampouinage Sieges Premium",
-    price: 60,
-    popular: true,
-    items: [
-      "Shampouinage sieges tissu",
-      "Brossage mecanique + extraction",
-      "Traitement anti-odeur",
-      "Aspiration + plastiques rapide",
-    ],
-  },
-  {
-    name: "Interieur Integral Detailing",
-    price: 110,
-    popular: false,
-    items: [
-      "Shampouinage sieges",
-      "Shampouinage tapis & moquettes",
-      "Detailing complet plastiques",
-      "Aspiration totale + vitres",
-      "Desodorisation",
-    ],
-  },
-]
-
-const options = [
-  { name: "Lavage exterieur (carrosserie + vitres)", price: 25 },
-  { name: "Nettoyage plafonnier (ciel de toit)", price: 25 },
-  { name: "Dressing plastiques (protection + ravivage)", price: 12 },
-  { name: "Desinfection antibacterienne (vapeur/ozone)", price: 22 },
-  { name: "Coffre profond (lavage + shampouinage)", price: 12 },
-]
+import { AUTO_FORMULES as formules, AUTO_OPTIONS as options, formatPrice } from "@/lib/pricing"
 
 export function TarifsAuto() {
   return (
@@ -79,7 +36,7 @@ export function TarifsAuto() {
                 </span>
               )}
               <h3 className="mt-2 text-lg font-semibold text-foreground">{f.name}</h3>
-              <p className="mt-2 text-3xl font-bold text-primary">{f.price}€</p>
+              <p className="mt-2 text-3xl font-bold text-primary">{formatPrice(f.price)}</p>
               <ul className="mt-4 flex-1 space-y-2">
                 {f.items.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -107,7 +64,7 @@ export function TarifsAuto() {
                 className="flex items-center justify-between rounded-lg border border-secondary/20 bg-background px-4 py-3"
               >
                 <span className="text-sm text-foreground">{opt.name}</span>
-                <span className="ml-2 whitespace-nowrap text-sm font-semibold text-primary">+{opt.price}€</span>
+                <span className="ml-2 whitespace-nowrap text-sm font-semibold text-primary">+{formatPrice(opt.price)}</span>
               </div>
             ))}
           </div>

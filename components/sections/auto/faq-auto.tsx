@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { formatPrice, PRICING } from "@/lib/pricing"
 
 const faqsAuto = [
   {
@@ -39,8 +40,7 @@ const faqsAuto = [
   {
     id: "faq-auto-6",
     question: "Faites-vous aussi le lavage exterieur ?",
-    answer:
-      "Oui, en option a +25€. On lave la carrosserie a la main et les vitres exterieures. Ce n'est pas un detailing complet exterieur, mais un lavage soigne pour accompagner le nettoyage interieur.",
+    answer: `Oui, en option a +${formatPrice(PRICING.auto.options.exterieur)}. On lave la carrosserie a la main et les vitres exterieures. Ce n'est pas un detailing complet exterieur, mais un lavage soigne pour accompagner le nettoyage interieur.`,
   },
   {
     id: "faq-auto-7",

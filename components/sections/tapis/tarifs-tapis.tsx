@@ -1,14 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const tarifs = [
-  { type: "Petit", dimensions: "100x160 cm", surface: "≤1.5 m²", price: 50 },
-  { type: "Moyen", dimensions: "140x200 cm", surface: "≈2-3 m²", price: 60, popular: true },
-  { type: "Grand", dimensions: "160x230 cm", surface: "≈3.5-4 m²", price: 79 },
-  { type: "Tres grand", dimensions: "200x290 cm", surface: "≈5-6 m²", price: 89 },
-  { type: "XXL", dimensions: "240x330 cm+", surface: "≥7 m²", price: 120 },
-]
+import { TAPIS_TARIFS as tarifs, formatPrice } from "@/lib/pricing"
 
 const inclus = [
   "Aspiration recto-verso",
@@ -52,7 +45,7 @@ export function TarifsTapis() {
                 </span>
               )}
               <p className="mt-2 text-sm font-medium text-foreground">{t.type}</p>
-              <p className="mt-2 text-3xl font-bold text-primary">{t.price}€</p>
+              <p className="mt-2 text-3xl font-bold text-primary">{formatPrice(t.price)}</p>
               <p className="mt-1 text-xs text-muted-foreground">{t.dimensions}</p>
               <p className="text-xs text-muted-foreground">{t.surface}</p>
             </div>

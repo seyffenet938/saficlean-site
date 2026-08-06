@@ -2,22 +2,61 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, Check, Star, Sparkles, Car, Sofa, BedDouble, Armchair, Square, Grid3X3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { formatPrice, PACK_EXAMPLES, PRICING, startingFrom } from "@/lib/pricing"
+
+const description = `Decouvrez tous nos tarifs de nettoyage textile a domicile en Ile-de-France. Prix transparents, sans surprise. Canape des ${formatPrice(startingFrom("canape"))}, matelas des ${formatPrice(startingFrom("matelas"))}.`
 
 export const metadata: Metadata = {
   title: "Tarifs Nettoyage a Domicile — Canape, Matelas, Tapis, Auto | SafiClean",
-  description: "Decouvrez tous nos tarifs de nettoyage textile a domicile en Ile-de-France. Prix transparents, sans surprise. Canape des 45€, matelas des 40€.",
+  description,
   alternates: {
     canonical: "/tarifs",
   },
   openGraph: {
     title: "Tarifs Nettoyage a Domicile — Canape, Matelas, Tapis, Auto | SafiClean",
-    description: "Decouvrez tous nos tarifs de nettoyage textile a domicile en Ile-de-France. Prix transparents, sans surprise. Canape des 45€, matelas des 40€.",
+    description,
     url: "/tarifs",
     siteName: "SafiClean",
     locale: "fr_FR",
     type: "website",
   },
 }
+
+// Lignes de tableau propres à cette page — libellés locaux, prix issus de la source unique.
+const canapeRows = [
+  { type: "Fauteuil", price: PRICING.canape.fauteuil, duree: "~45 min", popular: false },
+  { type: "Canape 2 places", price: PRICING.canape["2-places"], duree: "~1h", popular: false },
+  { type: "Canape 3 places", price: PRICING.canape["3-places"], duree: "~1h30", popular: true },
+  { type: "Canape angle 4-5 places", price: PRICING.canape["angle-4-5"], duree: "~2h", popular: false },
+  { type: "Canape XXL 6+ places", price: PRICING.canape["xxl-6+"], duree: "~2h30", popular: false },
+]
+
+const chaisesRows = ([1, 2, 3, 4, 5, 6, 8] as const).map((qty) => {
+  const total = PRICING.chaises[qty]
+  const plein = PRICING.chaises[1] * qty
+  return {
+    qty: `${qty} chaise${qty > 1 ? "s" : ""}`,
+    total: formatPrice(total),
+    unit: `${formatPrice(Math.round(total / qty))}/chaise`,
+    saving: total < plein ? `-${formatPrice(plein - total)}` : "",
+  }
+})
+
+const matelasRows = [
+  { size: "Matelas bebe", ...PRICING.matelas.bebe },
+  { size: "1 place (90cm)", ...PRICING.matelas["1-place"] },
+  { size: "2 places (140cm)", ...PRICING.matelas["2-places"] },
+  { size: "Queen/King (160-180cm)", ...PRICING.matelas["queen-king"] },
+  { size: "XXL (180cm+)", ...PRICING.matelas.xxl },
+]
+
+const tapisRows = [
+  { size: "Petit", dims: "jusqu'a 100x160cm (≤1.5m²)", price: PRICING.tapis.petit },
+  { size: "Moyen", dims: "120x170 / 140x200cm (≈2-3m²)", price: PRICING.tapis.moyen },
+  { size: "Grand", dims: "160x230cm (≈3.5-4m²)", price: PRICING.tapis.grand },
+  { size: "Tres grand", dims: "200x290cm (≈5-6m²)", price: PRICING.tapis["tres-grand"] },
+  { size: "XXL", dims: "240x330cm et + (≥7m²)", price: PRICING.tapis.xxl },
+]
 
 const navLinks = [
   { label: "Canape & Fauteuil", href: "#canape", icon: Sofa },
@@ -96,21 +135,17 @@ export default function TarifsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-primary-foreground/20">
-                    <td className="py-3 px-2">2 articles</td>
-                    <td className="py-3 px-2 font-bold text-lg">-15%</td>
-                    <td className="py-3 px-2 text-sm hidden md:table-cell">Canape 3 places + Matelas 2 places = 114€ au lieu de 134€</td>
-                  </tr>
-                  <tr className="border-b border-primary-foreground/20">
-                    <td className="py-3 px-2">3 articles</td>
-                    <td className="py-3 px-2 font-bold text-lg">-20%</td>
-                    <td className="py-3 px-2 text-sm hidden md:table-cell">Canape + Matelas + Tapis = 188€ au lieu de 235€</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-2">4 articles ou +</td>
-                    <td className="py-3 px-2 font-bold text-lg">-25%</td>
-                    <td className="py-3 px-2 text-sm hidden md:table-cell">Maximum d'economies</td>
-                  </tr>
+                  {PACK_EXAMPLES.map((pack, i) => (
+                    <tr key={pack.articles} className={i < PACK_EXAMPLES.length - 1 ? "border-b border-primary-foreground/20" : ""}>
+                      <td className="py-3 px-2">{pack.articles}</td>
+                      <td className="py-3 px-2 font-bold text-lg">-{Math.round(pack.discount * 100)}%</td>
+                      <td className="py-3 px-2 text-sm hidden md:table-cell">
+                        {pack.full !== null && pack.discounted !== null
+                          ? `${pack.label} = ${formatPrice(pack.discounted)} au lieu de ${formatPrice(pack.full)}`
+                          : pack.label}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -151,61 +186,30 @@ export default function TarifsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-border">
-                    <td className="py-4 px-4 text-foreground">Fauteuil</td>
-                    <td className="py-4 px-4 font-bold text-primary">45€</td>
-                    <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">~45 min</td>
-                    <td className="py-4 px-4 text-right">
-                      <Button asChild size="sm" className="rounded-full">
-                        <Link href="/reserver">Reserver</Link>
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-border">
-                    <td className="py-4 px-4 text-foreground">Canape 2 places</td>
-                    <td className="py-4 px-4 font-bold text-primary">69€</td>
-                    <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">~1h</td>
-                    <td className="py-4 px-4 text-right">
-                      <Button asChild size="sm" className="rounded-full">
-                        <Link href="/reserver">Reserver</Link>
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-border bg-primary/5">
-                    <td className="py-4 px-4 text-foreground">
-                      <span className="flex items-center gap-2">
-                        Canape 3 places
-                        <span className="inline-block px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">Le + choisi</span>
-                      </span>
-                    </td>
-                    <td className="py-4 px-4 font-bold text-primary">79€</td>
-                    <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">~1h30</td>
-                    <td className="py-4 px-4 text-right">
-                      <Button asChild size="sm" className="rounded-full">
-                        <Link href="/reserver">Reserver</Link>
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-border">
-                    <td className="py-4 px-4 text-foreground">Canape angle 4-5 places</td>
-                    <td className="py-4 px-4 font-bold text-primary">119€</td>
-                    <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">~2h</td>
-                    <td className="py-4 px-4 text-right">
-                      <Button asChild size="sm" className="rounded-full">
-                        <Link href="/reserver">Reserver</Link>
-                      </Button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="py-4 px-4 text-foreground">Canape XXL 6+ places</td>
-                    <td className="py-4 px-4 font-bold text-primary">159€</td>
-                    <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">~2h30</td>
-                    <td className="py-4 px-4 text-right">
-                      <Button asChild size="sm" className="rounded-full">
-                        <Link href="/reserver">Reserver</Link>
-                      </Button>
-                    </td>
-                  </tr>
+                  {canapeRows.map((row, i) => (
+                    <tr
+                      key={row.type}
+                      className={`${i < canapeRows.length - 1 ? "border-b border-border" : ""} ${row.popular ? "bg-primary/5" : ""}`}
+                    >
+                      <td className="py-4 px-4 text-foreground">
+                        {row.popular ? (
+                          <span className="flex items-center gap-2">
+                            {row.type}
+                            <span className="inline-block px-2 py-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">Le + choisi</span>
+                          </span>
+                        ) : (
+                          row.type
+                        )}
+                      </td>
+                      <td className="py-4 px-4 font-bold text-primary">{formatPrice(row.price)}</td>
+                      <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">{row.duree}</td>
+                      <td className="py-4 px-4 text-right">
+                        <Button asChild size="sm" className="rounded-full">
+                          <Link href="/reserver">Reserver</Link>
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -237,15 +241,7 @@ export default function TarifsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    { qty: "1 chaise", total: "20€", unit: "20€/chaise", saving: "" },
-                    { qty: "2 chaises", total: "34€", unit: "17€/chaise", saving: "-6€" },
-                    { qty: "3 chaises", total: "48€", unit: "16€/chaise", saving: "-12€" },
-                    { qty: "4 chaises", total: "60€", unit: "15€/chaise", saving: "-20€" },
-                    { qty: "5 chaises", total: "75€", unit: "15€/chaise", saving: "-25€" },
-                    { qty: "6 chaises", total: "90€", unit: "15€/chaise", saving: "-30€" },
-                    { qty: "8 chaises", total: "120€", unit: "15€/chaise", saving: "-40€" },
-                  ].map((row, i) => (
+                  {chaisesRows.map((row, i) => (
                     <tr key={i} className="border-b border-border last:border-b-0">
                       <td className="py-4 px-4 text-foreground">{row.qty}</td>
                       <td className="py-4 px-4">
@@ -293,17 +289,11 @@ export default function TarifsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    { size: "Matelas bebe", recto: "40€", both: "55€" },
-                    { size: "1 place (90cm)", recto: "49€", both: "69€" },
-                    { size: "2 places (140cm)", recto: "55€", both: "75€" },
-                    { size: "Queen/King (160-180cm)", recto: "69€", both: "89€" },
-                    { size: "XXL (180cm+)", recto: "120€", both: "150€" },
-                  ].map((row, i) => (
+                  {matelasRows.map((row, i) => (
                     <tr key={i} className="border-b border-border last:border-b-0">
                       <td className="py-4 px-4 text-foreground">{row.size}</td>
-                      <td className="py-4 px-4 font-bold text-primary">{row.recto}</td>
-                      <td className="py-4 px-4 font-bold text-primary">{row.both}</td>
+                      <td className="py-4 px-4 font-bold text-primary">{formatPrice(row.recto)}</td>
+                      <td className="py-4 px-4 font-bold text-primary">{formatPrice(row.rectoVerso)}</td>
                       <td className="py-4 px-4 text-right">
                         <Button asChild size="sm" className="rounded-full">
                           <Link href="/reserver">Reserver</Link>
@@ -342,17 +332,11 @@ export default function TarifsPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    { size: "Petit", dims: "jusqu'a 100x160cm (≤1.5m²)", price: "50€" },
-                    { size: "Moyen", dims: "120x170 / 140x200cm (≈2-3m²)", price: "60€" },
-                    { size: "Grand", dims: "160x230cm (≈3.5-4m²)", price: "79€" },
-                    { size: "Tres grand", dims: "200x290cm (≈5-6m²)", price: "89€" },
-                    { size: "XXL", dims: "240x330cm et + (≥7m²)", price: "120€" },
-                  ].map((row, i) => (
+                  {tapisRows.map((row, i) => (
                     <tr key={i} className="border-b border-border last:border-b-0">
                       <td className="py-4 px-4 text-foreground">{row.size}</td>
                       <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">{row.dims}</td>
-                      <td className="py-4 px-4 font-bold text-primary">{row.price}</td>
+                      <td className="py-4 px-4 font-bold text-primary">{formatPrice(row.price)}</td>
                       <td className="py-4 px-4 text-right">
                         <Button asChild size="sm" className="rounded-full">
                           <Link href="/reserver">Reserver</Link>
@@ -408,7 +392,7 @@ export default function TarifsPage() {
             {/* Essentiel */}
             <div className="bg-card rounded-xl border border-border p-6">
               <h3 className="font-bold text-foreground mb-1">Essentiel Interieur</h3>
-              <p className="text-2xl font-bold text-primary mb-4">50€</p>
+              <p className="text-2xl font-bold text-primary mb-4">{formatPrice(PRICING.auto.essentiel)}</p>
               <ul className="space-y-2 text-sm text-muted-foreground mb-6">
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -431,7 +415,7 @@ export default function TarifsPage() {
             {/* Premium */}
             <div className="bg-card rounded-xl border border-border p-6">
               <h3 className="font-bold text-foreground mb-1">Shampouinage Sieges Premium</h3>
-              <p className="text-2xl font-bold text-primary mb-4">60€</p>
+              <p className="text-2xl font-bold text-primary mb-4">{formatPrice(PRICING.auto.premium)}</p>
               <ul className="space-y-2 text-sm text-muted-foreground mb-6">
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -461,7 +445,7 @@ export default function TarifsPage() {
                 Complet
               </span>
               <h3 className="font-bold text-foreground mb-1">Interieur Integral Detailing</h3>
-              <p className="text-2xl font-bold text-primary mb-4">110€</p>
+              <p className="text-2xl font-bold text-primary mb-4">{formatPrice(PRICING.auto.integral)}</p>
               <ul className="space-y-2 text-sm text-muted-foreground mb-6">
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -495,11 +479,11 @@ export default function TarifsPage() {
               <table className="w-full">
                 <tbody>
                   {[
-                    { option: "Lavage exterieur", detail: "Carrosserie + vitres", price: "+25€" },
-                    { option: "Nettoyage plafonnier", detail: "Ciel de toit", price: "+25€" },
-                    { option: "Dressing plastiques", detail: "Protection + ravivage", price: "+12€" },
-                    { option: "Desinfection antibacterienne", detail: "Vapeur ou ozone", price: "+22€" },
-                    { option: "Coffre profond", detail: "Lavage + shampouinage", price: "+12€" },
+                    { option: "Lavage exterieur", detail: "Carrosserie + vitres", price: `+${formatPrice(PRICING.auto.options.exterieur)}` },
+                    { option: "Nettoyage plafonnier", detail: "Ciel de toit", price: `+${formatPrice(PRICING.auto.options.plafonnier)}` },
+                    { option: "Dressing plastiques", detail: "Protection + ravivage", price: `+${formatPrice(PRICING.auto.options.plastiques)}` },
+                    { option: "Desinfection antibacterienne", detail: "Vapeur ou ozone", price: `+${formatPrice(PRICING.auto.options.desinfection)}` },
+                    { option: "Coffre profond", detail: "Lavage + shampouinage", price: `+${formatPrice(PRICING.auto.options.coffre)}` },
                   ].map((row, i) => (
                     <tr key={i} className="border-b border-border last:border-b-0">
                       <td className="py-3 px-4 text-foreground font-medium">{row.option}</td>

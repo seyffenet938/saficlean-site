@@ -4,6 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Phone, CalendarCheck } from "lucide-react"
+import { formatPrice, startingFrom } from "@/lib/pricing"
 
 export function HeroCanape() {
   return (
@@ -65,7 +66,7 @@ function HeroCanapeContent() {
       </h1>
 
       <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-white/80 lg:text-lg">
-        <span className="text-2xl font-bold text-primary">Des 45€</span>
+        <span className="text-2xl font-bold text-primary">Des {formatPrice(startingFrom("canape"))}</span>
         <span className="ml-2">— Tissu, cuir, simili. Resultat visible immediatement.</span>
       </p>
 

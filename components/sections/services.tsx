@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Sparkles, ImageIcon } from "lucide-react"
+import { formatPrice, formatPriceSpaced, PRICING, startingFrom } from "@/lib/pricing"
 
 const services = [
   {
@@ -11,8 +12,8 @@ const services = [
       "Tissu, cuir, simili — on redonne vie a votre canape et vos fauteuils. Taches, odeurs et grisaille disparaissent en une seule intervention.",
     href: "/canape",
     badge: "Le + demande",
-    price: "A partir de 45 €",
-    priceDetail: "Fauteuil 45€ · 2 places 69€ · 3 places 79€",
+    price: `A partir de ${formatPriceSpaced(startingFrom("canape"))}`,
+    priceDetail: `Fauteuil ${formatPrice(PRICING.canape.fauteuil)} · 2 places ${formatPrice(PRICING.canape["2-places"])} · 3 places ${formatPrice(PRICING.canape["3-places"])}`,
   },
   {
     title: "Nettoyage matelas",
@@ -22,8 +23,8 @@ const services = [
       "Acariens, taches, odeurs de transpiration. On assainit votre matelas en profondeur pour un sommeil plus sain.",
     href: "/matelas",
     badge: null,
-    price: "A partir de 40 €",
-    priceDetail: "Bebe 40€ · 1 place 49€ · 2 places 55€",
+    price: `A partir de ${formatPriceSpaced(startingFrom("matelas"))}`,
+    priceDetail: `Bebe ${formatPrice(PRICING.matelas.bebe.recto)} · 1 place ${formatPrice(PRICING.matelas["1-place"].recto)} · 2 places ${formatPrice(PRICING.matelas["2-places"].recto)}`,
   },
   {
     title: "Nettoyage chaises",
@@ -33,7 +34,7 @@ const services = [
       "Chaises de salle a manger, de bureau ou rembourrées — meme traitement professionnel, meme resultat impeccable.",
     href: "/chaises",
     badge: null,
-    price: "A partir de 20 € / chaise",
+    price: `A partir de ${formatPriceSpaced(startingFrom("chaises"))} / chaise`,
     priceDetail: "Degressif des 2 chaises (-15% a -25%)",
   },
   {
@@ -44,8 +45,8 @@ const services = [
       "Tapis modernes, orientaux ou fragiles. On adapte notre technique a chaque fibre pour un nettoyage sans risque.",
     href: "/tapis",
     badge: null,
-    price: "A partir de 50 €",
-    priceDetail: "Petit 50€ · Moyen 60€ · Grand 79€",
+    price: `A partir de ${formatPriceSpaced(startingFrom("tapis"))}`,
+    priceDetail: `Petit ${formatPrice(PRICING.tapis.petit)} · Moyen ${formatPrice(PRICING.tapis.moyen)} · Grand ${formatPrice(PRICING.tapis.grand)}`,
   },
   {
     title: "Nettoyage moquette",
@@ -66,8 +67,8 @@ const services = [
       "Sieges, tapis, moquettes, plastiques, vitres — on redonne a votre vehicule un interieur propre et sain, directement chez vous.",
     href: "/auto",
     badge: null,
-    price: "A partir de 50 €",
-    priceDetail: "Essentiel 50€ · Sieges Premium 60€ · Integral 110€",
+    price: `A partir de ${formatPriceSpaced(startingFrom("auto"))}`,
+    priceDetail: `Essentiel ${formatPrice(PRICING.auto.essentiel)} · Sieges Premium ${formatPrice(PRICING.auto.premium)} · Integral ${formatPrice(PRICING.auto.integral)}`,
   },
 ]
 
