@@ -32,7 +32,7 @@ const services = [
     after: "/images/before-after/chaises-apres.jpg",
     description:
       "Chaises de salle a manger, de bureau ou rembourrées — meme traitement professionnel, meme resultat impeccable.",
-    href: "/chaises",
+    href: "/tarifs#chaises",
     badge: null,
     price: `A partir de ${formatPriceSpaced(startingFrom("chaises"))} / chaise`,
     priceDetail: "Degressif des 2 chaises (-15% a -25%)",

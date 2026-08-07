@@ -11,17 +11,64 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
+const SITE_URL = "https://saficlean.fr"
+const TITLE = "SafiClean — Nettoyage textile à domicile en Île-de-France"
+const DESCRIPTION =
+  "SafiClean, votre expert en nettoyage textile à domicile en Île-de-France. Canapés, matelas, tapis, moquettes et fauteuils nettoyés chez vous."
+
 export const metadata: Metadata = {
-  title: "SafiClean — Nettoyage textile à domicile en Île-de-France",
-  description:
-    "SafiClean, votre expert en nettoyage textile à domicile en Île-de-France. Canapés, matelas, tapis, moquettes et fauteuils nettoyés chez vous.",
-  generator: "v0.app",
+  // Rend absolues toutes les URL relatives (canonical, OpenGraph) des pages enfants.
+  metadataBase: new URL(SITE_URL),
+  // Pas de `template` : les titres des pages enfants contiennent déjà « | SafiClean ».
+  title: TITLE,
+  description: DESCRIPTION,
+  applicationName: "SafiClean",
+  manifest: "/manifest.json",
+  alternates: {
+    canonical: "/",
+  },
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: SITE_URL,
+    siteName: "SafiClean",
+    locale: "fr_FR",
+    type: "website",
+    images: [
+      {
+        url: "/images/hero-desktop.jpg",
+        width: 1200,
+        height: 855,
+        alt: "Technicien SafiClean nettoyant un canapé à domicile",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ["/images/hero-desktop.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 }
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // Pas de maximumScale : bloquer le zoom casse l'accessibilité (WCAG 1.4.4).
 }
 
 export default function RootLayout({
