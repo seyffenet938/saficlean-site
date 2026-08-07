@@ -2,8 +2,16 @@ import { Resend } from "resend"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Domain verified in Resend
-const FROM_EMAIL = "SafiClean <noreply@saficlean.fr>"
+/**
+ * ⚠️ NE PAS remettre `noreply@saficlean.fr` : cette adresse N'EXISTE PAS.
+ * Les confirmations envoyées depuis cette adresse ont bouncé (550 5.1.1) —
+ * des clients n'ont jamais reçu leur confirmation, et toute réponse d'un
+ * client partait dans le vide. Cf. backlog `recOeCG2yKeiEeXng`.
+ *
+ * On envoie donc depuis l'adresse réelle, qui reçoit aussi les réponses.
+ */
+const FROM_EMAIL = "SafiClean <contact@saficlean.fr>"
+const REPLY_TO = "contact@saficlean.fr"
 const ADMIN_EMAIL = "contact@saficlean.fr"
 
 export interface BookingEmailData {
@@ -24,9 +32,9 @@ export interface BookingEmailData {
 }
 
 export async function sendBookingConfirmationToCustomer(data: BookingEmailData) {
-  console.log("[v0] sendBookingConfirmationToCustomer called")
-  console.log("[v0] RESEND_API_KEY exists:", !!process.env.RESEND_API_KEY)
-  console.log("[v0] Sending to:", data.customerEmail)
+  console.log("[booking] sendBookingConfirmationToCustomer called")
+  console.log("[booking] RESEND_API_KEY exists:", !!process.env.RESEND_API_KEY)
+  console.log("[booking] Sending to:", data.customerEmail)
   
   const optionsList = data.options
     .map((opt) => `- ${opt.label}: ${opt.price.toFixed(2)} €`)
@@ -34,6 +42,7 @@ export async function sendBookingConfirmationToCustomer(data: BookingEmailData) 
 
   const { data: result, error } = await resend.emails.send({
     from: FROM_EMAIL,
+    replyTo: REPLY_TO,
     to: data.customerEmail,
     subject: `Confirmation de votre reservation SafiClean - ${data.date}`,
     html: `
@@ -108,7 +117,7 @@ export async function sendBookingConfirmationToCustomer(data: BookingEmailData) 
   </div>
 
   <div style="text-align: center; padding-top: 24px; border-top: 1px solid #e5e7eb; color: #999; font-size: 12px;">
-    <p>© 2025 SafiClean - Tous droits reserves</p>
+    <p>© ${new Date().getFullYear()} SafiClean - Tous droits reserves</p>
     <p>Ile-de-France</p>
   </div>
 </body>
@@ -117,20 +126,21 @@ export async function sendBookingConfirmationToCustomer(data: BookingEmailData) 
   })
 
   if (error) {
-    console.error("[v0] Error sending customer email:", error)
+    console.error("[booking] Error sending customer email:", error)
     throw error
   }
 
-  console.log("[v0] Customer email sent successfully:", result)
+  console.log("[booking] Customer email sent successfully:", result)
   return { success: true }
 }
 
 export async function sendBookingNotificationToAdmin(data: BookingEmailData) {
-  console.log("[v0] sendBookingNotificationToAdmin called")
-  console.log("[v0] Sending admin notification to:", ADMIN_EMAIL)
+  console.log("[booking] sendBookingNotificationToAdmin called")
+  console.log("[booking] Sending admin notification to:", ADMIN_EMAIL)
   
   const { data: result, error } = await resend.emails.send({
     from: FROM_EMAIL,
+    replyTo: data.customerEmail,
     to: ADMIN_EMAIL,
     subject: `Nouvelle reservation - ${data.customerName} - ${data.date}`,
     html: `
@@ -180,10 +190,10 @@ export async function sendBookingNotificationToAdmin(data: BookingEmailData) {
   })
 
   if (error) {
-    console.error("[v0] Error sending admin notification:", error)
+    console.error("[booking] Error sending admin notification:", error)
     throw error
   }
 
-  console.log("[v0] Admin email sent successfully:", result)
+  console.log("[booking] Admin email sent successfully:", result)
   return { success: true }
 }
