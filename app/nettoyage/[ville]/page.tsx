@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ville) return {}
 
   const title = `Nettoyage Canapé, Matelas & Tapis à ${ville.nom} (${ville.cp}) | SafiClean`
-  const description = `Nettoyage textile à domicile à ${ville.nom} et dans le ${ville.depNom} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("chaises"))}.`
+  const description = `Nettoyage textile à domicile à ${ville.nom} et dans le ${ville.depNom} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("matelas"))}.`
 
   return {
     title,
@@ -78,7 +78,7 @@ export default async function VillePage({ params }: Props) {
     offers: {
       "@type": "Offer",
       priceCurrency: "EUR",
-      price: startingFrom("chaises"),
+      price: startingFrom("matelas"),
       description: "Prix de départ, déplacement inclus",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/reserver`,

@@ -66,8 +66,11 @@ function HeroVilleContent({ ville }: { ville: Ville }) {
       </h1>
 
       <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-white/80 lg:text-lg">
+        {/* Prix d'appel = le plus bas parmi les services cités dans le H1
+            (canapé / matelas / tapis). Annoncer le tarif chaise (20€) ici
+            laisserait croire qu'un canapé coûte 20€. */}
         <span className="text-2xl font-bold text-primary">
-          Dès {formatPrice(startingFrom("chaises"))}
+          Dès {formatPrice(startingFrom("matelas"))}
         </span>
         <span className="ml-2">
           — On intervient chez vous à {ville.nom}, 7j/7 de 8h à 20h. Devis gratuit,
