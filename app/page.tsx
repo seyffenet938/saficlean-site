@@ -17,7 +17,7 @@ export default async function Home() {
       <SocialProof />
       <Services />
       <Process />
-      <Testimonials reviews={reviews} />
+      <Testimonials googleReviews={reviews} />
       <WhySaficlean />
       <FAQ />
       <CTAFinal />

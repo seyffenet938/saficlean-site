@@ -38,7 +38,7 @@ export default async function MatelasPage() {
       <SocialProof />
       <TarifsMatelas />
       <Process />
-      <Testimonials reviews={reviews} />
+      <Testimonials googleReviews={reviews} />
       <WhySaficlean />
       <FAQMatelas />
       <InlineBooking service="matelas" />

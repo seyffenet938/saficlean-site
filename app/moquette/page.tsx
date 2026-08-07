@@ -35,7 +35,7 @@ export default async function MoquettePage() {
       <SocialProof />
       <InfoMoquette />
       <Process />
-      <Testimonials reviews={reviews} />
+      <Testimonials googleReviews={reviews} />
       <WhySaficlean />
       <FAQMoquette />
       <InlineBooking service="moquette" />

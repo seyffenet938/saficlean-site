@@ -81,7 +81,7 @@ function ReviewCard({ review }: { review: (typeof reviews)[0] }) {
   )
 }
 
-export function Testimonials({ reviews = REVIEWS_FALLBACK }: { reviews?: Reviews }) {
+export function Testimonials({ googleReviews = REVIEWS_FALLBACK }: { googleReviews?: Reviews }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -192,7 +192,7 @@ export function Testimonials({ reviews = REVIEWS_FALLBACK }: { reviews?: Reviews
             rel="noopener noreferrer"
             className="text-sm font-medium text-primary hover:underline"
           >
-            {formatRating(reviews.rating)}/5 sur Google — {reviews.count} avis
+            {formatRating(googleReviews.rating)}/5 sur Google — {googleReviews.count} avis
           </a>
         </div>
       </div>

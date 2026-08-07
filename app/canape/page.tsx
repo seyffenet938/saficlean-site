@@ -38,7 +38,7 @@ export default async function CanapePage() {
       <SocialProof />
       <TarifsCanape />
       <Process />
-      <Testimonials reviews={reviews} />
+      <Testimonials googleReviews={reviews} />
       <WhySaficlean />
       <FAQCanape />
       <InlineBooking service="canape" />

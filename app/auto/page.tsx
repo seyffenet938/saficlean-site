@@ -38,7 +38,7 @@ export default async function AutoPage() {
       <SocialProof />
       <TarifsAuto />
       <Process />
-      <Testimonials reviews={reviews} />
+      <Testimonials googleReviews={reviews} />
       <WhySaficlean />
       <FAQAuto />
       <InlineBooking service="auto" />

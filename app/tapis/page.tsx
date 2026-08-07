@@ -38,7 +38,7 @@ export default async function TapisPage() {
       <SocialProof />
       <TarifsTapis />
       <Process />
-      <Testimonials reviews={reviews} />
+      <Testimonials googleReviews={reviews} />
       <WhySaficlean />
       <FAQTapis />
       <InlineBooking service="tapis" />

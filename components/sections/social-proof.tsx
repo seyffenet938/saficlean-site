@@ -1,26 +1,15 @@
 import { Star, ExternalLink } from "lucide-react"
-import { getReviews } from "@/lib/reviews"
+import { formatRating, getReviews } from "@/lib/reviews"
 
-const stats = [
-  {
-    value: "5/5",
-    label: "Note Google",
-    hasStar: true,
-  },
-  {
-    value: "80",
-    label: "Avis clients verifies",
-    hasStar: false,
-  },
-  {
-    value: "500+",
-    label: "Interventions realisees",
-    hasStar: false,
-  },
-]
 
 export async function SocialProof() {
   const reviews = await getReviews()
+
+  const stats = [
+    { value: `${formatRating(reviews.rating)}/5`, label: "Note Google", hasStar: true },
+    { value: String(reviews.count), label: "Avis clients verifies", hasStar: false },
+    { value: "500+", label: "Interventions realisees", hasStar: false },
+  ]
 
   return (
     <section className="bg-primary px-4 py-6 lg:py-8">
