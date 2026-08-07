@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Star } from "lucide-react"
+import { REVIEWS } from "@/components/seo/local-business-jsonld"
 
 const reviews = [
   {
@@ -191,7 +192,7 @@ export function Testimonials() {
             rel="noopener noreferrer"
             className="text-sm font-medium text-primary hover:underline"
           >
-            5/5 sur Google — 80 avis
+            {REVIEWS.rating}/5 sur Google — {REVIEWS.count} avis
           </a>
         </div>
       </div>

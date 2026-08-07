@@ -5,6 +5,7 @@ import "./globals.css"
 import { Navbar } from "@/components/layout/navbar"
 import { Footer } from "@/components/layout/footer"
 import { MobileStickyButtons } from "@/components/layout/mobile-sticky-buttons"
+import { LocalBusinessJsonLd } from "@/components/seo/local-business-jsonld"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -79,6 +80,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${inter.variable} bg-background`}>
       <body className="font-sans antialiased">
+        <LocalBusinessJsonLd />
         <Navbar />
         <main>{children}</main>
         <Footer />
