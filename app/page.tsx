@@ -6,15 +6,18 @@ import { Testimonials } from "@/components/sections/testimonials"
 import { WhySaficlean } from "@/components/sections/why-saficlean"
 import { FAQ } from "@/components/sections/faq"
 import { CTAFinal } from "@/components/sections/cta-final"
+import { getReviews } from "@/lib/reviews"
 
-export default function Home() {
+export default async function Home() {
+  const reviews = await getReviews()
+
   return (
     <>
       <Hero />
       <SocialProof />
       <Services />
       <Process />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <WhySaficlean />
       <FAQ />
       <CTAFinal />

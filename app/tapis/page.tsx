@@ -9,6 +9,7 @@ import { WhySaficlean } from "@/components/sections/why-saficlean"
 import { FAQTapis } from "@/components/sections/tapis/faq-tapis"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
+import { getReviews } from "@/lib/reviews"
 
 const description = `Nettoyage professionnel de tapis a domicile en Ile-de-France. Laine, synthetique, oriental. Couleurs ravivees. Des ${formatPrice(startingFrom("tapis"))}.`
 
@@ -28,14 +29,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function TapisPage() {
+export default async function TapisPage() {
+  const reviews = await getReviews()
+
   return (
     <>
       <HeroTapis />
       <SocialProof />
       <TarifsTapis />
       <Process />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <WhySaficlean />
       <FAQTapis />
       <InlineBooking service="tapis" />

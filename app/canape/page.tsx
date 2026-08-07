@@ -9,6 +9,7 @@ import { WhySaficlean } from "@/components/sections/why-saficlean"
 import { FAQCanape } from "@/components/sections/canape/faq-canape"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
+import { getReviews } from "@/lib/reviews"
 
 const description = `Nettoyage professionnel de canape et fauteuil a domicile en Ile-de-France. Tissu, microfibre, velours, lin. Resultat visible immediatement. Des ${formatPrice(startingFrom("canape"))}.`
 
@@ -28,14 +29,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function CanapePage() {
+export default async function CanapePage() {
+  const reviews = await getReviews()
+
   return (
     <>
       <HeroCanape />
       <SocialProof />
       <TarifsCanape />
       <Process />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <WhySaficlean />
       <FAQCanape />
       <InlineBooking service="canape" />

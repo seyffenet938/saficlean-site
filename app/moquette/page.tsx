@@ -8,6 +8,7 @@ import { WhySaficlean } from "@/components/sections/why-saficlean"
 import { FAQMoquette } from "@/components/sections/moquette/faq-moquette"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
+import { getReviews } from "@/lib/reviews"
 
 export const metadata: Metadata = {
   title: "Nettoyage Moquette a Domicile - Paris & Ile-de-France | SafiClean",
@@ -25,14 +26,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function MoquettePage() {
+export default async function MoquettePage() {
+  const reviews = await getReviews()
+
   return (
     <>
       <HeroMoquette />
       <SocialProof />
       <InfoMoquette />
       <Process />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <WhySaficlean />
       <FAQMoquette />
       <InlineBooking service="moquette" />

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Star } from "lucide-react"
-import { REVIEWS } from "@/components/seo/local-business-jsonld"
+import { formatRating, REVIEWS_FALLBACK, type Reviews } from "@/lib/reviews"
 
 const reviews = [
   {
@@ -81,7 +81,7 @@ function ReviewCard({ review }: { review: (typeof reviews)[0] }) {
   )
 }
 
-export function Testimonials() {
+export function Testimonials({ reviews = REVIEWS_FALLBACK }: { reviews?: Reviews }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -192,7 +192,7 @@ export function Testimonials() {
             rel="noopener noreferrer"
             className="text-sm font-medium text-primary hover:underline"
           >
-            {REVIEWS.rating}/5 sur Google — {REVIEWS.count} avis
+            {formatRating(reviews.rating)}/5 sur Google — {reviews.count} avis
           </a>
         </div>
       </div>

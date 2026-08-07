@@ -1,5 +1,5 @@
 import { Star, ExternalLink } from "lucide-react"
-import { REVIEWS } from "@/components/seo/local-business-jsonld"
+import { getReviews } from "@/lib/reviews"
 
 const stats = [
   {
@@ -19,7 +19,9 @@ const stats = [
   },
 ]
 
-export function SocialProof() {
+export async function SocialProof() {
+  const reviews = await getReviews()
+
   return (
     <section className="bg-primary px-4 py-6 lg:py-8">
       <div className="mx-auto max-w-4xl">
@@ -51,7 +53,7 @@ export function SocialProof() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-full border border-primary-foreground/20 px-5 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
           >
-            Voir nos {REVIEWS.count} avis Google
+            Voir nos {reviews.count} avis Google
             <ExternalLink className="h-3.5 w-3.5" />
           </a>
         </div>

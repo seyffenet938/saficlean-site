@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Phone, Check, Star, Sparkles, Car, Sofa, BedDouble, Armchair, Square, Grid3X3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatPrice, PACK_EXAMPLES, PRICING, startingFrom } from "@/lib/pricing"
-import { REVIEWS } from "@/components/seo/local-business-jsonld"
+import { formatRating, getReviews } from "@/lib/reviews"
 
 const description = `Decouvrez tous nos tarifs de nettoyage textile a domicile en Ile-de-France. Prix transparents, sans surprise. Canape des ${formatPrice(startingFrom("canape"))}, matelas des ${formatPrice(startingFrom("matelas"))}.`
 
@@ -69,7 +69,9 @@ const navLinks = [
   { label: "Pack Multi-Meubles", href: "#pack", icon: Sparkles },
 ]
 
-export default function TarifsPage() {
+export default async function TarifsPage() {
+  const reviews = await getReviews()
+
   return (
     <>
       {/* HERO */}
@@ -89,7 +91,7 @@ export default function TarifsPage() {
               <Check className="h-4 w-4" /> Paiement apres intervention
             </span>
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <Star className="h-4 w-4 fill-current" /> {REVIEWS.rating}/5 · {REVIEWS.count} avis Google
+              <Star className="h-4 w-4 fill-current" /> {formatRating(reviews.rating)}/5 · {reviews.count} avis Google
             </span>
           </div>
         </div>

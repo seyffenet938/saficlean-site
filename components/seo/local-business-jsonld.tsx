@@ -1,4 +1,5 @@
 import { PRICING, startingFrom } from "@/lib/pricing"
+import { getReviews } from "@/lib/reviews"
 
 /**
  * Données structurées schema.org — LocalBusiness « service à domicile ».
@@ -64,7 +65,9 @@ const SERVICES = [
   },
 ]
 
-export function LocalBusinessJsonLd() {
+export async function LocalBusinessJsonLd() {
+  const reviews = await getReviews()
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
@@ -106,8 +109,8 @@ export function LocalBusinessJsonLd() {
     ],
     aggregateRating: {
       "@type": "AggregateRating",
-      ratingValue: "5",
-      reviewCount: "100",
+      ratingValue: String(reviews.rating),
+      reviewCount: String(reviews.count),
       bestRating: "5",
       worstRating: "1",
     },
@@ -190,5 +193,3 @@ export function BreadcrumbJsonLd({ items }: { items: { name: string; path: strin
   )
 }
 
-/** Le nombre d'avis est aussi affiché sur le site — une seule source. */
-export const REVIEWS = { count: 100, rating: 5 } as const

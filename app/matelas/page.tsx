@@ -9,6 +9,7 @@ import { WhySaficlean } from "@/components/sections/why-saficlean"
 import { FAQMatelas } from "@/components/sections/matelas/faq-matelas"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
+import { getReviews } from "@/lib/reviews"
 
 const description = `Nettoyage professionnel de matelas a domicile en Ile-de-France. Anti-acariens, taches, odeurs. Resultat visible immediatement. Des ${formatPrice(startingFrom("matelas"))}.`
 
@@ -28,14 +29,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function MatelasPage() {
+export default async function MatelasPage() {
+  const reviews = await getReviews()
+
   return (
     <>
       <HeroMatelas />
       <SocialProof />
       <TarifsMatelas />
       <Process />
-      <Testimonials />
+      <Testimonials reviews={reviews} />
       <WhySaficlean />
       <FAQMatelas />
       <InlineBooking service="matelas" />
