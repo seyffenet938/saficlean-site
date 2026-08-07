@@ -5,10 +5,11 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react"
 const serviceLinks = [
   { label: "Canape & Fauteuil", href: "/canape" },
   { label: "Matelas", href: "/matelas" },
-  { label: "Chaises", href: "/canape#chaises" },
+  { label: "Chaises", href: "/tarifs#chaises" },
   { label: "Tapis", href: "/tapis" },
   { label: "Moquette", href: "/moquette" },
   { label: "Nettoyage Auto", href: "/auto" },
+  { label: "Zones desservies", href: "/zones" },
 ]
 
 function InstagramIcon({ className }: { className?: string }) {
