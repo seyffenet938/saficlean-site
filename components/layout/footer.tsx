@@ -122,15 +122,15 @@ export function Footer() {
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                 <div>
-                  <p>Lundi — Samedi</p>
+                  <p>{"Lundi \u2014 Dimanche"}</p>
                   <p className="font-medium text-foreground">8h - 20h</p>
                 </div>
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <Clock className="mt-0.5 h-4 w-4 flex-shrink-0 text-primary" />
                 <div>
-                  <p>Dimanche</p>
-                  <p className="font-medium text-foreground">{"Ferm\u00e9"}</p>
+                  <p>Week-end inclus</p>
+                  <p className="font-medium text-foreground">7j/7</p>
                 </div>
               </li>
             </ul>
@@ -140,7 +140,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="mt-12 border-t pt-8">
           <p className="mb-4 text-xs text-muted-foreground text-center">
-            {"© 2025 SafiClean — Tous droits r\u00e9serv\u00e9s"}
+            {`© ${new Date().getFullYear()} SafiClean — Tous droits réservés`}
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center sm:gap-6 text-xs">
             <Link href="/mentions-legales" className="text-muted-foreground transition-colors hover:text-primary">
