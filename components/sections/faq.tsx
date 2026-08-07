@@ -29,7 +29,7 @@ const faqs = [
     id: "faq-4",
     question: "Est-ce que le nettoyage peut abimer mon tissu ?",
     answer:
-      "Non. A notre arrivee, on analyse le type de textile avant toute intervention. La methode, la pression et les produits sont adaptes a chaque tissu — qu'il s'agisse de coton, velours, lin, cuir ou microfibre. C'est du sur-mesure, pas du standardise.",
+      "Non. A notre arrivee, on analyse le type de textile avant toute intervention. La methode, la pression et les produits sont adaptes a chaque tissu — qu'il s'agisse de coton, velours, lin ou microfibre. C'est du sur-mesure, pas du standardise.",
   },
   {
     id: "faq-5",

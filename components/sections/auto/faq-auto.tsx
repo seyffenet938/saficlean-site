@@ -26,12 +26,6 @@ const faqsAuto = [
       "Apres un shampouinage, les sieges sont utilisables immediatement mais completement secs en 4 a 8 heures selon la ventilation. On vous conseille de laisser les vitres entrouvertes.",
   },
   {
-    id: "faq-auto-4",
-    question: "Nettoyez-vous les sieges en cuir ?",
-    answer:
-      "Oui. Pour le cuir, on utilise des produits specifiques qui nettoient sans abimer et nourrissent le cuir. Le tarif est identique aux sieges tissu.",
-  },
-  {
     id: "faq-auto-5",
     question: "Pouvez-vous eliminer les odeurs de cigarette ?",
     answer:

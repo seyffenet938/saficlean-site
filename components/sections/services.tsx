@@ -9,7 +9,7 @@ const services = [
     before: "/images/before-after/canape-avant.jpg",
     after: "/images/before-after/canape-apres.jpg",
     description:
-      "Tissu, cuir, simili — on redonne vie a votre canape et vos fauteuils. Taches, odeurs et grisaille disparaissent en une seule intervention.",
+      "Tissu, microfibre, velours — on redonne vie a votre canape et vos fauteuils. Taches, odeurs et grisaille disparaissent en une seule intervention.",
     href: "/canape",
     badge: "Le + demande",
     price: `A partir de ${formatPriceSpaced(startingFrom("canape"))}`,

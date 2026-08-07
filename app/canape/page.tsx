@@ -10,7 +10,7 @@ import { FAQCanape } from "@/components/sections/canape/faq-canape"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 
-const description = `Nettoyage professionnel de canape et fauteuil a domicile en Ile-de-France. Tissu, microfibre, velours, simili-cuir. Resultat visible immediatement. Des ${formatPrice(startingFrom("canape"))}.`
+const description = `Nettoyage professionnel de canape et fauteuil a domicile en Ile-de-France. Tissu, microfibre, velours, lin. Resultat visible immediatement. Des ${formatPrice(startingFrom("canape"))}.`
 
 export const metadata: Metadata = {
   title: "Nettoyage Canape & Fauteuil a Domicile - Paris & Ile-de-France | SafiClean",

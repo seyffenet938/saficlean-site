@@ -16,7 +16,7 @@ const faqsCanape = [
     id: "faq-canape-2",
     question: "Nettoyez-vous tous les types de tissus ?",
     answer:
-      "Oui. Tissu classique, velours, lin, coton, microfibre, cuir, simili-cuir... On adapte notre technique et nos produits a chaque matiere. Un diagnostic est fait a notre arrivee pour determiner la methode optimale.",
+      "Oui. Tissu classique, velours, lin, coton, microfibre... On adapte notre technique et nos produits a chaque matiere. Un diagnostic est fait a notre arrivee pour determiner la methode optimale.",
   },
   {
     id: "faq-canape-3",

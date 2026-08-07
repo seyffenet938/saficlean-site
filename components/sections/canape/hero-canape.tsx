@@ -67,7 +67,7 @@ function HeroCanapeContent() {
 
       <p className="mt-5 max-w-xl text-pretty text-base leading-relaxed text-white/80 lg:text-lg">
         <span className="text-2xl font-bold text-primary">Des {formatPrice(startingFrom("canape"))}</span>
-        <span className="ml-2">— Tissu, cuir, simili. Resultat visible immediatement.</span>
+        <span className="ml-2">— Tissu, microfibre, velours. Resultat visible immediatement.</span>
       </p>
 
       <div className="mt-8 flex flex-col gap-4 sm:flex-row">
