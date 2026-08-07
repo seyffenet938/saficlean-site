@@ -28,7 +28,14 @@ export type Reviews = { count: number; rating: number }
  */
 export async function getReviews(): Promise<Reviews> {
   const apiKey = process.env.GOOGLE_PLACES_API_KEY
-  if (!apiKey) return REVIEWS_FALLBACK
+
+  // Les logs ci-dessous n'apparaissent QUE dans les logs Vercel (jamais côté
+  // client) et ne contiennent jamais la clé. Sans eux, un repli silencieux est
+  // indiscernable d'un succès.
+  if (!apiKey) {
+    console.warn("[reviews] GOOGLE_PLACES_API_KEY absente de cet environnement → repli")
+    return REVIEWS_FALLBACK
+  }
 
   try {
     const res = await fetch(`https://places.googleapis.com/v1/places/${PLACE_ID}`, {
@@ -39,15 +46,22 @@ export async function getReviews(): Promise<Reviews> {
       next: { revalidate: 86400 }, // 24 h
     })
 
-    if (!res.ok) return REVIEWS_FALLBACK
-
-    const data = (await res.json()) as { rating?: number; userRatingCount?: number }
-    if (typeof data.rating !== "number" || typeof data.userRatingCount !== "number") {
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "")
+      console.warn(`[reviews] Places API ${res.status} → repli. ${detail.slice(0, 300)}`)
       return REVIEWS_FALLBACK
     }
 
+    const data = (await res.json()) as { rating?: number; userRatingCount?: number }
+    if (typeof data.rating !== "number" || typeof data.userRatingCount !== "number") {
+      console.warn(`[reviews] Réponse inattendue → repli. ${JSON.stringify(data).slice(0, 300)}`)
+      return REVIEWS_FALLBACK
+    }
+
+    console.log(`[reviews] OK — ${data.userRatingCount} avis, note ${data.rating}`)
     return { count: data.userRatingCount, rating: data.rating }
-  } catch {
+  } catch (err) {
+    console.warn(`[reviews] Appel échoué → repli. ${String(err).slice(0, 300)}`)
     return REVIEWS_FALLBACK
   }
 }
