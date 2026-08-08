@@ -7,6 +7,7 @@ import {
   type BookingEmailData,
 } from "@/lib/email"
 import { sendBookingToPipeline } from "@/lib/pipeline"
+import { computePack } from "@/lib/pricing"
 
 const SERVICE_NAMES: Record<string, string> = {
   canape: "Canape & Fauteuil",
@@ -22,25 +23,9 @@ export async function submitBooking(bookingState: BookingState) {
     // Generate reservation ID
     const bookingId = `SF-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`
 
-    // Calculate totals for summary
-    const subtotal = bookingState.selectedOptions.reduce((sum, opt) => sum + opt.price, 0)
-    const eligibleCount = bookingState.selectedOptions.filter(
-      (opt) => opt.price >= 40 && !["chaises", "moquette"].includes(opt.type)
-    ).length
-
-    let discountRate = 0
-    if (eligibleCount >= 4) discountRate = 0.25
-    else if (eligibleCount === 3) discountRate = 0.2
-    else if (eligibleCount === 2) discountRate = 0.15
-
-    let discount = subtotal * discountRate
-    const autoOption = bookingState.selectedOptions.find((opt) => opt.type === "auto")
-    if (autoOption) {
-      const maxDiscountOnAuto = autoOption.price * 0.1
-      discount = Math.min(discount, maxDiscountOnAuto)
-    }
-
-    const total = Math.round((subtotal - discount) * 100) / 100
+    // Même calcul que celui affiché au client dans le tunnel : le montant
+    // enregistré ne peut pas diverger de celui qu'il a validé.
+    const { subtotal, discount, total } = computePack(bookingState.selectedOptions)
 
     // Format date for display
     const dateObj = new Date(bookingState.date)

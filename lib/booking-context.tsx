@@ -1,6 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, ReactNode } from "react"
+import { computePack } from "@/lib/pricing"
 
 export interface SelectedOption {
   id: string // Unique identifier for each item
@@ -105,47 +106,15 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     setState((prev) => ({ ...prev, [field]: value }))
   }
 
-  const getSubtotal = () => {
-    return state.selectedOptions.reduce((sum, opt) => sum + opt.price, 0)
-  }
+  // Tout le calcul vient de computePack (lib/pricing.ts) : une seule
+  // implémentation partagée avec la soumission serveur.
+  const pack = () => computePack(state.selectedOptions)
 
-  const getEligibleCount = () => {
-    return state.selectedOptions.filter(
-      (opt) => opt.price >= 40 && !["chaises", "moquette"].includes(opt.type) && !opt.type.startsWith("auto-option")
-    ).length
-  }
-
-  const getDiscountRate = () => {
-    const eligibleCount = getEligibleCount()
-    if (eligibleCount >= 4) return 0.25
-    if (eligibleCount === 3) return 0.20
-    if (eligibleCount === 2) return 0.15
-    return 0
-  }
-
-  const calculateDiscount = () => {
-    const subtotal = getSubtotal()
-    const discountRate = getDiscountRate()
-    
-    if (discountRate === 0) return 0
-
-    let discount = subtotal * discountRate
-
-    // Cap discount for auto services
-    const autoOption = state.selectedOptions.find((opt) => opt.type === "auto")
-    if (autoOption) {
-      const maxDiscountOnAuto = autoOption.price * 0.1
-      discount = Math.min(discount, maxDiscountOnAuto)
-    }
-
-    return Math.round(discount * 100) / 100
-  }
-
-  const calculateTotal = () => {
-    const subtotal = getSubtotal()
-    const discount = calculateDiscount()
-    return Math.round((subtotal - discount) * 100) / 100
-  }
+  const getSubtotal = () => pack().subtotal
+  const getEligibleCount = () => pack().eligibleCount
+  const getDiscountRate = () => pack().discountRate
+  const calculateDiscount = () => pack().discount
+  const calculateTotal = () => pack().total
 
   const reset = () => {
     setState(initialState)

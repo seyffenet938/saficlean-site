@@ -103,6 +103,68 @@ export function applyDiscount(total: number, discount: number): number {
   return Math.round(total * (1 - discount))
 }
 
+// ── Calcul du Pack Multi-Meubles — SOURCE UNIQUE ────────────────────────
+//
+// ⚠️ Ce calcul était auparavant écrit EN DUR à deux endroits :
+// `lib/booking-context.tsx` (ce que voit le client) et
+// `app/reserver/actions.ts` (ce qui part en email et dans Airtable).
+// Les deux avaient déjà divergé — le client excluait les options auto de
+// l'éligibilité, pas le serveur, et les arrondis différaient.
+// Un écart entre le prix affiché et le prix enregistré est un problème
+// d'argent : il ne doit exister qu'une seule implémentation.
+
+export type PackItem = { type: string; price: number }
+
+export type PackResult = {
+  subtotal: number
+  eligibleCount: number
+  discountRate: number
+  discount: number
+  total: number
+}
+
+/** Un article compte dans le pack s'il est assez cher et non exclu. */
+function isEligible(item: PackItem): boolean {
+  if (item.price < PACK_RULES.minPrice) return false
+  if ((PACK_RULES.excluded as readonly string[]).includes(item.type)) return false
+  // Les options auto (plafonnier, coffre…) sont des suppléments, pas des articles.
+  if (item.type.startsWith("auto-option")) return false
+  return true
+}
+
+/**
+ * Calcule sous-total, remise pack et total à partir des articles choisis.
+ * Utilisé À LA FOIS par l'affichage temps réel du tunnel et par la
+ * soumission serveur, pour qu'ils ne puissent jamais diverger.
+ */
+export function computePack(items: PackItem[]): PackResult {
+  const subtotal = items.reduce((sum, i) => sum + i.price, 0)
+  const eligibleCount = items.filter(isEligible).length
+
+  const discountRate =
+    eligibleCount >= 4
+      ? PACK_RULES.discounts[4]
+      : eligibleCount === 3
+        ? PACK_RULES.discounts[3]
+        : eligibleCount === 2
+          ? PACK_RULES.discounts[2]
+          : 0
+
+  let discount = subtotal * discountRate
+
+  // L'intérieur auto compte comme un article, mais plafonne la remise à 10 %
+  // de son propre prix (règle métier — cf. 05-tarifs/30_TARIFS.md).
+  const autoItem = items.find((i) => i.type === "auto")
+  if (autoItem) {
+    discount = Math.min(discount, autoItem.price * PACK_RULES.autoCap)
+  }
+
+  discount = Math.round(discount * 100) / 100
+  const total = Math.round((subtotal - discount) * 100) / 100
+
+  return { subtotal, eligibleCount, discountRate, discount, total }
+}
+
 // ── Catalogues d'affichage (libellés + prix tirés de PRICING) ──
 
 export const CANAPE_TARIFS = [
