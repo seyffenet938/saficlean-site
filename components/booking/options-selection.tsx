@@ -4,6 +4,7 @@ import { useBooking, SelectedOption } from "@/lib/booking-context"
 import { PRICING } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
+import { PackUpsell } from "@/components/booking/pack-upsell"
 
 const TAPIS_LABELS: Record<string, string> = {
   petit: "Petit — 100x160cm (1.5m²)",
@@ -75,6 +76,10 @@ export function OptionsSelectionStep() {
           <MoquetteOptions />
         )}
       </div>
+
+      {/* Reproduit l'upsell que Seyffe fait au téléphone : ne s'affiche que
+          s'il manque exactement un article pour déclencher le pack. */}
+      <PackUpsell />
     </div>
   )
 }
