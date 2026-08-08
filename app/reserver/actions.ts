@@ -6,6 +6,7 @@ import {
   sendBookingNotificationToAdmin,
   type BookingEmailData,
 } from "@/lib/email"
+import { sendBookingToPipeline } from "@/lib/pipeline"
 
 const SERVICE_NAMES: Record<string, string> = {
   canape: "Canape & Fauteuil",
@@ -71,15 +72,41 @@ export async function submitBooking(bookingState: BookingState) {
       accessInfo: bookingState.accessInfo,
     }
 
-    // Send emails
-    try {
-      await Promise.all([
+    // Emails + entrée dans le pipeline, en parallèle et sans dépendance
+    // mutuelle : aucun des deux ne doit faire échouer la réservation.
+    const [emailResult, pipelineResult] = await Promise.allSettled([
+      Promise.all([
         sendBookingConfirmationToCustomer(emailData),
         sendBookingNotificationToAdmin(emailData),
-      ])
-    } catch (emailError) {
-      console.error("[Booking Email Error]", emailError)
-      // Continue even if email fails - booking is still valid
+      ]),
+      sendBookingToPipeline({
+        bookingId,
+        firstName: bookingState.firstName,
+        lastName: bookingState.lastName,
+        phone: bookingState.phone,
+        email: bookingState.email,
+        address: bookingState.address,
+        postalCode: bookingState.postalCode,
+        city: bookingState.city,
+        date: formattedDate,
+        timeSlot: bookingState.timeSlot,
+        services: emailData.services,
+        options: emailData.options,
+        subtotal,
+        discount,
+        total,
+        accessInfo: bookingState.accessInfo,
+      }),
+    ])
+
+    if (emailResult.status === "rejected") {
+      console.error("[Booking Email Error]", emailResult.reason)
+    }
+    // sendBookingToPipeline ne lève pas : on lit son statut.
+    if (pipelineResult.status === "fulfilled" && !pipelineResult.value.ok) {
+      console.error(
+        `[Booking] ${bookingId} NON transmise au pipeline (${pipelineResult.value.reason}) — lead à rattraper à la main`,
+      )
     }
 
     console.log(`[Booking] ID: ${bookingId}`)
