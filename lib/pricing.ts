@@ -70,14 +70,20 @@ export type AutoOption = keyof typeof PRICING.auto.options
 
 // ── Helpers d'affichage ──
 
-/** 79 → "79€" */
+/**
+ * 79 → "79€" · 22.35 → "22,35€"
+ * Virgule décimale : on écrit pour des clients français, « 22.35€ » fait
+ * traduction automatique. Les entiers restent sans décimales inutiles.
+ */
 export function formatPrice(n: number): string {
-  return `${n}€`
+  if (Number.isInteger(n)) return `${n}€`
+  return `${n.toFixed(2).replace(".", ",")}€`
 }
 
 /** 79 → "79 €" (variante espacée, pour les accroches « A partir de ») */
 export function formatPriceSpaced(n: number): string {
-  return `${n} €`
+  if (Number.isInteger(n)) return `${n} €`
+  return `${n.toFixed(2).replace(".", ",")} €`
 }
 
 /** Prix d'entrée d'un service, calculé depuis la grille. */
