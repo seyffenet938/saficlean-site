@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, Suspense } from "react"
+import { useState, useEffect, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -14,6 +14,7 @@ import { SummaryStep } from "@/components/booking/summary-step"
 import { BookingSummary } from "@/components/booking/booking-summary"
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import { submitBooking } from "./actions"
+import { trackBookingStep, trackBookingSubmitted, trackBookingFailed } from "@/lib/analytics"
 
 const STEPS = [
   { id: 1, title: "Services", validate: (state: any) => state.selectedServices.length > 0 },
@@ -75,7 +76,7 @@ function MobileTotalBar() {
 function BookingPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { state, updateStep, toggleService, addOption, updateField } = useBooking()
+  const { state, updateStep, toggleService, addOption, updateField, calculateTotal } = useBooking()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [initialized, setInitialized] = useState(false)
@@ -123,6 +124,17 @@ function BookingPageContent() {
   const currentStep = STEPS.find((s) => s.id === state.step)
   const canProceed = currentStep?.validate(state) ?? false
 
+  // Mesure du tunnel : une étape n'est comptée qu'à sa PREMIÈRE visite.
+  // Sans ce garde-fou, un aller-retour gonflerait le compteur et fausserait
+  // le taux de passage entre étapes.
+  const stepsTracked = useRef<Set<number>>(new Set())
+  useEffect(() => {
+    if (!initialized) return
+    if (stepsTracked.current.has(state.step)) return
+    stepsTracked.current.add(state.step)
+    trackBookingStep(state.step, state.selectedOptions.length)
+  }, [state.step, state.selectedOptions.length, initialized])
+
   const handleNext = () => {
     if (state.step < 5) {
       updateStep(state.step + 1)
@@ -142,11 +154,14 @@ function BookingPageContent() {
     try {
       const result = await submitBooking(state)
       if (result.success && result.bookingId) {
+        trackBookingSubmitted(state.selectedOptions.length, calculateTotal())
         router.push(`/reserver/confirmation?id=${result.bookingId}`)
       } else {
+        trackBookingFailed(result.error || "reponse_sans_succes")
         setError(result.error || "Une erreur est survenue")
       }
-    } catch {
+    } catch (err) {
+      trackBookingFailed(String(err))
       setError("Une erreur est survenue. Veuillez reessayer.")
     } finally {
       setIsSubmitting(false)
