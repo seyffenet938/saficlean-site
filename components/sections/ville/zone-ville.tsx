@@ -1,7 +1,8 @@
 import Link from "next/link"
 import { ArrowRight, Check, MapPin, Clock, ShieldCheck } from "lucide-react"
 import { formatPrice, PRICING, startingFrom } from "@/lib/pricing"
-import { villesVoisinesDuDepartement, type Ville } from "@/lib/villes"
+import { villesVoisinesDuDepartement, VILLES_PILOTE, type Ville } from "@/lib/villes"
+import { SERVICES_LOCAUX } from "@/lib/services-locaux"
 
 /** Services proposés, avec le prix d'entrée tiré de la source unique. */
 function services() {
@@ -41,6 +42,10 @@ function services() {
 
 export function ZoneVille({ ville }: { ville: Ville }) {
   const autresVilles = villesVoisinesDuDepartement(ville)
+  // Pages service × ville : n'existent que pour les villes du pilote.
+  const pagesService = (VILLES_PILOTE as readonly string[]).includes(ville.slug)
+    ? SERVICES_LOCAUX
+    : []
 
   return (
     <section className="bg-background px-4 py-16 lg:py-24">
@@ -118,6 +123,28 @@ export function ZoneVille({ ville }: { ville: Ville }) {
             </Link>
           </div>
         </div>
+
+        {pagesService.length > 0 && (
+          <div className="mt-10 rounded-2xl border-2 border-primary/30 bg-primary/5 p-6">
+            <h3 className="text-lg font-semibold text-foreground">
+              Pages dédiées à {ville.nom}
+            </h3>
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {pagesService.map((s) => (
+                <Link
+                  key={s.slug}
+                  href={`/nettoyage/${ville.slug}/${s.slug}`}
+                  className="group flex items-center justify-between rounded-xl bg-background px-4 py-3 transition-shadow hover:shadow-md"
+                >
+                  <span className="text-sm font-medium capitalize text-foreground">
+                    Nettoyage {s.nom}
+                  </span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Communes limitrophes — contenu local réel */}
         <div className="mt-12 rounded-2xl border border-secondary/20 bg-muted/50 p-6 lg:p-8">

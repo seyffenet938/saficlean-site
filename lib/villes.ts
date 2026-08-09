@@ -424,6 +424,29 @@ export const VILLES: Ville[] = [
   },
 ]
 
+/**
+ * ── Pages service × ville (pilote) ──────────────────────────────────
+ *
+ * On NE génère PAS la matrice complète : 48 villes × 3 services = 144
+ * pages quasi identiques, c'est la définition des doorway pages et ça
+ * ferait déclasser tout le domaine, y compris les 48 pages villes qui
+ * viennent d'être indexées.
+ *
+ * Pilote borné : les 8 villes les plus fortes en leads Google LSA
+ * (export 428 leads), × 3 services. Soit 24 pages, mesurables.
+ * On étendra si Search Console montre que ça performe.
+ */
+export const VILLES_PILOTE = [
+  "paris", // 94 leads LSA
+  "sannois", // 17
+  "argenteuil", // 13
+  "sarcelles", // 9
+  "asnieres-sur-seine", // 9
+  "le-raincy", // 9
+  "saint-maur-des-fosses", // 8
+  "colombes", // 8
+] as const
+
 /** Index par slug — pour les routes dynamiques. */
 export const VILLES_PAR_SLUG = new Map(VILLES.map((v) => [v.slug, v]))
 

@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
-import { VILLES } from "@/lib/villes"
+import { VILLES, VILLES_PILOTE } from "@/lib/villes"
+import { SERVICES_LOCAUX } from "@/lib/services-locaux"
 
 const SITE_URL = "https://saficlean.fr"
 
@@ -33,6 +34,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
+  // Pages service x ville (pilote : 8 villes x 3 services)
+  const servicesVilles: MetadataRoute.Sitemap = VILLES_PILOTE.flatMap((v) =>
+    SERVICES_LOCAUX.map((s) => ({
+      url: `${SITE_URL}/nettoyage/${v}/${s.slug}`,
+      lastModified,
+      changeFrequency: "monthly" as const,
+      priority: 0.75,
+    })),
+  )
+
   return [
     ...pages.map(({ path, priority, changeFrequency }) => ({
       url: `${SITE_URL}${path}`,
@@ -41,5 +52,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority,
     })),
     ...villes,
+    ...servicesVilles,
   ]
 }
