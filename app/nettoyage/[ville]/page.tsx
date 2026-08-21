@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { formatPrice, startingFrom } from "@/lib/pricing"
 import { getReviews } from "@/lib/reviews"
-import { getVille, VILLES } from "@/lib/villes"
+import { getVille, VILLES, zoneAutour } from "@/lib/villes"
 import { HeroVille } from "@/components/sections/ville/hero-ville"
 import { ZoneVille } from "@/components/sections/ville/zone-ville"
 import { SocialProof } from "@/components/sections/social-proof"
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ville) return {}
 
   const title = `Nettoyage Canapé, Matelas & Tapis à ${ville.nom} (${ville.cp}) | SafiClean`
-  const description = `Nettoyage textile à domicile à ${ville.nom} et dans le ${ville.depNom} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("matelas"))}.`
+  const description = `Nettoyage textile à domicile à ${ville.nom}, ${zoneAutour(ville)} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("matelas"))}.`
 
   return {
     title,

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check, MapPin, Clock, ShieldCheck } from "lucide-react"
 import { formatPrice, PRICING, startingFrom } from "@/lib/pricing"
-import { villesVoisinesDuDepartement, VILLES_PILOTE, type Ville } from "@/lib/villes"
+import { villesVoisinesDuDepartement, VILLES_PILOTE, zoneAutour, libelleAutresLieux, type Ville } from "@/lib/villes"
 import { SERVICES_LOCAUX } from "@/lib/services-locaux"
 
 /** Services proposés, avec le prix d'entrée tiré de la source unique. */
@@ -59,8 +59,8 @@ export function ZoneVille({ ville }: { ville: Ville }) {
             Un nettoyage textile professionnel, chez vous à {ville.nom}
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            SafiClean se déplace à {ville.nom} ({ville.cp}) et dans tout le{" "}
-            {ville.depNom} avec un matériel professionnel d{"'"}injection-extraction.
+            SafiClean se déplace à {ville.nom} ({ville.cp}) et {zoneAutour(ville)}{" "}
+            avec un matériel professionnel d{"'"}injection-extraction.
             Canapés, matelas, tapis, chaises et intérieurs de véhicule sont traités
             à votre domicile — rien à transporter, rien à démonter.
           </p>
@@ -170,7 +170,7 @@ export function ZoneVille({ ville }: { ville: Ville }) {
           {autresVilles.length > 0 && (
             <>
               <p className="mt-6 text-sm text-muted-foreground">
-                Autres villes du {ville.depNom} où nous intervenons :
+                {libelleAutresLieux(ville)} où nous intervenons :
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {autresVilles.map((v) => (

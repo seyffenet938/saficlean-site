@@ -37,6 +37,45 @@ export const VILLES: Ville[] = [
     voisines: ["Saint-Denis", "Montreuil", "Levallois-Perret", "Ivry-sur-Seine"],
   },
 
+  // ── 75 · Arrondissements parisiens ──────────────────────────────────
+  //
+  // Ajoutés le 21/08/2026 sur DONNÉES Search Console : 15 arrondissements
+  // génèrent des impressions (47 au total) alors qu'une seule page Paris
+  // générique existait — et le site y ressort déjà en position 5 à 12.
+  // On ne crée QUE ceux qui ont un signal mesuré, pas les 20.
+  {
+    slug: "paris-4e", nom: "Paris 4e", cp: "75004", dep: "75", depNom: "Paris",
+    voisines: ["Paris 1er", "Paris 3e", "Paris 11e", "Paris 12e", "Paris 5e"],
+  },
+  {
+    slug: "paris-6e", nom: "Paris 6e", cp: "75006", dep: "75", depNom: "Paris",
+    voisines: ["Paris 5e", "Paris 7e", "Paris 14e", "Paris 15e", "Paris 1er"],
+  },
+  {
+    slug: "paris-9e", nom: "Paris 9e", cp: "75009", dep: "75", depNom: "Paris",
+    voisines: ["Paris 2e", "Paris 8e", "Paris 10e", "Paris 18e"],
+  },
+  {
+    slug: "paris-12e", nom: "Paris 12e", cp: "75012", dep: "75", depNom: "Paris",
+    voisines: ["Paris 4e", "Paris 11e", "Paris 13e", "Saint-Mandé", "Charenton-le-Pont"],
+  },
+  {
+    slug: "paris-13e", nom: "Paris 13e", cp: "75013", dep: "75", depNom: "Paris",
+    voisines: ["Paris 5e", "Paris 12e", "Paris 14e", "Ivry-sur-Seine", "Le Kremlin-Bicêtre"],
+  },
+  {
+    slug: "paris-15e", nom: "Paris 15e", cp: "75015", dep: "75", depNom: "Paris",
+    voisines: ["Paris 6e", "Paris 7e", "Paris 14e", "Issy-les-Moulineaux", "Vanves"],
+  },
+  {
+    slug: "paris-17e", nom: "Paris 17e", cp: "75017", dep: "75", depNom: "Paris",
+    voisines: ["Paris 8e", "Paris 9e", "Paris 16e", "Paris 18e", "Levallois-Perret", "Clichy"],
+  },
+  {
+    slug: "paris-19e", nom: "Paris 19e", cp: "75019", dep: "75", depNom: "Paris",
+    voisines: ["Paris 10e", "Paris 18e", "Paris 20e", "Pantin", "Aubervilliers"],
+  },
+
   // ── 95 · Val-d'Oise ─────────────────────────────────────────────────
   {
     slug: "argenteuil",
@@ -446,6 +485,20 @@ export const VILLES_PILOTE = [
   "saint-maur-des-fosses", // 8
   "colombes", // 8
 ] as const
+
+
+/**
+ * « dans tout le Val-d'Oise » — mais pour Paris, « dans tout le Paris »
+ * est fautif. Cette fonction produit la formulation correcte selon le cas.
+ */
+export function zoneAutour(v: Ville): string {
+  return v.dep === "75" ? "dans Paris et la proche banlieue" : `dans tout le ${v.depNom}`
+}
+
+/** « Autres villes du 95 » / « Autres arrondissements » pour Paris. */
+export function libelleAutresLieux(v: Ville): string {
+  return v.dep === "75" ? "Autres arrondissements" : `Autres villes du ${v.depNom}`
+}
 
 /** Index par slug — pour les routes dynamiques. */
 export const VILLES_PAR_SLUG = new Map(VILLES.map((v) => [v.slug, v]))

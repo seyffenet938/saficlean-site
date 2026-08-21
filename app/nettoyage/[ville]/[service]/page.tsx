@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowRight, Check, MapPin } from "lucide-react"
 import { formatPrice } from "@/lib/pricing"
 import { getReviews } from "@/lib/reviews"
-import { getVille, VILLES_PILOTE } from "@/lib/villes"
+import { getVille, VILLES_PILOTE, zoneAutour } from "@/lib/villes"
 import { getServiceLocal, SERVICES_LOCAUX } from "@/lib/services-locaux"
 import { HeroVille } from "@/components/sections/ville/hero-ville"
 import { SocialProof } from "@/components/sections/social-proof"
@@ -146,7 +146,7 @@ export default async function ServiceVillePage({ params }: Props) {
             </h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">{service.argument}</p>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              Nous intervenons à {ville.nom} ({ville.cp}) et dans tout le {ville.depNom},
+              Nous intervenons à {ville.nom} ({ville.cp}) et {zoneAutour(ville)},
               7j/7 de 8h à 20h. Devis gratuit, sans engagement, et{" "}
               <strong className="text-foreground">paiement après l{"'"}intervention</strong>.
             </p>
