@@ -492,7 +492,11 @@ export const VILLES_PILOTE = [
  * est fautif. Cette fonction produit la formulation correcte selon le cas.
  */
 export function zoneAutour(v: Ville): string {
-  return v.dep === "75" ? "dans Paris et la proche banlieue" : `dans tout le ${v.depNom}`
+  // Trois cas distincts, sinon on écrit « à Paris 15e et dans Paris… » :
+  // Paris répété, ou « dans tout LE Paris » qui est fautif.
+  if (v.slug === "paris") return "dans les 20 arrondissements"
+  if (v.dep === "75") return "dans les arrondissements voisins"
+  return `dans tout le ${v.depNom}`
 }
 
 /** « Autres villes du 95 » / « Autres arrondissements » pour Paris. */
