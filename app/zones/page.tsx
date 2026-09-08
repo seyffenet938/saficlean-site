@@ -4,6 +4,7 @@ import { MapPin, Phone, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { formatPrice, startingFrom } from "@/lib/pricing"
 import { VILLES, villesParDepartement } from "@/lib/villes"
+import { DEP_PAR_NUM } from "@/lib/departements"
 
 const description = `SafiClean intervient dans ${VILLES.length} villes d'Île-de-France pour le nettoyage de canapés, matelas, tapis et intérieurs de véhicule à domicile. Trouvez votre commune.`
 
@@ -62,12 +63,23 @@ export default function ZonesPage() {
           <div className="space-y-10">
             {parDep.map((groupe) => (
               <div key={groupe.dep}>
-                <h2 className="mb-4 flex items-center gap-3 text-2xl font-bold text-foreground">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-                    {groupe.dep}
-                  </span>
-                  {groupe.depNom}
-                </h2>
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                  <h2 className="flex items-center gap-3 text-2xl font-bold text-foreground">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
+                      {groupe.dep}
+                    </span>
+                    {groupe.depNom}
+                  </h2>
+                  {DEP_PAR_NUM.get(groupe.dep)?.page && (
+                    <Link
+                      href={`/zones/${DEP_PAR_NUM.get(groupe.dep)!.slug}`}
+                      className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+                    >
+                      Tout le {groupe.dep}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {groupe.villes.map((v) => (
                     <Link

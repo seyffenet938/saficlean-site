@@ -13,6 +13,8 @@
  *    communes voisines réelles. Ne jamais inventer une donnée locale.
  */
 
+import { DEP_PAR_NUM } from "./departements"
+
 export type Ville = {
   /** Segment d'URL : /nettoyage/<slug> */
   slug: string
@@ -488,20 +490,26 @@ export const VILLES_PILOTE = [
 
 
 /**
- * « dans tout le Val-d'Oise » — mais pour Paris, « dans tout le Paris »
- * est fautif. Cette fonction produit la formulation correcte selon le cas.
+ * ⚠️ NE JAMAIS interpoler `le ${v.depNom}` : le genre et le nombre varient.
+ * On dit « dans LE Val-d'Oise » mais « EN Seine-Saint-Denis » et « DANS LES
+ * Hauts-de-Seine ». Les formes correctes vivent dans lib/departements.ts.
+ * Bug corrigé le 08/09/2026 : « dans tout le Seine-Saint-Denis » et
+ * « Autres villes du Hauts-de-Seine » étaient en production sur les
+ * 47 pages ville hors Paris.
  */
 export function zoneAutour(v: Ville): string {
-  // Trois cas distincts, sinon on écrit « à Paris 15e et dans Paris… » :
-  // Paris répété, ou « dans tout LE Paris » qui est fautif.
+  // Paris d'abord : « dans tout le Paris » est fautif, et sur une page
+  // d'arrondissement on écrirait « à Paris 15e et dans Paris… ».
   if (v.slug === "paris") return "dans les 20 arrondissements"
   if (v.dep === "75") return "dans les arrondissements voisins"
-  return `dans tout le ${v.depNom}`
+  return DEP_PAR_NUM.get(v.dep)?.zone ?? "dans tout le département"
 }
 
-/** « Autres villes du 95 » / « Autres arrondissements » pour Paris. */
+/** « Autres villes des Hauts-de-Seine » / « Autres arrondissements » pour Paris. */
 export function libelleAutresLieux(v: Ville): string {
-  return v.dep === "75" ? "Autres arrondissements" : `Autres villes du ${v.depNom}`
+  if (v.dep === "75") return "Autres arrondissements"
+  const de = DEP_PAR_NUM.get(v.dep)?.de
+  return de ? `Autres villes ${de}` : "Autres villes du département"
 }
 
 /** Index par slug — pour les routes dynamiques. */

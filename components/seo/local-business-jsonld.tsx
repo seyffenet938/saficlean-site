@@ -12,7 +12,7 @@ import { getReviews } from "@/lib/reviews"
  * - Aucune mention de crédit d'impôt (agrément SAP non obtenu).
  */
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 
 // Départements couverts — Paris + petite et grande couronne.
 const AREA_SERVED = [

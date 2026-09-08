@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next"
 import { VILLES, VILLES_PILOTE } from "@/lib/villes"
 import { SERVICES_LOCAUX } from "@/lib/services-locaux"
+import { DEPARTEMENTS_PAGES } from "@/lib/departements"
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 
 /**
  * Sitemap du site. Toute nouvelle page publique doit être ajoutée ici.
@@ -34,6 +35,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }))
 
+  // Une entree par departement ayant des communes couvertes (cf. lib/departements.ts).
+  // Priorite 0.75 : au-dessus des villes, ce sont des hubs.
+  const departements: MetadataRoute.Sitemap = DEPARTEMENTS_PAGES.map((d) => ({
+    url: `${SITE_URL}/zones/${d.slug}`,
+    lastModified,
+    changeFrequency: "monthly" as const,
+    priority: 0.75,
+  }))
+
   // Pages service x ville (pilote : 8 villes x 3 services)
   const servicesVilles: MetadataRoute.Sitemap = VILLES_PILOTE.flatMap((v) =>
     SERVICES_LOCAUX.map((s) => ({
@@ -51,6 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency,
       priority,
     })),
+    ...departements,
     ...villes,
     ...servicesVilles,
   ]
