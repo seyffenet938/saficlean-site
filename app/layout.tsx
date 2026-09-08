@@ -12,7 +12,7 @@ const inter = Inter({
   variable: "--font-inter",
 })
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 const TITLE = "SafiClean — Nettoyage textile à domicile en Île-de-France"
 const DESCRIPTION =
   "SafiClean, votre expert en nettoyage textile à domicile en Île-de-France. Canapés, matelas, tapis, moquettes et fauteuils nettoyés chez vous."

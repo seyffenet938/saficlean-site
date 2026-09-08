@@ -14,7 +14,7 @@ import { CTAFinal } from "@/components/sections/cta-final"
 import { BreadcrumbJsonLd } from "@/components/seo/local-business-jsonld"
 import { DEP_PAR_NUM } from "@/lib/departements"
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 
 /** Toutes les villes sont prérendues au build. */
 export function generateStaticParams() {

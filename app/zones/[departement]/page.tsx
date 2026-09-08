@@ -20,7 +20,7 @@ import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { BreadcrumbJsonLd } from "@/components/seo/local-business-jsonld"
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 
 /**
  * ⚠️ VERROU : hors des 5 départements qui ont réellement des communes

@@ -3,7 +3,7 @@ import { VILLES, VILLES_PILOTE } from "@/lib/villes"
 import { SERVICES_LOCAUX } from "@/lib/services-locaux"
 import { DEPARTEMENTS_PAGES } from "@/lib/departements"
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 
 /**
  * Sitemap du site. Toute nouvelle page publique doit être ajoutée ici.

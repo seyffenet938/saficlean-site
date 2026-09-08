@@ -22,7 +22,7 @@ import { FAQMatelas } from "@/components/sections/matelas/faq-matelas"
 import { TarifsTapis } from "@/components/sections/tapis/tarifs-tapis"
 import { FAQTapis } from "@/components/sections/tapis/faq-tapis"
 
-const SITE_URL = "https://saficlean.fr"
+const SITE_URL = "https://www.saficlean.fr"
 
 /** Grille tarifaire et FAQ RÉELLES du service — pas un texte réécrit. */
 const BLOCS = {
