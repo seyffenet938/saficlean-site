@@ -14,6 +14,7 @@ import { WhySaficlean } from "@/components/sections/why-saficlean"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { BreadcrumbJsonLd } from "@/components/seo/local-business-jsonld"
+import { DEP_PAR_NUM } from "@/lib/departements"
 import { TarifsCanape } from "@/components/sections/canape/tarifs-canape"
 import { FAQCanape } from "@/components/sections/canape/faq-canape"
 import { TarifsMatelas } from "@/components/sections/matelas/tarifs-matelas"
@@ -80,6 +81,7 @@ export default async function ServiceVillePage({ params }: Props) {
   const service = getServiceLocal(sSlug)
   if (!ville || !service) notFound()
 
+  const dep = DEP_PAR_NUM.get(ville.dep)
   const reviews = await getReviews()
   const blocs = BLOCS[service.slug as keyof typeof BLOCS]
   const autresServices = SERVICES_LOCAUX.filter((s) => s.slug !== service.slug)
@@ -126,6 +128,7 @@ export default async function ServiceVillePage({ params }: Props) {
         items={[
           { name: "Accueil", path: "/" },
           { name: "Zones desservies", path: "/zones" },
+          ...(dep?.page ? [{ name: dep.nom, path: `/zones/${dep.slug}` }] : []),
           { name: ville.nom, path: `/nettoyage/${ville.slug}` },
           { name: `Nettoyage ${service.nom}`, path: `/nettoyage/${ville.slug}/${service.slug}` },
         ]}

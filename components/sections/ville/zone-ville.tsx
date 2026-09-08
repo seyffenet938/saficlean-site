@@ -3,6 +3,7 @@ import { ArrowRight, Check, MapPin, Clock, ShieldCheck } from "lucide-react"
 import { formatPrice, PRICING, startingFrom } from "@/lib/pricing"
 import { villesVoisinesDuDepartement, VILLES_PILOTE, zoneAutour, libelleAutresLieux, type Ville } from "@/lib/villes"
 import { SERVICES_LOCAUX } from "@/lib/services-locaux"
+import { DEP_PAR_NUM } from "@/lib/departements"
 
 /** Services proposés, avec le prix d'entrée tiré de la source unique. */
 function services() {
@@ -42,6 +43,7 @@ function services() {
 
 export function ZoneVille({ ville }: { ville: Ville }) {
   const autresVilles = villesVoisinesDuDepartement(ville)
+  const dep = DEP_PAR_NUM.get(ville.dep)
   // Pages service × ville : n'existent que pour les villes du pilote.
   const pagesService = (VILLES_PILOTE as readonly string[]).includes(ville.slug)
     ? SERVICES_LOCAUX
@@ -184,6 +186,16 @@ export function ZoneVille({ ville }: { ville: Ville }) {
                 ))}
               </div>
             </>
+          )}
+
+          {dep?.page && (
+            <Link
+              href={`/zones/${dep.slug}`}
+              className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            >
+              Voir toutes nos communes {dep.de}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
           )}
         </div>
       </div>
