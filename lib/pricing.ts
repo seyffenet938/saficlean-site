@@ -122,8 +122,11 @@ export const DEPLACEMENT = {
   zones: [
     { id: "proche", label: "Épinay et ≤ 15 km (93, proche 92 et 95)", frais: 0 },
     { id: "paris", label: "Paris intra-muros", frais: 20, note: "accès et stationnement" },
-    { id: "moyenne", label: "15 à 25 km (Herblay, Pontoise, proche 78)", frais: 15 },
-    { id: "eloignee", label: "25 à 40 km (Mareil-Marly, sud 94, Fresnes)", frais: 25 },
+    // Décision Seyffe 10/09 : TOUT le 78 est à +15 €, quelle que soit la
+    // distance. Mareil-Marly (78750) était dans la tranche 25-40 km à
+    // +25 € — il passe à +15 €. Le sud 94 et Fresnes restent à +25 €.
+    { id: "moyenne", label: "15 à 25 km (Herblay, Pontoise) et tout le 78", frais: 15 },
+    { id: "eloignee", label: "25 à 40 km hors 78 (sud 94, Fresnes)", frais: 25 },
     { id: "devis", label: "Au-delà de 40 km", frais: null },
   ],
 } as const
