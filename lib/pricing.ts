@@ -3,7 +3,7 @@
  *  SOURCE UNIQUE DES PRIX DU SITE
  * ════════════════════════════════════════════════════════════════════
  *
- * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v1.0 — 15 juin 2026).
+ * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v2.1 — 9 septembre 2026).
  *
  * ⚠️  LA FICHE FAIT FOI. Ne jamais modifier un prix ici sans l'avoir lu
  *     et vérifié dans `30_TARIFS.md` d'abord. Jamais l'inverse.
@@ -38,6 +38,19 @@ export const PRICING = {
     "tres-grand": 89,
     xxl: 120,
   },
+  /**
+   * Tapis en matière délicate (laine, soie, viscose, berbère noué main).
+   * ⚠️ Ce sont les valeurs ARRONDIES de 30_TARIFS.md, PAS price × 1,4 :
+   * la fiche écrit 85 € là où le calcul donne 84, et 110 € là où il donne
+   * 110,60. La fiche fait foi — on affiche ce que Seyffe facture.
+   */
+  tapisDelicat: {
+    petit: 70,
+    moyen: 85,
+    grand: 110,
+    "tres-grand": 125,
+    xxl: 170,
+  },
   moquette: "devis",
   auto: {
     essentiel: 50,
@@ -59,6 +72,72 @@ export const PACK_RULES = {
   autoCap: 0.1,
   discounts: { 2: 0.15, 3: 0.2, 4: 0.25 },
 } as const
+
+// ── Suppléments article (v2.0 / v2.1) ───────────────────────────────────
+//
+// Ils s'appliquent AVANT le pack : la remise porte sur le sous-total
+// suppléments compris (cf. « Ordre d'application » dans 30_TARIFS.md).
+// Matière et odeurs SE CUMULENT — ce sont deux causes différentes : un
+// tapis en laine souillé d'urine porte les deux.
+
+export const SUPPLEMENTS = {
+  /** +40 % sur laine, soie, viscose, berbère noué main. */
+  matiereDelicate: {
+    rate: 0.4,
+    matieres: ["laine", "soie", "viscose", "berbère noué main"],
+    /** Ce qui justifie le supplément — à dire au client, pas à cacher. */
+    raison:
+      "produit pH neutre obligatoire, risque de feutrage et de dégorgement, séchage plus long, intervention plus lente",
+  },
+  /**
+   * Traitement odeurs et souillures organiques : FORFAIT PAR ZONE, pas un
+   * pourcentage. Une tache d'urine demande le même travail sur un petit
+   * tapis à 50 € que sur un XXL à 120 €.
+   */
+  odeurs: {
+    leger: 25,
+    marque: 40,
+    /** Saturation profonde : sur devis, ce montant est un plancher. */
+    saturation: 60,
+  },
+} as const
+
+export type OdeurNiveau = keyof typeof SUPPLEMENTS.odeurs
+
+/** Libellés client des trois niveaux — les mêmes mots qu'au téléphone. */
+export const ODEUR_NIVEAUX = [
+  { id: "leger" as const, label: "Accident isolé, tache récente", prix: SUPPLEMENTS.odeurs.leger },
+  { id: "marque" as const, label: "Souillure ancienne, odeur installée, auréole", prix: SUPPLEMENTS.odeurs.marque },
+  { id: "saturation" as const, label: "Répété au même endroit, imprégné à cœur", prix: SUPPLEMENTS.odeurs.saturation, devis: true },
+]
+
+// ── Frais de déplacement (v2.0) ─────────────────────────────────────────
+//
+// ⚠️ S'appliquent AU TOTAL de l'intervention, une seule fois, PAS par
+// article. Exclus de l'assiette du pack : la remise ne porte jamais dessus.
+
+export const DEPLACEMENT = {
+  /** Offerts dès ce montant de prestations (après remise). Levier d'upsell. */
+  offertDes: 150,
+  zones: [
+    { id: "proche", label: "Épinay et ≤ 15 km (93, proche 92 et 95)", frais: 0 },
+    { id: "paris", label: "Paris intra-muros", frais: 20, note: "accès et stationnement" },
+    { id: "moyenne", label: "15 à 25 km (Herblay, Pontoise, proche 78)", frais: 15 },
+    { id: "eloignee", label: "25 à 40 km (Mareil-Marly, sud 94, Fresnes)", frais: 25 },
+    { id: "devis", label: "Au-delà de 40 km", frais: null },
+  ],
+} as const
+
+export type ZoneDeplacement = (typeof DEPLACEMENT.zones)[number]["id"]
+
+/** Prix d'un tapis selon sa taille et sa matière — la grille, pas un calcul. */
+export function prixTapis(taille: TapisOption, delicate = false): number {
+  return delicate ? PRICING.tapisDelicat[taille] : PRICING.tapis[taille]
+}
+
+export function fraisDeplacement(zone: ZoneDeplacement): number | null {
+  return DEPLACEMENT.zones.find((z) => z.id === zone)?.frais ?? 0
+}
 
 export type ServiceKey = keyof typeof PRICING
 export type CanapeOption = keyof typeof PRICING.canape
@@ -169,6 +248,101 @@ export function computePack(items: PackItem[]): PackResult {
   const total = Math.round((subtotal - discount) * 100) / 100
 
   return { subtotal, eligibleCount, discountRate, discount, total }
+}
+
+// ── Devis complet — ORDRE D'APPLICATION de 30_TARIFS.md ─────────────────
+//
+// L'ordre n'est pas cosmétique, il change le montant facturé :
+//   1. prix de base de chaque article
+//   2. + suppléments article (matière +40 % ET/OU odeurs forfaitaires)
+//   3. = sous-total prestations → c'est l'assiette de la remise
+//   4. − une seule remise (la plus avantageuse)
+//   5. + frais de déplacement, JAMAIS remisés, offerts dès 150 €
+//
+// Appliquer la remise avant les suppléments, ou remiser le déplacement,
+// donnerait un total différent de celui que Seyffe annonce au téléphone.
+
+export type QuoteItem = PackItem & {
+  /** Laine, soie, viscose, berbère noué main → +40 %. */
+  matiereDelicate?: boolean
+  /**
+   * Prix « matière délicate » lu dans la grille, quand elle en donne un
+   * (tapis). Il prime sur le calcul +40 % : la fiche arrondit, et c'est
+   * son montant qui est facturé. Sans lui, on retombe sur les +40 %.
+   */
+  prixDelicate?: number
+  /** Souillure organique → forfait par zone traitée. */
+  odeurs?: OdeurNiveau | null
+}
+
+export type QuoteResult = {
+  /** Somme des prix de grille, avant tout supplément. */
+  base: number
+  supplementMatiere: number
+  supplementOdeurs: number
+  /** base + suppléments — l'assiette sur laquelle porte la remise. */
+  sousTotal: number
+  eligibleCount: number
+  discountRate: number
+  discount: number
+  /** sousTotal − remise. C'est ce qui déclenche les 150 €. */
+  prestations: number
+  deplacement: number
+  deplacementOffert: boolean
+  deplacementSurDevis: boolean
+  /** prestations + déplacement. Le montant réellement dû. */
+  total: number
+}
+
+const round2 = (n: number) => Math.round(n * 100) / 100
+
+export function computeQuote(
+  items: QuoteItem[],
+  zone: ZoneDeplacement = "proche",
+): QuoteResult {
+  const base = items.reduce((sum, i) => sum + i.price, 0)
+
+  // Étapes 1 et 2 : chaque article porte ses propres suppléments.
+  let supplementMatiere = 0
+  let supplementOdeurs = 0
+  const ajustes: PackItem[] = items.map((i) => {
+    const m = !i.matiereDelicate
+      ? 0
+      : i.prixDelicate !== undefined
+        ? i.prixDelicate - i.price // valeur arrondie de la grille
+        : i.price * SUPPLEMENTS.matiereDelicate.rate
+    const o = i.odeurs ? SUPPLEMENTS.odeurs[i.odeurs] : 0
+    supplementMatiere += m
+    supplementOdeurs += o
+    // L'éligibilité au pack se juge sur le prix suppléments compris :
+    // c'est ce qui est réellement facturé pour cet article.
+    return { type: i.type, price: i.price + m + o }
+  })
+
+  // Étapes 3 et 4 : une seule implémentation de la remise, celle du pack.
+  const pack = computePack(ajustes)
+
+  // Étape 5 : le déplacement s'ajoute APRÈS la remise et n'est pas remisé.
+  const frais = fraisDeplacement(zone)
+  const deplacementSurDevis = frais === null
+  const deplacementOffert =
+    !deplacementSurDevis && (frais ?? 0) > 0 && pack.total >= DEPLACEMENT.offertDes
+  const deplacement = deplacementSurDevis || deplacementOffert ? 0 : (frais ?? 0)
+
+  return {
+    base: round2(base),
+    supplementMatiere: round2(supplementMatiere),
+    supplementOdeurs: round2(supplementOdeurs),
+    sousTotal: pack.subtotal,
+    eligibleCount: pack.eligibleCount,
+    discountRate: pack.discountRate,
+    discount: pack.discount,
+    prestations: pack.total,
+    deplacement,
+    deplacementOffert,
+    deplacementSurDevis,
+    total: round2(pack.total + deplacement),
+  }
 }
 
 // ── Catalogues d'affichage (libellés + prix tirés de PRICING) ──

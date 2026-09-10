@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 import { ArrowRight, Check, MapPin } from "lucide-react"
 import { formatPrice } from "@/lib/pricing"
 import { getReviews } from "@/lib/reviews"
-import { getVille, VILLES_PILOTE, zoneAutour } from "@/lib/villes"
+import { aVille, getVille, VILLES_PILOTE, zoneAutour } from "@/lib/villes"
 import { getServiceLocal, SERVICES_LOCAUX } from "@/lib/services-locaux"
 import { HeroVille } from "@/components/sections/ville/hero-ville"
 import { SocialProof } from "@/components/sections/social-proof"
@@ -57,8 +57,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const service = getServiceLocal(sSlug)
   if (!ville || !service) return {}
 
-  const title = `Nettoyage ${service.nom} à ${ville.nom} (${ville.cp}) — à domicile | SafiClean`
-  const description = `Nettoyage de ${service.nom} à domicile à ${ville.nom} et alentours (${ville.depNom}). Dès ${formatPrice(service.prixDepart)}, devis gratuit, paiement après intervention. 7j/7 de 8h à 20h.`
+  const title = `Nettoyage ${service.nom} ${aVille(ville)} (${ville.cp}) — à domicile | SafiClean`
+  const description = `Nettoyage de ${service.nom} à domicile ${aVille(ville)} et alentours (${ville.depNom}). Dès ${formatPrice(service.prixDepart)}, devis gratuit, paiement après intervention. 7j/7 de 8h à 20h.`
 
   return {
     title,
@@ -89,8 +89,8 @@ export default async function ServiceVillePage({ params }: Props) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: `Nettoyage ${service.nom} à domicile à ${ville.nom}`,
-    description: `${service.argument} Intervention à ${ville.nom} (${ville.cp}) et communes limitrophes.`,
+    name: `Nettoyage ${service.nom} à domicile ${aVille(ville)}`,
+    description: `${service.argument} Intervention ${aVille(ville)} (${ville.cp}) et communes limitrophes.`,
     serviceType: `Nettoyage ${service.nom}`,
     url: `${SITE_URL}/nettoyage/${ville.slug}/${service.slug}`,
     provider: { "@id": `${SITE_URL}/#business` },
@@ -112,7 +112,7 @@ export default async function ServiceVillePage({ params }: Props) {
       "@type": "Offer",
       priceCurrency: "EUR",
       price: service.prixDepart,
-      description: "Prix de départ, déplacement inclus",
+      description: "Prix de départ, hors frais de déplacement éventuels",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/reserver`,
     },
@@ -145,11 +145,11 @@ export default async function ServiceVillePage({ params }: Props) {
               NETTOYAGE {service.singulier.toUpperCase()} À {ville.nom.toUpperCase()}
             </span>
             <h2 className="mt-3 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-              Votre {service.singulier} nettoyé chez vous à {ville.nom}
+              Votre {service.singulier} nettoyé chez vous {aVille(ville)}
             </h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">{service.argument}</p>
             <p className="mt-3 leading-relaxed text-muted-foreground">
-              Nous intervenons à {ville.nom} ({ville.cp}) et {zoneAutour(ville)},
+              Nous intervenons {aVille(ville)} ({ville.cp}) et {zoneAutour(ville)},
               7j/7 de 8h à 20h. Devis gratuit, sans engagement, et{" "}
               <strong className="text-foreground">paiement après l{"'"}intervention</strong>.
             </p>
@@ -195,7 +195,7 @@ export default async function ServiceVillePage({ params }: Props) {
       <section className="bg-muted/50 px-4 py-12">
         <div className="mx-auto max-w-6xl">
           <h2 className="text-xl font-bold text-foreground">
-            Nos autres prestations à {ville.nom}
+            Nos autres prestations {aVille(ville)}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             À partir de 2 articles, le Pack Multi-Meubles applique −15 % à −25 % sur
@@ -209,7 +209,7 @@ export default async function ServiceVillePage({ params }: Props) {
                 className="group rounded-xl border border-secondary/20 bg-card p-5 transition-shadow hover:shadow-lg"
               >
                 <p className="font-semibold capitalize text-foreground">
-                  Nettoyage {s.nom} à {ville.nom}
+                  Nettoyage {s.nom} {aVille(ville)}
                 </p>
                 <p className="mt-1 text-lg font-bold text-primary">
                   dès {formatPrice(s.prixDepart)}
@@ -225,7 +225,7 @@ export default async function ServiceVillePage({ params }: Props) {
               className="group rounded-xl border border-secondary/20 bg-card p-5 transition-shadow hover:shadow-lg"
             >
               <p className="font-semibold text-foreground">
-                Tous nos services à {ville.nom}
+                Tous nos services {aVille(ville)}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Chaises, moquette, intérieur de véhicule…

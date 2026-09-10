@@ -512,6 +512,29 @@ export function libelleAutresLieux(v: Ville): string {
   return de ? `Autres villes ${de}` : "Autres villes du département"
 }
 
+/**
+ * « à Argenteuil » mais « au Raincy » : deux communes desservies portent
+ * un article dans leur nom (Le Raincy, Le Perreux-sur-Marne), et « à Le
+ * Raincy » était affiché en production. Même famille que zoneAutour() :
+ * ⚠️ NE JAMAIS écrire `à ${v.nom}` en dur.
+ */
+export function aVille(v: Ville | string): string {
+  const nom = typeof v === "string" ? v : v.nom
+  if (nom.startsWith("Le ")) return `au ${nom.slice(3)}`
+  if (nom.startsWith("Les ")) return `aux ${nom.slice(4)}`
+  if (nom.startsWith("La ")) return `à la ${nom.slice(3)}`
+  return `à ${nom}`
+}
+
+/** « d'Argenteuil » · « du Raincy » · « de Sannois ». */
+export function deVille(v: Ville | string): string {
+  const nom = typeof v === "string" ? v : v.nom
+  if (nom.startsWith("Le ")) return `du ${nom.slice(3)}`
+  if (nom.startsWith("Les ")) return `des ${nom.slice(4)}`
+  if (nom.startsWith("La ")) return `de la ${nom.slice(3)}`
+  return /^[AEIOUYÀÂÉÈÊÎÔÙÛ]/i.test(nom) ? `d'${nom}` : `de ${nom}`
+}
+
 /** Index par slug — pour les routes dynamiques. */
 export const VILLES_PAR_SLUG = new Map(VILLES.map((v) => [v.slug, v]))
 

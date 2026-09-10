@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Phone, CalendarCheck, MapPin } from "lucide-react"
 import { formatPrice, startingFrom } from "@/lib/pricing"
-import type { Ville } from "@/lib/villes"
+import { aVille, type Ville } from "@/lib/villes"
 import type { ServiceLocal } from "@/lib/services-locaux"
 
 export function HeroVille({ ville, service }: { ville: Ville; service?: ServiceLocal }) {
@@ -61,8 +61,8 @@ function HeroVilleContent({ ville, service }: { ville: Ville; service?: ServiceL
 
       <h1 className="mt-4 text-balance text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl lg:leading-tight">
         {service
-          ? `Nettoyage ${service.nom} à ${ville.nom}`
-          : `Nettoyage de canapé, matelas et tapis à ${ville.nom}`}
+          ? `Nettoyage ${service.nom} ${aVille(ville)}`
+          : `Nettoyage de canapé, matelas et tapis ${aVille(ville)}`}
         <span className="mt-2 block text-primary drop-shadow-sm">
           — à domicile, {ville.depNom}
         </span>

@@ -1,7 +1,8 @@
 "use client"
 
+import { useState } from "react"
 import { useBooking, SelectedOption } from "@/lib/booking-context"
-import { PRICING } from "@/lib/pricing"
+import { formatPrice, PRICING, prixTapis, type TapisOption } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
 import { PackUpsell } from "@/components/booking/pack-upsell"
@@ -200,27 +201,64 @@ function MatelasSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "i
 }
 
 function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id">) => void }) {
-  const tapisOptions = PRICING.tapis
+  // La matière est LA question que Seyffe pose au téléphone (30_TARIFS.md) :
+  // un tapis en laine coûte jusqu'à +40 %. La poser ici évite d'avoir à
+  // réajuster le prix devant le client le jour de l'intervention.
+  const [delicate, setDelicate] = useState(false)
 
   return (
-    <div className="grid grid-cols-1 gap-2">
-      {Object.entries(tapisOptions).map(([size, price]) => (
-        <button
-          key={size}
-          onClick={() =>
-            onSelect({
-              type: "tapis",
-              value: size,
-              price,
-              label: `Tapis ${TAPIS_LABELS[size] || size}`,
-            })
-          }
-          className="rounded-lg border-2 border-secondary/30 bg-background px-3 py-3 text-sm transition-all hover:border-primary/50 hover:bg-primary/5 text-left flex justify-between items-center"
-        >
-          <div>{TAPIS_LABELS[size] || size}</div>
-          <div className="text-primary font-semibold">{price} €</div>
-        </button>
-      ))}
+    <div className="space-y-3">
+      <div className="rounded-lg border border-secondary/30 bg-background p-3">
+        <p className="text-sm font-medium text-foreground">Matiere de votre tapis</p>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          {[
+            { v: false, label: "Synthetique" },
+            { v: true, label: "Laine, soie, viscose" },
+          ].map((m) => (
+            <button
+              key={String(m.v)}
+              type="button"
+              onClick={() => setDelicate(m.v)}
+              className={`rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all ${
+                delicate === m.v
+                  ? "border-primary bg-primary/10 text-foreground"
+                  : "border-secondary/30 bg-background text-muted-foreground hover:border-primary/50"
+              }`}
+            >
+              {m.label}
+            </button>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">
+          {delicate
+            ? "Produit pH neutre, sechage plus long, intervention plus lente : le tarif ci-dessous en tient compte."
+            : "Coton, polypropylene, polyester, acrylique."}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2">
+        {(Object.keys(PRICING.tapis) as TapisOption[]).map((size) => {
+          const price = prixTapis(size, delicate)
+          return (
+            <button
+              key={size}
+              onClick={() =>
+                onSelect({
+                  type: "tapis",
+                  value: size,
+                  price,
+                  label: `Tapis ${TAPIS_LABELS[size] || size}${delicate ? " — laine/soie" : ""}`,
+                  matiereDelicate: delicate,
+                })
+              }
+              className="rounded-lg border-2 border-secondary/30 bg-background px-3 py-3 text-sm transition-all hover:border-primary/50 hover:bg-primary/5 text-left flex justify-between items-center"
+            >
+              <div>{TAPIS_LABELS[size] || size}</div>
+              <div className="text-primary font-semibold">{formatPrice(price)}</div>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

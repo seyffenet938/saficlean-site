@@ -1,6 +1,7 @@
 "use client"
 
 import { useBooking } from "@/lib/booking-context"
+import { DEPLACEMENT, formatPrice } from "@/lib/pricing"
 
 export function BookingSummary() {
   const { state, calculateTotal, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate } = useBooking()
@@ -71,6 +72,26 @@ export function BookingSummary() {
         <div className="text-3xl font-bold">{total.toFixed(2)} €</div>
         <div className="text-xs text-primary-foreground/60 mt-1">Paiement apres intervention</div>
       </div>
+
+      {/*
+        Le déplacement dépend de la commune (Paris +20 €, 15-25 km +15 €,
+        25-40 km +25 € — cf. 30_TARIFS.md). On ne l'ajoute PAS au total :
+        le code postal n'est saisi qu'à l'étape suivante, et surtout on n'a
+        pas de distance fiable par commune. Annoncer une zone fausse serait
+        pire que l'annoncer à l'appel. On dit donc la règle, pas un montant.
+      */}
+      {total > 0 && total < DEPLACEMENT.offertDes && (
+        <p className="mt-3 text-xs leading-relaxed text-primary-foreground/70">
+          Selon votre commune, des frais de deplacement peuvent s{"'"}ajouter — ils
+          sont <strong className="text-primary-foreground">offerts des {formatPrice(DEPLACEMENT.offertDes)}</strong> de
+          prestation. Nous vous le confirmons lors de l{"'"}appel.
+        </p>
+      )}
+      {total >= DEPLACEMENT.offertDes && (
+        <p className="mt-3 text-xs leading-relaxed text-primary-foreground/70">
+          Deplacement offert : votre total depasse {formatPrice(DEPLACEMENT.offertDes)}.
+        </p>
+      )}
     </div>
   )
 }
