@@ -76,8 +76,7 @@ function HeroVilleContent({ ville, service }: { ville: Ville; service?: ServiceL
           Dès {formatPrice(service ? service.prixDepart : startingFrom("matelas"))}
         </span>
         <span className="ml-2">
-          — {service ? `Votre ${service.singulier} nettoyé` : "On intervient"} chez vous à{" "}
-          {ville.nom}, 7j/7 de 8h à 20h. Devis gratuit, paiement après intervention.
+          — {service ? `Votre ${service.singulier} nettoyé` : "On intervient"} chez vous {aVille(ville)}, 7j/7 de 8h à 20h. Devis gratuit, paiement après intervention.
         </span>
       </p>
 
