@@ -2,7 +2,15 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, Check, Star, Sparkles, Car, Sofa, BedDouble, Armchair, Square, Grid3X3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { formatPrice, PACK_EXAMPLES, PRICING, startingFrom } from "@/lib/pricing"
+import {
+  DEPLACEMENT,
+  formatPrice,
+  ODEUR_NIVEAUX,
+  PACK_EXAMPLES,
+  PRICING,
+  startingFrom,
+  SUPPLEMENTS,
+} from "@/lib/pricing"
 import { formatRating, getReviews } from "@/lib/reviews"
 
 const description = `Decouvrez tous nos tarifs de nettoyage textile a domicile en Ile-de-France. Prix transparents, sans surprise. Canape des ${formatPrice(startingFrom("canape"))}, matelas des ${formatPrice(startingFrom("matelas"))}.`
@@ -52,14 +60,15 @@ const matelasRows = [
 ]
 
 const tapisRows = [
-  { size: "Petit", dims: "jusqu'a 100x160cm (≤1.5m²)", price: PRICING.tapis.petit },
-  { size: "Moyen", dims: "120x170 / 140x200cm (≈2-3m²)", price: PRICING.tapis.moyen },
-  { size: "Grand", dims: "160x230cm (≈3.5-4m²)", price: PRICING.tapis.grand },
-  { size: "Tres grand", dims: "200x290cm (≈5-6m²)", price: PRICING.tapis["tres-grand"] },
-  { size: "XXL", dims: "240x330cm et + (≥7m²)", price: PRICING.tapis.xxl },
+  { size: "Petit", dims: "jusqu'a 100x160cm (≤1.5m²)", price: PRICING.tapis.petit, delicate: PRICING.tapisDelicat.petit },
+  { size: "Moyen", dims: "120x170 / 140x200cm (≈2-3m²)", price: PRICING.tapis.moyen, delicate: PRICING.tapisDelicat.moyen },
+  { size: "Grand", dims: "160x230cm (≈3.5-4m²)", price: PRICING.tapis.grand, delicate: PRICING.tapisDelicat.grand },
+  { size: "Tres grand", dims: "200x290cm (≈5-6m²)", price: PRICING.tapis["tres-grand"], delicate: PRICING.tapisDelicat["tres-grand"] },
+  { size: "XXL", dims: "240x330cm et + (≥7m²)", price: PRICING.tapis.xxl, delicate: PRICING.tapisDelicat.xxl },
 ]
 
 const navLinks = [
+  { label: "Ce qui fait varier", href: "#variations", icon: Sparkles },
   { label: "Canape & Fauteuil", href: "#canape", icon: Sofa },
   { label: "Matelas", href: "#matelas", icon: BedDouble },
   { label: "Chaises", href: "#chaises", icon: Armchair },
@@ -330,7 +339,8 @@ export default async function TarifsPage() {
                   <tr>
                     <th className="py-4 px-4 text-left font-semibold text-foreground">Taille</th>
                     <th className="py-4 px-4 text-left font-semibold text-foreground hidden sm:table-cell">Dimensions</th>
-                    <th className="py-4 px-4 text-left font-semibold text-foreground">Prix</th>
+                    <th className="py-4 px-4 text-left font-semibold text-foreground">Synthetique</th>
+                    <th className="py-4 px-4 text-left font-semibold text-foreground">Laine, soie, viscose</th>
                     <th className="py-4 px-4 text-right font-semibold text-foreground">Reserver</th>
                   </tr>
                 </thead>
@@ -340,6 +350,7 @@ export default async function TarifsPage() {
                       <td className="py-4 px-4 text-foreground">{row.size}</td>
                       <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">{row.dims}</td>
                       <td className="py-4 px-4 font-bold text-primary">{formatPrice(row.price)}</td>
+                      <td className="py-4 px-4 font-bold text-foreground">{formatPrice(row.delicate)}</td>
                       <td className="py-4 px-4 text-right">
                         <Button asChild size="sm" className="rounded-full">
                           <Link href="/reserver">Reserver</Link>
@@ -351,6 +362,12 @@ export default async function TarifsPage() {
               </table>
             </div>
           </div>
+          <p className="mt-4 text-sm text-muted-foreground">
+            La laine, la soie, la viscose et le berbere noue main demandent un
+            produit pH neutre, un sechage plus long et une intervention plus lente :
+            leur tarif est majore. Nous vous posons la question au telephone, avant
+            l{"'"}intervention — jamais devant vous le jour J.
+          </p>
         </div>
       </section>
 
@@ -506,6 +523,99 @@ export default async function TarifsPage() {
       </section>
 
       {/* CTA FINAL */}
+      {/* CE QUI FAIT VARIER LE TARIF — suppléments et déplacement (grille v2.1) */}
+      <section id="variations" className="py-12 px-4 bg-background scroll-mt-16">
+        <div className="container mx-auto max-w-4xl">
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+            Ce qui fait varier le tarif
+          </h2>
+          <p className="text-muted-foreground mb-8 max-w-2xl">
+            Les prix ci-dessus sont ceux que vous payez dans la grande majorite des
+            cas. Trois choses peuvent les faire bouger, et nous vous les annoncons
+            toujours <strong className="text-foreground">au telephone, avant de venir</strong> —
+            jamais une fois sur place.
+          </p>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            {/* Matière délicate */}
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="font-semibold text-foreground text-lg">
+                Matiere delicate <span className="text-primary">+{Math.round(SUPPLEMENTS.matiereDelicate.rate * 100)}%</span>
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {SUPPLEMENTS.matiereDelicate.matieres.join(", ")}.
+              </p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Pourquoi : {SUPPLEMENTS.matiereDelicate.raison}.
+              </p>
+              <p className="mt-3 text-sm font-medium text-foreground">
+                Exemple : un tapis 160x230 passe de {formatPrice(PRICING.tapis.grand)} a{" "}
+                {formatPrice(PRICING.tapisDelicat.grand)}.
+              </p>
+            </div>
+
+            {/* Odeurs et souillures */}
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="font-semibold text-foreground text-lg">
+                Odeurs et souillures organiques
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Forfait par zone traitee : le travail est le meme sur un petit tapis
+                que sur un grand.
+              </p>
+              <ul className="mt-3 space-y-2">
+                {ODEUR_NIVEAUX.map((n) => (
+                  <li key={n.id} className="flex items-start justify-between gap-3 text-sm">
+                    <span className="text-muted-foreground">{n.label}</span>
+                    <span className="shrink-0 font-bold text-primary">
+                      {n.devis ? `des ${formatPrice(n.prix)}` : `+${formatPrice(n.prix)}`}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                Sur une souillure ancienne imprégnée en profondeur, le resultat est
+                optimise mais ne peut pas etre garanti a coeur : plusieurs passages
+                sont parfois necessaires. Nous ne traitons pas les infestations
+                (puces, punaises), c{"'"}est un metier reglemente different.
+              </p>
+            </div>
+          </div>
+
+          {/* Déplacement */}
+          <div className="mt-5 rounded-xl border-2 border-primary/30 bg-primary/5 p-6">
+            <h3 className="font-semibold text-foreground text-lg">Frais de deplacement</h3>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Appliques une seule fois sur l{"'"}intervention, jamais par article,
+              et jamais concernes par la remise du pack.
+            </p>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full text-sm">
+                <tbody>
+                  {DEPLACEMENT.zones.map((z) => (
+                    <tr key={z.id} className="border-b border-border/60 last:border-b-0">
+                      <td className="py-3 pr-4 text-muted-foreground">{z.label}</td>
+                      <td className="py-3 text-right font-bold text-primary whitespace-nowrap">
+                        {z.frais === null
+                          ? "sur devis"
+                          : z.frais === 0
+                            ? "inclus"
+                            : `+${formatPrice(z.frais)}`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 rounded-lg bg-background p-4 text-sm font-medium text-foreground">
+              Deplacement offert des {formatPrice(DEPLACEMENT.offertDes)} de prestation.
+              Ajouter un matelas ou un tapis a votre canape suffit souvent a passer
+              le seuil — et le Pack Multi-Meubles s{"'"}applique en plus.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-primary text-primary-foreground py-16 px-4">
         <div className="container mx-auto max-w-2xl text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">

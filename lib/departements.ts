@@ -99,7 +99,7 @@ export const DEPARTEMENTS: Departement[] = [
     zone: "dans les Yvelines",
     prefecture: "Versailles",
     contexte:
-      "Deux communes couvertes à ce jour : Saint-Germain-en-Laye et Poissy, déplacement inclus dans le tarif. Pour une commune voisine des Yvelines, appelez-nous — le déplacement s'étudie au cas par cas plutôt que d'être annoncé à l'avance.",
+      "Deux communes couvertes à ce jour : Saint-Germain-en-Laye et Poissy. Le département est en zone 15-25 km, avec des frais de déplacement offerts dès 150 € de prestation. Pour une commune voisine des Yvelines, appelez-nous — le déplacement s'étudie au cas par cas plutôt que d'être annoncé à l'avance.",
     page: true,
   },
   {

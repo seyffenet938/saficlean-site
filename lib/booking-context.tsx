@@ -7,8 +7,11 @@ export interface SelectedOption {
   id: string // Unique identifier for each item
   type: string
   value: string | number
+  /** Prix DÉJÀ ajusté à la matière : c'est lui qui est facturé. */
   price: number
   label: string
+  /** Laine, soie, viscose, berbère noué main — cf. 30_TARIFS.md v2.1. */
+  matiereDelicate?: boolean
 }
 
 export interface BookingState {

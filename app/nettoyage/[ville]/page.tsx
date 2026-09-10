@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { formatPrice, startingFrom } from "@/lib/pricing"
 import { getReviews } from "@/lib/reviews"
-import { getVille, VILLES, zoneAutour } from "@/lib/villes"
+import { aVille, getVille, VILLES, zoneAutour } from "@/lib/villes"
 import { HeroVille } from "@/components/sections/ville/hero-ville"
 import { ZoneVille } from "@/components/sections/ville/zone-ville"
 import { SocialProof } from "@/components/sections/social-proof"
@@ -28,8 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ville = getVille(slug)
   if (!ville) return {}
 
-  const title = `Nettoyage Canapé, Matelas & Tapis à ${ville.nom} (${ville.cp}) | SafiClean`
-  const description = `Nettoyage textile à domicile à ${ville.nom}, ${zoneAutour(ville)} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("matelas"))}.`
+  const title = `Nettoyage Canapé, Matelas & Tapis ${aVille(ville)} (${ville.cp}) | SafiClean`
+  const description = `Nettoyage textile à domicile ${aVille(ville)}, ${zoneAutour(ville)} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("matelas"))}.`
 
   return {
     title,
@@ -58,8 +58,8 @@ export default async function VillePage({ params }: Props) {
   const serviceJsonLd = {
     "@context": "https://schema.org",
     "@type": "Service",
-    name: `Nettoyage textile à domicile à ${ville.nom}`,
-    description: `Nettoyage de canapés, matelas, tapis, chaises et intérieurs de véhicule à domicile à ${ville.nom} (${ville.cp}), ${ville.depNom}.`,
+    name: `Nettoyage textile à domicile ${aVille(ville)}`,
+    description: `Nettoyage de canapés, matelas, tapis, chaises et intérieurs de véhicule à domicile ${aVille(ville)} (${ville.cp}), ${ville.depNom}.`,
     serviceType: "Nettoyage textile à domicile",
     url: `${SITE_URL}/nettoyage/${ville.slug}`,
     provider: { "@id": `${SITE_URL}/#business` },
@@ -81,7 +81,7 @@ export default async function VillePage({ params }: Props) {
       "@type": "Offer",
       priceCurrency: "EUR",
       price: startingFrom("matelas"),
-      description: "Prix de départ, déplacement inclus",
+      description: "Prix de départ, hors frais de déplacement éventuels",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/reserver`,
     },

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check, MapPin, Clock, ShieldCheck } from "lucide-react"
-import { formatPrice, PRICING, startingFrom } from "@/lib/pricing"
-import { villesVoisinesDuDepartement, VILLES_PILOTE, zoneAutour, libelleAutresLieux, type Ville } from "@/lib/villes"
+import { DEPLACEMENT, formatPrice, PRICING, startingFrom } from "@/lib/pricing"
+import { aVille, villesVoisinesDuDepartement, VILLES_PILOTE, zoneAutour, libelleAutresLieux, type Ville } from "@/lib/villes"
 import { SERVICES_LOCAUX } from "@/lib/services-locaux"
 import { DEP_PAR_NUM } from "@/lib/departements"
 
@@ -58,10 +58,10 @@ export function ZoneVille({ ville }: { ville: Ville }) {
             INTERVENTION À {ville.nom.toUpperCase()}
           </span>
           <h2 className="mt-3 text-balance text-3xl font-bold text-foreground lg:text-4xl">
-            Un nettoyage textile professionnel, chez vous à {ville.nom}
+            Un nettoyage textile professionnel, chez vous {aVille(ville)}
           </h2>
           <p className="mt-4 leading-relaxed text-muted-foreground">
-            SafiClean se déplace à {ville.nom} ({ville.cp}) et {zoneAutour(ville)}{" "}
+            SafiClean se déplace {aVille(ville)} ({ville.cp}) et {zoneAutour(ville)}{" "}
             avec un matériel professionnel d{"'"}injection-extraction.
             Canapés, matelas, tapis, chaises et intérieurs de véhicule sont traités
             à votre domicile — rien à transporter, rien à démonter.
@@ -77,7 +77,7 @@ export function ZoneVille({ ville }: { ville: Ville }) {
         <div className="mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
           {[
             { icon: Clock, titre: "7j/7, 8h-20h", texte: "Créneaux souples, y compris le week-end" },
-            { icon: MapPin, titre: `${ville.nom} et alentours`, texte: "Déplacement inclus dans le tarif" },
+            { icon: MapPin, titre: `${ville.nom} et alentours`, texte: `Déplacement offert dès ${formatPrice(DEPLACEMENT.offertDes)} de prestation` },
             { icon: ShieldCheck, titre: "Assuré RC Pro", texte: "AXA France IARD — vos biens sont couverts" },
           ].map((item) => (
             <div key={item.titre} className="rounded-xl border border-secondary/20 bg-card p-5">
@@ -90,7 +90,7 @@ export function ZoneVille({ ville }: { ville: Ville }) {
 
         {/* Services + prix */}
         <h3 className="mb-5 text-xl font-bold text-foreground">
-          Nos prestations à {ville.nom}
+          Nos prestations {aVille(ville)}
         </h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {services().map((s) => (
@@ -129,7 +129,7 @@ export function ZoneVille({ ville }: { ville: Ville }) {
         {pagesService.length > 0 && (
           <div className="mt-10 rounded-2xl border-2 border-primary/30 bg-primary/5 p-6">
             <h3 className="text-lg font-semibold text-foreground">
-              Pages dédiées à {ville.nom}
+              Pages dédiées {aVille(ville)}
             </h3>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
               {pagesService.map((s) => (
@@ -154,7 +154,7 @@ export function ZoneVille({ ville }: { ville: Ville }) {
             Communes desservies autour de {ville.nom}
           </h3>
           <p className="mt-2 text-sm text-muted-foreground">
-            Nous intervenons à {ville.nom} et dans les communes limitrophes, souvent
+            Nous intervenons {aVille(ville)} et dans les communes limitrophes, souvent
             dans la même journée :
           </p>
           <div className="mt-4 flex flex-wrap gap-2">

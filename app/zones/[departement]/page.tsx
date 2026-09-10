@@ -3,9 +3,9 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowRight, Check, MapPin, Phone, Clock, ShieldCheck } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { formatPrice, PRICING, startingFrom } from "@/lib/pricing"
+import { DEPLACEMENT, formatPrice, PRICING, startingFrom } from "@/lib/pricing"
 import { getReviews } from "@/lib/reviews"
-import { VILLES, VILLES_PILOTE } from "@/lib/villes"
+import { aVille, VILLES, VILLES_PILOTE } from "@/lib/villes"
 import {
   DEPARTEMENTS_PAGES,
   getDepartement,
@@ -136,7 +136,7 @@ export default async function DepartementPage({ params }: Props) {
       "@type": "Offer",
       priceCurrency: "EUR",
       price: startingFrom("matelas"),
-      description: "Prix de départ, déplacement inclus",
+      description: "Prix de départ, hors frais de déplacement éventuels",
       availability: "https://schema.org/InStock",
       url: `${SITE_URL}/reserver`,
     },
@@ -210,7 +210,7 @@ export default async function DepartementPage({ params }: Props) {
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-3">
             {[
               { icon: Clock, titre: "7j/7, 8h-20h", texte: "Créneaux souples, y compris le week-end" },
-              { icon: MapPin, titre: `Préfecture ${dep.prefecture}`, texte: "Déplacement inclus dans le tarif" },
+              { icon: MapPin, titre: `Préfecture ${dep.prefecture}`, texte: `Déplacement offert dès ${formatPrice(DEPLACEMENT.offertDes)} de prestation` },
               { icon: ShieldCheck, titre: "Assuré RC Pro", texte: "AXA France IARD — vos biens sont couverts" },
             ].map((item) => (
               <div key={item.titre} className="rounded-xl border border-secondary/20 bg-card p-5">
@@ -288,7 +288,7 @@ export default async function DepartementPage({ params }: Props) {
               >
                 <span>
                   <span className="block text-sm font-medium text-foreground">
-                    Nettoyage à {v.nom}
+                    Nettoyage {aVille(v)}
                   </span>
                   <span className="block text-xs text-muted-foreground">{v.cp}</span>
                 </span>
@@ -314,7 +314,7 @@ export default async function DepartementPage({ params }: Props) {
                       className="group flex items-center justify-between rounded-xl bg-background px-4 py-3 transition-shadow hover:shadow-md"
                     >
                       <span className="text-sm font-medium text-foreground">
-                        Nettoyage {s.nom} à {v.nom}
+                        Nettoyage {s.nom} {aVille(v)}
                       </span>
                       <ArrowRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" />
                     </Link>
