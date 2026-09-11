@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 // Page de confirmation : contient les données de la réservation du client.
 // Jamais indexée, jamais suivie.
 export const metadata: Metadata = {
-  title: "Demande envoyee | SafiClean",
+  title: "Demande envoyée | SafiClean",
   robots: {
     index: false,
     follow: false,

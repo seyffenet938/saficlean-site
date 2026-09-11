@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ville = getVille(slug)
   if (!ville) return {}
 
-  const title = `Nettoyage Canapé, Matelas & Tapis ${aVille(ville)} (${ville.cp}) | SafiClean`
+  const title = `Nettoyage canapé, matelas & tapis dès ${formatPrice(startingFrom("matelas"))} ${aVille(ville)} (${ville.dep}) | SafiClean`
   const description = `Nettoyage textile à domicile ${aVille(ville)}, ${zoneAutour(ville)} : canapé, matelas, tapis, chaises, intérieur auto. Devis gratuit, paiement après intervention. Dès ${formatPrice(startingFrom("matelas"))}.`
 
   return {

@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!dep) return {}
 
   const villes = villesDu(dep)
-  const title = `Nettoyage Canapé, Matelas & Tapis ${dep.dans} (${dep.num}) | SafiClean`
+  const title = `Nettoyage canapé, matelas & tapis dès ${formatPrice(startingFrom("matelas"))} ${dep.dans} (${dep.num}) | SafiClean`
   const description = `Nettoyage textile à domicile ${dep.dans} : ${villes.length} communes desservies. Canapé, matelas, tapis, chaises, intérieur auto. Dès ${formatPrice(startingFrom("matelas"))}, devis gratuit, paiement après intervention. 7j/7 de 8h à 20h.`
 
   return {

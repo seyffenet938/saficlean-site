@@ -66,6 +66,22 @@ export const PRICING = {
   },
 } as const
 
+/**
+ * Durée d'INTERVENTION par type de canapé — pas de séchage (4 à 12 h).
+ * Divisées par deux le 11/09/2026 sur décision de Seyffe : les anciennes
+ * valeurs (45 min · 1h · 1h30 · 2h · 2h30) surestimaient le temps réel.
+ * Arrondi vers le haut (fauteuil 22,5 → 25 min) : une durée annoncée trop
+ * courte fâche le client, une durée un peu longue ne gêne personne.
+ * Étaient écrites EN DUR dans /tarifs — centralisées ici avec le reste.
+ */
+export const DUREE_CANAPE: Record<keyof typeof PRICING.canape, string> = {
+  fauteuil: "~25 min",
+  "2-places": "~30 min",
+  "3-places": "~45 min",
+  "angle-4-5": "~1h",
+  "xxl-6+": "~1h15",
+}
+
 export const PACK_RULES = {
   minPrice: 40,
   excluded: ["chaises", "moquette"],

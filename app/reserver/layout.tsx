@@ -5,13 +5,13 @@ import { formatPrice, startingFrom } from "@/lib/pricing"
 const description = `Reservez votre nettoyage textile a domicile en Ile-de-France en 2 minutes. Devis immediat, sans engagement, paiement apres intervention. Des ${formatPrice(startingFrom("chaises"))}.`
 
 export const metadata: Metadata = {
-  title: "Reserver un nettoyage a domicile — Devis immediat | SafiClean",
+  title: "Réserver un nettoyage à domicile — devis immédiat | SafiClean",
   description,
   alternates: {
     canonical: "/reserver",
   },
   openGraph: {
-    title: "Reserver un nettoyage a domicile — Devis immediat | SafiClean",
+    title: "Réserver un nettoyage à domicile — devis immédiat | SafiClean",
     description,
     url: "/reserver",
     siteName: "SafiClean",

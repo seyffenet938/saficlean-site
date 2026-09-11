@@ -14,13 +14,13 @@ import { getReviews } from "@/lib/reviews"
 const description = `Nettoyage professionnel de canape et fauteuil a domicile en Ile-de-France. Tissu, microfibre, velours, lin. Resultat visible immediatement. Des ${formatPrice(startingFrom("canape"))}.`
 
 export const metadata: Metadata = {
-  title: "Nettoyage Canape & Fauteuil a Domicile - Paris & Ile-de-France | SafiClean",
+  title: `Nettoyage canapé & fauteuil à domicile dès ${formatPrice(startingFrom("canape"))} — Paris & IDF | SafiClean`,
   description,
   alternates: {
     canonical: "/canape",
   },
   openGraph: {
-    title: "Nettoyage Canape & Fauteuil a Domicile — Paris & Ile-de-France | SafiClean",
+    title: `Nettoyage canapé & fauteuil à domicile dès ${formatPrice(startingFrom("canape"))} — Paris & IDF | SafiClean`,
     description,
     url: "/canape",
     siteName: "SafiClean",

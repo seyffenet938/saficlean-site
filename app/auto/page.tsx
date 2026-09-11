@@ -14,13 +14,13 @@ import { getReviews } from "@/lib/reviews"
 const description = `Nettoyage professionnel interieur auto a domicile en Ile-de-France. Sieges, moquettes, plastiques. Detailing professionnel. Des ${formatPrice(startingFrom("auto"))}.`
 
 export const metadata: Metadata = {
-  title: "Nettoyage Interieur Auto a Domicile - Paris & Ile-de-France | SafiClean",
+  title: `Nettoyage intérieur auto à domicile dès ${formatPrice(startingFrom("auto"))} — Paris & IDF | SafiClean`,
   description,
   alternates: {
     canonical: "/auto",
   },
   openGraph: {
-    title: "Nettoyage Interieur Auto a Domicile — Paris & Ile-de-France | SafiClean",
+    title: `Nettoyage intérieur auto à domicile dès ${formatPrice(startingFrom("auto"))} — Paris & IDF | SafiClean`,
     description,
     url: "/auto",
     siteName: "SafiClean",

@@ -14,13 +14,13 @@ import { getReviews } from "@/lib/reviews"
 const description = `Nettoyage professionnel de tapis a domicile en Ile-de-France. Laine, synthetique, oriental. Couleurs ravivees. Des ${formatPrice(startingFrom("tapis"))}.`
 
 export const metadata: Metadata = {
-  title: "Nettoyage Tapis a Domicile - Paris & Ile-de-France | SafiClean",
+  title: `Nettoyage tapis à domicile dès ${formatPrice(startingFrom("tapis"))} — Paris & IDF | SafiClean`,
   description,
   alternates: {
     canonical: "/tapis",
   },
   openGraph: {
-    title: "Nettoyage Tapis a Domicile — Paris & Ile-de-France | SafiClean",
+    title: `Nettoyage tapis à domicile dès ${formatPrice(startingFrom("tapis"))} — Paris & IDF | SafiClean`,
     description,
     url: "/tapis",
     siteName: "SafiClean",

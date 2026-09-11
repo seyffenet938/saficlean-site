@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next"
+import { formatPrice, startingFrom } from "@/lib/pricing"
 import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/react"
 import "./globals.css"
@@ -13,7 +14,7 @@ const inter = Inter({
 })
 
 const SITE_URL = "https://www.saficlean.fr"
-const TITLE = "SafiClean — Nettoyage textile à domicile en Île-de-France"
+const TITLE = `Nettoyage canapé, matelas & tapis à domicile dès ${formatPrice(startingFrom("matelas"))} en Île-de-France | SafiClean`
 const DESCRIPTION =
   "SafiClean, votre expert en nettoyage textile à domicile en Île-de-France. Canapés, matelas, tapis, moquettes et fauteuils nettoyés chez vous."
 

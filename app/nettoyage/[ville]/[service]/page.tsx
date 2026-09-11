@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const service = getServiceLocal(sSlug)
   if (!ville || !service) return {}
 
-  const title = `Nettoyage ${service.nom} ${aVille(ville)} (${ville.cp}) — à domicile | SafiClean`
+  const title = `Nettoyage ${service.nom} dès ${formatPrice(service.prixDepart)} ${aVille(ville)} (${ville.dep}) | SafiClean`
   const description = `Nettoyage de ${service.nom} à domicile ${aVille(ville)} et alentours (${ville.depNom}). Dès ${formatPrice(service.prixDepart)}, devis gratuit, paiement après intervention. 7j/7 de 8h à 20h.`
 
   return {

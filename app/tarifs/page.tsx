@@ -4,6 +4,7 @@ import { Phone, Check, Star, Sparkles, Car, Sofa, BedDouble, Armchair, Square, G
 import { Button } from "@/components/ui/button"
 import {
   DEPLACEMENT,
+  DUREE_CANAPE,
   formatPrice,
   ODEUR_NIVEAUX,
   PACK_EXAMPLES,
@@ -16,13 +17,13 @@ import { formatRating, getReviews } from "@/lib/reviews"
 const description = `Decouvrez tous nos tarifs de nettoyage textile a domicile en Ile-de-France. Prix transparents, sans surprise. Canape des ${formatPrice(startingFrom("canape"))}, matelas des ${formatPrice(startingFrom("matelas"))}.`
 
 export const metadata: Metadata = {
-  title: "Tarifs Nettoyage a Domicile — Canape, Matelas, Tapis, Auto | SafiClean",
+  title: "Tarifs nettoyage à domicile — canapé, matelas, tapis, auto | SafiClean",
   description,
   alternates: {
     canonical: "/tarifs",
   },
   openGraph: {
-    title: "Tarifs Nettoyage a Domicile — Canape, Matelas, Tapis, Auto | SafiClean",
+    title: "Tarifs nettoyage à domicile — canapé, matelas, tapis, auto | SafiClean",
     description,
     url: "/tarifs",
     siteName: "SafiClean",
@@ -33,11 +34,11 @@ export const metadata: Metadata = {
 
 // Lignes de tableau propres à cette page — libellés locaux, prix issus de la source unique.
 const canapeRows = [
-  { type: "Fauteuil", price: PRICING.canape.fauteuil, duree: "~45 min", popular: false },
-  { type: "Canape 2 places", price: PRICING.canape["2-places"], duree: "~1h", popular: false },
-  { type: "Canape 3 places", price: PRICING.canape["3-places"], duree: "~1h30", popular: true },
-  { type: "Canape angle 4-5 places", price: PRICING.canape["angle-4-5"], duree: "~2h", popular: false },
-  { type: "Canape XXL 6+ places", price: PRICING.canape["xxl-6+"], duree: "~2h30", popular: false },
+  { type: "Fauteuil", price: PRICING.canape.fauteuil, duree: DUREE_CANAPE.fauteuil, popular: false },
+  { type: "Canape 2 places", price: PRICING.canape["2-places"], duree: DUREE_CANAPE["2-places"], popular: false },
+  { type: "Canape 3 places", price: PRICING.canape["3-places"], duree: DUREE_CANAPE["3-places"], popular: true },
+  { type: "Canape angle 4-5 places", price: PRICING.canape["angle-4-5"], duree: DUREE_CANAPE["angle-4-5"], popular: false },
+  { type: "Canape XXL 6+ places", price: PRICING.canape["xxl-6+"], duree: DUREE_CANAPE["xxl-6+"], popular: false },
 ]
 
 const chaisesRows = ([1, 2, 3, 4, 5, 6, 8] as const).map((qty) => {

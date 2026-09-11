@@ -11,13 +11,13 @@ import { CTAFinal } from "@/components/sections/cta-final"
 import { getReviews } from "@/lib/reviews"
 
 export const metadata: Metadata = {
-  title: "Nettoyage Moquette a Domicile - Paris & Ile-de-France | SafiClean",
+  title: "Nettoyage moquette à domicile — devis gratuit sous 2h | SafiClean",
   description: "Nettoyage professionnel de moquette a domicile en Ile-de-France. Particuliers et professionnels. Shampouinage, detachage, desinfection. Sur devis.",
   alternates: {
     canonical: "/moquette",
   },
   openGraph: {
-    title: "Nettoyage Moquette a Domicile — Paris & Ile-de-France | SafiClean",
+    title: "Nettoyage moquette à domicile — devis gratuit sous 2h | SafiClean",
     description: "Nettoyage professionnel de moquette a domicile en Ile-de-France. Particuliers et professionnels. Shampouinage, detachage, desinfection. Sur devis.",
     url: "/moquette",
     siteName: "SafiClean",

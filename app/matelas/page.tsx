@@ -14,13 +14,13 @@ import { getReviews } from "@/lib/reviews"
 const description = `Nettoyage professionnel de matelas a domicile en Ile-de-France. Anti-acariens, taches, odeurs. Resultat visible immediatement. Des ${formatPrice(startingFrom("matelas"))}.`
 
 export const metadata: Metadata = {
-  title: "Nettoyage Matelas a Domicile - Paris & Ile-de-France | SafiClean",
+  title: `Nettoyage matelas à domicile dès ${formatPrice(startingFrom("matelas"))} — Paris & IDF | SafiClean`,
   description,
   alternates: {
     canonical: "/matelas",
   },
   openGraph: {
-    title: "Nettoyage Matelas a Domicile — Paris & Ile-de-France | SafiClean",
+    title: `Nettoyage matelas à domicile dès ${formatPrice(startingFrom("matelas"))} — Paris & IDF | SafiClean`,
     description,
     url: "/matelas",
     siteName: "SafiClean",
