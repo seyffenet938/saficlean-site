@@ -1,3 +1,4 @@
+import { DEPLACEMENT, formatPrice, libellePalierMoquette, PRICING, prixMoquette } from "@/lib/pricing"
 import Link from "next/link"
 import { ArrowRight, Check, Sparkles, Building2, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -74,25 +75,50 @@ export function InfoMoquette() {
           </div>
         </div>
 
-        {/* Pricing info */}
-        <div className="mt-12 rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 text-center lg:p-8">
-          <h3 className="text-xl font-semibold text-foreground">Comment est calcule le prix ?</h3>
-          <p className="mt-3 text-muted-foreground">
-            {/*
-              ⚠️ « 3€ a 6€/m² » et « salon de 20m² = 60€ a 120€ » ont ete
-              RETIRES le 17/09/2026 : ces chiffres n'existaient NULLE PART
-              dans 05-tarifs/30_TARIFS.md — un reste de v0, signale des le
-              06/08 et reste six semaines en ligne. A 20 m², la grille pro
-              donne 12 €/m² = 240 € : l'exemple publie etait 2 a 4 fois
-              sous le tarif. Regle CLAUDE.md : aucun prix invente.
-              La fiche dit aujourd'hui « sur devis selon surface » pour le
-              particulier — c'est ce qui est affiche ici, ni plus ni moins.
-            */}
-            Le tarif depend de la surface (en m²), du type de moquette, de l'etat general et des traitements souhaites.
-            Plus la surface est grande, plus le prix au m² baisse.
+        {/* Pricing info — grille au m², 30_TARIFS v2.7 du 17/09/2026 */}
+        <div className="mt-12 rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 lg:p-8">
+          <h3 className="text-center text-xl font-semibold text-foreground">Nos tarifs au metre carre</h3>
+          <p className="mx-auto mt-3 max-w-2xl text-center text-muted-foreground">
+            Plus la surface est grande, plus le prix au metre carre baisse.
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            On mesure, on chiffre, et le devis est gratuit — reponse sous 2h.
+
+          <div className="mx-auto mt-6 max-w-lg overflow-x-auto">
+            <table className="w-full">
+              <tbody>
+                {PRICING.moquette.paliers.map((pal) => (
+                  <tr key={pal.min} className="border-b border-border/60 last:border-b-0">
+                    <td className="py-3 pr-4 text-muted-foreground">{libellePalierMoquette(pal)}</td>
+                    <td className="py-3 text-right font-bold text-primary whitespace-nowrap">
+                      {formatPrice(pal.prixM2)}/m²
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/*
+            🔴 Le seuil est une REGLE, pas une precision : sous 20 m², le
+            €/m² donne un prix PLUS BAS que la grille tapis a l'article.
+            L'omettre recreerait le trou inverse de celui corrige ce matin.
+          */}
+          <p className="mx-auto mt-5 max-w-2xl rounded-lg bg-background p-4 text-sm text-muted-foreground">
+            <strong className="text-foreground">En dessous de {PRICING.moquette.seuilM2} m²</strong>, ce
+            n{"'"}est pas un tarif au metre carre qui s{"'"}applique mais notre{" "}
+            <Link href="/tapis" className="text-primary hover:underline">grille tapis a l{"'"}article</Link> —
+            souvent plus avantageuse sur une petite surface.
+          </p>
+
+          <p className="mx-auto mt-4 max-w-2xl text-center text-sm text-muted-foreground">
+            Exemple : une piece de 40 m² revient a{" "}
+            <strong className="text-foreground">{formatPrice(prixMoquette(40)!.total)}</strong>.
+            Le deplacement est <strong className="text-foreground">offert des {formatPrice(DEPLACEMENT.offertDes)}</strong> de
+            prestation — ce qu{"'"}un chantier de moquette depasse dans tous les cas.
+          </p>
+
+          <p className="mx-auto mt-4 max-w-2xl text-center text-sm text-muted-foreground">
+            On mesure sur place, on chiffre, et le devis est gratuit — reponse sous 2h.
+            Le type de moquette (bouclee, velours, aiguilletee) et son etat peuvent faire varier l{"'"}estimation.
           </p>
         </div>
 

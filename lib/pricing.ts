@@ -51,7 +51,24 @@ export const PRICING = {
     "tres-grand": 125,
     xxl: 170,
   },
-  moquette: "devis",
+  /**
+   * Moquette et grande surface — 30_TARIFS v2.7 (17/09/2026).
+   * ⚠️ PRIX DE BASE DU GESTE, valable sur TOUS les canaux, particulier
+   * compris. Avant le 17/09 la fiche disait « sur devis » côté particulier
+   * et au m² côté pro seulement : c'est ce double régime qui a laissé
+   * « 3€ à 6€/m² » inventé six semaines en ligne.
+   * 🔴 Sous 20 m², c'est la grille TAPIS à l'article. Le €/m² y donnerait
+   *    un prix PLUS BAS que l'article : il est interdit.
+   */
+  moquette: {
+    seuilM2: 20,
+    paliers: [
+      { min: 20, max: 50, prixM2: 12 },
+      { min: 50, max: 200, prixM2: 8 },
+      { min: 200, max: 500, prixM2: 6 },
+      { min: 500, max: null, prixM2: 5 },
+    ],
+  },
   auto: {
     essentiel: 50,
     premium: 60,
@@ -146,6 +163,25 @@ export const DEPLACEMENT = {
     { id: "devis", label: "Au-delà de 40 km", frais: null },
   ],
 } as const
+
+/**
+ * Prix d'un chantier de moquette. Renvoie `null` sous le seuil :
+ * la grille TAPIS à l'article s'applique, et afficher un €/m² y serait
+ * une sous-facturation (cf. 30_TARIFS v2.7).
+ */
+export function prixMoquette(m2: number): { prixM2: number; total: number } | null {
+  if (m2 < PRICING.moquette.seuilM2) return null
+  const p = PRICING.moquette.paliers.find(
+    (x) => m2 >= x.min && (x.max === null || m2 < x.max),
+  )
+  if (!p) return null
+  return { prixM2: p.prixM2, total: Math.round(m2 * p.prixM2) }
+}
+
+/** Libellé de surface d'un palier : « 20 à 50 m² », « plus de 500 m² ». */
+export function libellePalierMoquette(p: (typeof PRICING.moquette.paliers)[number]): string {
+  return p.max === null ? `Plus de ${p.min} m²` : `${p.min} à ${p.max} m²`
+}
 
 export type ZoneDeplacement = (typeof DEPLACEMENT.zones)[number]["id"]
 
