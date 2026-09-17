@@ -22,7 +22,7 @@ const faqsMoquette = [
     id: "faq-moquette-3",
     question: "Comment est calcule le prix ?",
     answer:
-      "Le tarif depend de la surface (en m²), du type de moquette (bouclee, velours, aiguilletee), de son etat et des traitements souhaites. Comptez en moyenne 3€ a 6€/m². On etablit toujours un devis gratuit avant intervention.",
+      "Le tarif depend de la surface (en m²), du type de moquette (bouclee, velours, aiguilletee), de son etat et des traitements souhaites. Plus la surface est grande, plus le prix au m² baisse. On etablit toujours un devis gratuit avant intervention, avec une reponse sous 2h.",
   },
   {
     id: "faq-moquette-4",

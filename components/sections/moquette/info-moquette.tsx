@@ -78,11 +78,21 @@ export function InfoMoquette() {
         <div className="mt-12 rounded-2xl border-2 border-primary/20 bg-primary/5 p-6 text-center lg:p-8">
           <h3 className="text-xl font-semibold text-foreground">Comment est calcule le prix ?</h3>
           <p className="mt-3 text-muted-foreground">
+            {/*
+              ⚠️ « 3€ a 6€/m² » et « salon de 20m² = 60€ a 120€ » ont ete
+              RETIRES le 17/09/2026 : ces chiffres n'existaient NULLE PART
+              dans 05-tarifs/30_TARIFS.md — un reste de v0, signale des le
+              06/08 et reste six semaines en ligne. A 20 m², la grille pro
+              donne 12 €/m² = 240 € : l'exemple publie etait 2 a 4 fois
+              sous le tarif. Regle CLAUDE.md : aucun prix invente.
+              La fiche dit aujourd'hui « sur devis selon surface » pour le
+              particulier — c'est ce qui est affiche ici, ni plus ni moins.
+            */}
             Le tarif depend de la surface (en m²), du type de moquette, de l'etat general et des traitements souhaites.
-            Comptez en moyenne <span className="font-semibold text-primary">3€ a 6€/m²</span> selon la complexite.
+            Plus la surface est grande, plus le prix au m² baisse.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Exemple : salon de 20m² = 60€ a 120€ selon l'etat
+            On mesure, on chiffre, et le devis est gratuit — reponse sous 2h.
           </p>
         </div>
 
