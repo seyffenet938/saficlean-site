@@ -17,6 +17,30 @@ const nextConfig = {
         destination: "/tarifs#chaises",
         permanent: true,
       },
+
+      // ── Anciennes URL de l'époque v0 ────────────────────────────────
+      // Search Console les connaît encore et les recrawle : /services
+      // (mars 2026), /nettoyage-canape (mars), /privacy-policy (avril),
+      // /contact (avril), /deviscontact (avril). Elles renvoient 404
+      // depuis la refonte d'août — un 404 fait perdre le visiteur ET le
+      // signal accumulé. Les sœurs évidentes sont incluses : si v0 avait
+      // /nettoyage-canape, il avait très probablement les autres, et
+      // Seyffe n'a collé qu'un extrait du rapport.
+      { source: "/services", destination: "/tarifs", permanent: true },
+      { source: "/contact", destination: "/reserver", permanent: true },
+      { source: "/deviscontact", destination: "/reserver", permanent: true },
+      { source: "/devis", destination: "/reserver", permanent: true },
+      { source: "/reservation", destination: "/reserver", permanent: true },
+      { source: "/privacy-policy", destination: "/politique-confidentialite", permanent: true },
+      { source: "/privacy", destination: "/politique-confidentialite", permanent: true },
+      { source: "/mentions", destination: "/mentions-legales", permanent: true },
+      { source: "/nettoyage-canape", destination: "/canape", permanent: true },
+      { source: "/nettoyage-matelas", destination: "/matelas", permanent: true },
+      { source: "/nettoyage-tapis", destination: "/tapis", permanent: true },
+      { source: "/nettoyage-moquette", destination: "/moquette", permanent: true },
+      { source: "/nettoyage-auto", destination: "/auto", permanent: true },
+      { source: "/tarif", destination: "/tarifs", permanent: true },
+      { source: "/prix", destination: "/tarifs", permanent: true },
     ]
   },
 }
