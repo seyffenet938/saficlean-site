@@ -109,9 +109,25 @@ export function InfoMoquette() {
             souvent plus avantageuse sur une petite surface.
           </p>
 
+          {/*
+            🔴 GARANTIE DU MIEUX-DISANT (30_TARIFS v2.8, 18/09/2026).
+            Sans elle la grille etait absurde et le client pouvait le
+            calculer depuis cette page : 49 m² a 588 € contre 50 m² a
+            400 €. Elle ne fait jamais monter un prix.
+            ⚠️ Exemple a 100 m² et non 40 m² : au-dela de 33 m² le plafond
+            s'applique, et un exemple plafonne ne collerait plus au tableau
+            affiche juste au-dessus. A 100 m², 8 €/m² se verifie a l'oeil.
+          */}
+          <p className="mx-auto mt-5 max-w-2xl rounded-lg border border-primary/30 bg-background p-4 text-center text-sm text-foreground">
+            <strong>Nous ne facturons jamais plus que le tarif du palier au-dessus.</strong>{" "}
+            <span className="text-muted-foreground">
+              Si votre surface est juste sous un palier, c{"'"}est le tarif le plus avantageux qui s{"'"}applique.
+            </span>
+          </p>
+
           <p className="mx-auto mt-4 max-w-2xl text-center text-sm text-muted-foreground">
-            Exemple : une piece de 40 m² revient a{" "}
-            <strong className="text-foreground">{formatPrice(prixMoquette(40)!.total)}</strong>.
+            Exemple : un plateau de 100 m² revient a{" "}
+            <strong className="text-foreground">{formatPrice(prixMoquette(100)!.total)}</strong>.
             Le deplacement est <strong className="text-foreground">offert des {formatPrice(DEPLACEMENT.offertDes)}</strong> de
             prestation — ce qu{"'"}un chantier de moquette depasse dans tous les cas.
           </p>

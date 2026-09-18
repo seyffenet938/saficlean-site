@@ -167,15 +167,32 @@ export const DEPLACEMENT = {
 /**
  * Prix d'un chantier de moquette. Renvoie `null` sous le seuil :
  * la grille TAPIS à l'article s'applique, et afficher un €/m² y serait
- * une sous-facturation (cf. 30_TARIFS v2.7).
+ * une sous-facturation (cf. 30_TARIFS v2.8).
+ *
+ * 🔴 RÈGLE DU MIEUX-DISANT (30_TARIFS v2.8, arbitrée le 18/09/2026) :
+ * on ne facture JAMAIS plus que le plancher du palier supérieur.
+ * Sans elle, la grille produisait une absurdité que le client peut
+ * calculer depuis la page — 49 m² à 588 € contre 50 m² à 400 €.
+ * Elle ne fait jamais MONTER un prix : au pire elle en retire 188 €
+ * sur un 49 m², 392 € sur un 199 m², 494 € sur un 499 m².
  */
-export function prixMoquette(m2: number): { prixM2: number; total: number } | null {
+export function prixMoquette(
+  m2: number,
+): { prixM2: number; total: number; plafonne: boolean } | null {
   if (m2 < PRICING.moquette.seuilM2) return null
-  const p = PRICING.moquette.paliers.find(
+  const i = PRICING.moquette.paliers.findIndex(
     (x) => m2 >= x.min && (x.max === null || m2 < x.max),
   )
-  if (!p) return null
-  return { prixM2: p.prixM2, total: Math.round(m2 * p.prixM2) }
+  if (i === -1) return null
+  const p = PRICING.moquette.paliers[i]
+  const brut = m2 * p.prixM2
+
+  // Plancher du palier suivant : le prix d'entrée de la tranche d'après.
+  const suivant = PRICING.moquette.paliers[i + 1]
+  const plafond = suivant ? suivant.min * suivant.prixM2 : Number.POSITIVE_INFINITY
+
+  const total = Math.round(Math.min(brut, plafond))
+  return { prixM2: p.prixM2, total, plafonne: brut > plafond }
 }
 
 /** Libellé de surface d'un palier : « 20 à 50 m² », « plus de 500 m² ». */
