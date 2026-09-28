@@ -10,8 +10,13 @@ export interface SelectedOption {
   /** Prix DÉJÀ ajusté à la matière : c'est lui qui est facturé. */
   price: number
   label: string
-  /** Laine, soie, viscose, berbère noué main — cf. 30_TARIFS.md v2.1. */
-  matiereDelicate?: boolean
+  /**
+   * Voie technique du textile — cf. 30_TARIFS §matiere.
+   * Trois états depuis le 19/09/2026 : la soie et la viscose ont quitté
+   * le +40 % pour le ×2, elles étaient facturées moitié prix.
+   * Informatif ici : `price` porte déjà le montant facturé.
+   */
+  matiere?: import("@/lib/pricing").VoieTapis
 }
 
 export interface BookingState {

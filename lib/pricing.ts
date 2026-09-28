@@ -52,6 +52,23 @@ export const PRICING = {
     xxl: 170,
   },
   /**
+   * 🔴 VOIE SÈCHE — ×2, arbitré par Seyffe le 19/09/2026.
+   * Soie · viscose (rayonne) · jute, sisal, coir · velours à poil viscose.
+   * ⚠️ Ces matières étaient rangées avec la laine à +40 % : elles étaient
+   * donc facturées MOITIÉ PRIX. Aucune extraction, aucun rinçage — tout
+   * est manuel, et une auréole sur de la viscose ne se rattrape pas,
+   * elle se remplace. Le ×2 paie la cadence et la responsabilité, pas
+   * le consommable (2 € d'écart).
+   * Valeurs exactement doublées, sans arrondi, contrairement au +40 %.
+   */
+  tapisSec: {
+    petit: 100,
+    moyen: 120,
+    grand: 158,
+    "tres-grand": 178,
+    xxl: 240,
+  },
+  /**
    * Moquette et grande surface — 30_TARIFS v2.7 (17/09/2026).
    * ⚠️ PRIX DE BASE DU GESTE, valable sur TOUS les canaux, particulier
    * compris. Avant le 17/09 la fiche disait « sur devis » côté particulier
@@ -61,9 +78,25 @@ export const PRICING = {
    *    un prix PLUS BAS que l'article : il est interdit.
    */
   moquette: {
-    seuilM2: 20,
+    /**
+     * 🔴 Seuil abaissé de 20 à 10 m² le 19/09/2026 (30_TARIFS v4.4).
+     * La jonction est EXACTE : 9 m² = 120 € (tapis XXL) et
+     * 10 × 12 € = 120 €. La courbe devient monotone de bout en bout.
+     * Ce n'était pas qu'un lissage : un 19 m² se facturait 120 €, soit
+     * 6,3 €/m², la moitié de la tranche juste au-dessus.
+     */
+    seuilM2: 10,
+    /**
+     * 🔴 Au-delà de cette surface, on n'affiche PAS de prix (arbitrage
+     * Seyffe du 19/09) : ce n'est plus la surface qui décide mais le
+     * dégagement du mobilier, la fenêtre de fermeture, l'accès et la
+     * distance au point de vidange — et la cadence au-delà de 50 m²
+     * n'est pas mesurée. « Sur devis » ne veut pas dire « sans prix » :
+     * la grille reste le PLANCHER, la visite ne peut que faire monter.
+     */
+    seuilAffichage: 200,
     paliers: [
-      { min: 20, max: 50, prixM2: 12 },
+      { min: 10, max: 50, prixM2: 12 },
       { min: 50, max: 200, prixM2: 8 },
       { min: 200, max: 500, prixM2: 6 },
       { min: 500, max: null, prixM2: 5 },
@@ -114,10 +147,21 @@ export const PACK_RULES = {
 // tapis en laine souillé d'urine porte les deux.
 
 export const SUPPLEMENTS = {
-  /** +40 % sur laine, soie, viscose, berbère noué main. */
+  /**
+   * ⚠️ DEUX paliers depuis le 19/09/2026 — parce qu'il y a deux VOIES
+   * TECHNIQUES. La soie et la viscose ont QUITTÉ le +40 % pour le ×2 :
+   * elles étaient facturées moitié prix.
+   */
+  matiereSec: {
+    rate: 1.0,
+    matieres: ["soie", "viscose", "jute", "sisal", "velours à poil viscose"],
+    raison:
+      "aucune extraction ni rinçage possible : aspiration lente, tamponnage et brossage à la main, et une auréole ne se rattrape pas",
+  },
+  /** +40 % — voie humide, pH neutre, eau ≤ 35-40 °C. */
   matiereDelicate: {
     rate: 0.4,
-    matieres: ["laine", "soie", "viscose", "berbère noué main"],
+    matieres: ["laine", "berbère noué main"],
     /** Ce qui justifie le supplément — à dire au client, pas à cacher. */
     raison:
       "produit pH neutre obligatoire, risque de feutrage et de dégorgement, séchage plus long, intervention plus lente",
@@ -202,9 +246,14 @@ export function libellePalierMoquette(p: (typeof PRICING.moquette.paliers)[numbe
 
 export type ZoneDeplacement = (typeof DEPLACEMENT.zones)[number]["id"]
 
-/** Prix d'un tapis selon sa taille et sa matière — la grille, pas un calcul. */
-export function prixTapis(taille: TapisOption, delicate = false): number {
-  return delicate ? PRICING.tapisDelicat[taille] : PRICING.tapis[taille]
+/** Les trois voies techniques du tapis — cf. 30_TARIFS §matiere. */
+export type VoieTapis = "synthetique" | "delicate" | "sec"
+
+/** Prix d'un tapis selon sa taille et sa voie — la grille, jamais un calcul. */
+export function prixTapis(taille: TapisOption, voie: VoieTapis = "synthetique"): number {
+  if (voie === "sec") return PRICING.tapisSec[taille]
+  if (voie === "delicate") return PRICING.tapisDelicat[taille]
+  return PRICING.tapis[taille]
 }
 
 export function fraisDeplacement(zone: ZoneDeplacement): number | null {

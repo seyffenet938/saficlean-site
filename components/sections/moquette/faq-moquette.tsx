@@ -22,7 +22,7 @@ const faqsMoquette = [
     id: "faq-moquette-3",
     question: "Comment est calcule le prix ?",
     answer:
-      "Au metre carre, et le prix baisse quand la surface augmente : 12 €/m² de 20 a 50 m², 8 €/m² de 50 a 200 m², 6 €/m² de 200 a 500 m², 5 €/m² au-dela. En dessous de 20 m², c'est notre grille tapis a l'article qui s'applique, souvent plus avantageuse. Le type de moquette (bouclee, velours, aiguilletee) et son etat peuvent faire varier l'estimation. Et nous ne facturons jamais plus que le tarif du palier au-dessus : si votre surface est juste sous un seuil, c'est le tarif le plus avantageux qui s'applique. Devis gratuit, reponse sous 2h.",
+      "Au metre carre, et le prix baisse quand la surface augmente : 12 €/m² de 10 a 50 m², puis 8 €/m² de 50 a 200 m². En dessous de 10 m², c'est notre grille tapis a l'article qui s'applique. Au-dela de 200 m², c'est sur devis apres visite : ce n'est plus la surface qui decide le prix mais le degagement du mobilier, l'acces et la fenetre d'intervention. Le type de moquette (bouclee, velours, aiguilletee) et son etat peuvent faire varier l'estimation. Et nous ne facturons jamais plus que le tarif du palier au-dessus : si votre surface est juste sous un seuil, c'est le tarif le plus avantageux qui s'applique. Devis gratuit, reponse sous 2h.",
   },
   {
     id: "faq-moquette-4",

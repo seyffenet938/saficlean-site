@@ -61,11 +61,11 @@ const matelasRows = [
 ]
 
 const tapisRows = [
-  { size: "Petit", dims: "jusqu'a 100x160cm (≤1.5m²)", price: PRICING.tapis.petit, delicate: PRICING.tapisDelicat.petit },
-  { size: "Moyen", dims: "120x170 / 140x200cm (≈2-3m²)", price: PRICING.tapis.moyen, delicate: PRICING.tapisDelicat.moyen },
-  { size: "Grand", dims: "160x230cm (≈3.5-4m²)", price: PRICING.tapis.grand, delicate: PRICING.tapisDelicat.grand },
-  { size: "Tres grand", dims: "200x290cm (≈5-6m²)", price: PRICING.tapis["tres-grand"], delicate: PRICING.tapisDelicat["tres-grand"] },
-  { size: "XXL", dims: "240x330cm et + (≥7m²)", price: PRICING.tapis.xxl, delicate: PRICING.tapisDelicat.xxl },
+  { size: "Petit", dims: "jusqu'a 100x160cm (≤1.5m²)", price: PRICING.tapis.petit, delicate: PRICING.tapisDelicat.petit, sec: PRICING.tapisSec.petit },
+  { size: "Moyen", dims: "120x170 / 140x200cm (≈2-3m²)", price: PRICING.tapis.moyen, delicate: PRICING.tapisDelicat.moyen, sec: PRICING.tapisSec.moyen },
+  { size: "Grand", dims: "160x230cm (≈3.5-4m²)", price: PRICING.tapis.grand, delicate: PRICING.tapisDelicat.grand, sec: PRICING.tapisSec.grand },
+  { size: "Tres grand", dims: "200x290cm (≈5-6m²)", price: PRICING.tapis["tres-grand"], delicate: PRICING.tapisDelicat["tres-grand"], sec: PRICING.tapisSec["tres-grand"] },
+  { size: "XXL", dims: "240x330cm et + (≥7m²)", price: PRICING.tapis.xxl, delicate: PRICING.tapisDelicat.xxl, sec: PRICING.tapisSec.xxl },
 ]
 
 const navLinks = [
@@ -341,7 +341,8 @@ export default async function TarifsPage() {
                     <th className="py-4 px-4 text-left font-semibold text-foreground">Taille</th>
                     <th className="py-4 px-4 text-left font-semibold text-foreground hidden sm:table-cell">Dimensions</th>
                     <th className="py-4 px-4 text-left font-semibold text-foreground">Synthetique</th>
-                    <th className="py-4 px-4 text-left font-semibold text-foreground">Laine, soie, viscose</th>
+                    <th className="py-4 px-4 text-left font-semibold text-foreground">Laine, berbere</th>
+                    <th className="py-4 px-4 text-left font-semibold text-foreground">Soie, viscose, jute</th>
                     <th className="py-4 px-4 text-right font-semibold text-foreground">Reserver</th>
                   </tr>
                 </thead>
@@ -352,6 +353,7 @@ export default async function TarifsPage() {
                       <td className="py-4 px-4 text-muted-foreground hidden sm:table-cell">{row.dims}</td>
                       <td className="py-4 px-4 font-bold text-primary">{formatPrice(row.price)}</td>
                       <td className="py-4 px-4 font-bold text-foreground">{formatPrice(row.delicate)}</td>
+                      <td className="py-4 px-4 font-bold text-foreground">{formatPrice(row.sec)}</td>
                       <td className="py-4 px-4 text-right">
                         <Button asChild size="sm" className="rounded-full">
                           <Link href="/reserver">Reserver</Link>
@@ -364,10 +366,14 @@ export default async function TarifsPage() {
             </div>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            La laine, la soie, la viscose et le berbere noue main demandent un
-            produit pH neutre, un sechage plus long et une intervention plus lente :
-            leur tarif est majore. Nous vous posons la question au telephone, avant
-            l{"'"}intervention — jamais devant vous le jour J.
+            Toutes les fibres ne se nettoient pas de la meme facon, et c{"'"}est ce qui
+            fait varier le tarif. La <strong className="text-foreground">laine</strong> et le
+            berbere noue main demandent un produit pH neutre et un sechage plus long.
+            La <strong className="text-foreground">soie</strong>, la viscose, le jute et le
+            sisal ne supportent <strong className="text-foreground">ni extraction ni rincage</strong> :
+            tout se fait a la main, lentement, et une aureole sur ces fibres ne se rattrape pas.
+            Nous vous posons la question au telephone, et nous la confirmons par un test
+            discret en coin cache — jamais de negociation devant vous le jour J.
           </p>
         </div>
       </section>
@@ -538,20 +544,47 @@ export default async function TarifsPage() {
           </p>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {/* Matière délicate */}
+            {/*
+              DEUX voies techniques depuis le 19/09/2026 (30_TARIFS §matiere),
+              et non plus une seule majoration : la soie et la viscose ont
+              quitte le +40 % pour le ×2 — elles etaient facturees moitie prix.
+            */}
             <div className="rounded-xl border border-border bg-card p-6">
-              <h3 className="font-semibold text-foreground text-lg">
-                Matiere delicate <span className="text-primary">+{Math.round(SUPPLEMENTS.matiereDelicate.rate * 100)}%</span>
-              </h3>
+              <h3 className="font-semibold text-foreground text-lg">La matiere de votre textile</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                {SUPPLEMENTS.matiereDelicate.matieres.join(", ")}.
+                Deux familles demandent plus qu{"'"}un nettoyage standard, et pas pour la meme raison.
               </p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Pourquoi : {SUPPLEMENTS.matiereDelicate.raison}.
-              </p>
-              <p className="mt-3 text-sm font-medium text-foreground">
-                Exemple : un tapis 160x230 passe de {formatPrice(PRICING.tapis.grand)} a{" "}
-                {formatPrice(PRICING.tapisDelicat.grand)}.
+
+              <div className="mt-4 rounded-lg bg-background p-4">
+                <p className="font-medium text-foreground">
+                  {SUPPLEMENTS.matiereDelicate.matieres.join(", ")}{" "}
+                  <span className="text-primary">+{Math.round(SUPPLEMENTS.matiereDelicate.rate * 100)}%</span>
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {SUPPLEMENTS.matiereDelicate.raison}.
+                </p>
+                <p className="mt-2 text-sm text-foreground">
+                  Un tapis 160x230 passe de {formatPrice(PRICING.tapis.grand)} a{" "}
+                  <strong>{formatPrice(PRICING.tapisDelicat.grand)}</strong>.
+                </p>
+              </div>
+
+              <div className="mt-3 rounded-lg bg-background p-4">
+                <p className="font-medium text-foreground">
+                  {SUPPLEMENTS.matiereSec.matieres.join(", ")}{" "}
+                  <span className="text-primary">×{SUPPLEMENTS.matiereSec.rate + 1}</span>
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {SUPPLEMENTS.matiereSec.raison}.
+                </p>
+                <p className="mt-2 text-sm text-foreground">
+                  Le meme tapis passe a <strong>{formatPrice(PRICING.tapisSec.grand)}</strong>.
+                </p>
+              </div>
+
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                Nous posons la question au telephone et nous la confirmons sur place par un test
+                discret en coin cache — jamais de negociation devant vous le jour de l{"'"}intervention.
               </p>
             </div>
 

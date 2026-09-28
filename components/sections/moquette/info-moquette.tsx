@@ -85,14 +85,37 @@ export function InfoMoquette() {
           <div className="mx-auto mt-6 max-w-lg overflow-x-auto">
             <table className="w-full">
               <tbody>
-                {PRICING.moquette.paliers.map((pal) => (
-                  <tr key={pal.min} className="border-b border-border/60 last:border-b-0">
-                    <td className="py-3 pr-4 text-muted-foreground">{libellePalierMoquette(pal)}</td>
-                    <td className="py-3 text-right font-bold text-primary whitespace-nowrap">
-                      {formatPrice(pal.prixM2)}/m²
-                    </td>
-                  </tr>
-                ))}
+                {/*
+                  🔴 On n'affiche PAS les paliers au-dela de 200 m²
+                  (arbitrage Seyffe du 19/09) : au-dela, ce n'est plus la
+                  surface qui fait le prix mais le degagement du mobilier,
+                  la fenetre de fermeture, l'acces et la distance au point
+                  de vidange — et la cadence au-dela de 50 m² n'est pas
+                  mesuree. « Sur devis » ne veut pas dire « sans prix » :
+                  la grille reste le plancher, la visite ne fait que monter.
+                */}
+                {PRICING.moquette.paliers
+                  .filter((pal) => pal.min < PRICING.moquette.seuilAffichage)
+                  .map((pal) => (
+                    <tr key={pal.min} className="border-b border-border/60">
+                      <td className="py-3 pr-4 text-muted-foreground">
+                        {pal.max && pal.max > PRICING.moquette.seuilAffichage
+                          ? `${pal.min} à ${PRICING.moquette.seuilAffichage} m²`
+                          : libellePalierMoquette(pal)}
+                      </td>
+                      <td className="py-3 text-right font-bold text-primary whitespace-nowrap">
+                        {formatPrice(pal.prixM2)}/m²
+                      </td>
+                    </tr>
+                  ))}
+                <tr>
+                  <td className="py-3 pr-4 text-muted-foreground">
+                    Plus de {PRICING.moquette.seuilAffichage} m²
+                  </td>
+                  <td className="py-3 text-right font-semibold text-foreground whitespace-nowrap">
+                    sur devis, apres visite
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -105,8 +128,8 @@ export function InfoMoquette() {
           <p className="mx-auto mt-5 max-w-2xl rounded-lg bg-background p-4 text-sm text-muted-foreground">
             <strong className="text-foreground">En dessous de {PRICING.moquette.seuilM2} m²</strong>, ce
             n{"'"}est pas un tarif au metre carre qui s{"'"}applique mais notre{" "}
-            <Link href="/tapis" className="text-primary hover:underline">grille tapis a l{"'"}article</Link> —
-            souvent plus avantageuse sur une petite surface.
+            <Link href="/tapis" className="text-primary hover:underline">grille tapis a l{"'"}article</Link>.
+            Au-dela, on ne deplace plus le textile : on travaille sur place, au metre.
           </p>
 
           {/*

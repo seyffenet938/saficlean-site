@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useBooking, SelectedOption } from "@/lib/booking-context"
-import { formatPrice, PRICING, prixTapis, type TapisOption } from "@/lib/pricing"
+import { formatPrice, PRICING, prixTapis, type TapisOption, type VoieTapis } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
 import { PackUpsell } from "@/components/booking/pack-upsell"
@@ -204,23 +204,30 @@ function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id"
   // La matière est LA question que Seyffe pose au téléphone (30_TARIFS.md) :
   // un tapis en laine coûte jusqu'à +40 %. La poser ici évite d'avoir à
   // réajuster le prix devant le client le jour de l'intervention.
-  const [delicate, setDelicate] = useState(false)
+  const [voie, setVoie] = useState<VoieTapis>("synthetique")
 
   return (
     <div className="space-y-3">
       <div className="rounded-lg border border-secondary/30 bg-background p-3">
         <p className="text-sm font-medium text-foreground">Matiere de votre tapis</p>
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          {[
-            { v: false, label: "Synthetique" },
-            { v: true, label: "Laine, soie, viscose" },
-          ].map((m) => (
+        {/*
+          TROIS voies depuis le 19/09/2026 (30_TARIFS §matiere), et non
+          plus deux : la soie et la viscose ont quitte le +40 % pour le
+          ×2 — elles etaient facturees moitie prix. La voie seche n'admet
+          ni extraction ni rincage.
+        */}
+        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+          {([
+            { v: "synthetique", label: "Synthetique" },
+            { v: "delicate", label: "Laine, berbere" },
+            { v: "sec", label: "Soie, viscose, jute" },
+          ] as { v: VoieTapis; label: string }[]).map((m) => (
             <button
-              key={String(m.v)}
+              key={m.v}
               type="button"
-              onClick={() => setDelicate(m.v)}
+              onClick={() => setVoie(m.v)}
               className={`rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all ${
-                delicate === m.v
+                voie === m.v
                   ? "border-primary bg-primary/10 text-foreground"
                   : "border-secondary/30 bg-background text-muted-foreground hover:border-primary/50"
               }`}
@@ -230,15 +237,20 @@ function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id"
           ))}
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
-          {delicate
-            ? "Produit pH neutre, sechage plus long, intervention plus lente : le tarif ci-dessous en tient compte."
-            : "Coton, polypropylene, polyester, acrylique."}
+          {voie === "sec"
+            ? "Ni extraction ni rincage possibles : tout se fait a la main, lentement. Le tarif ci-dessous en tient compte."
+            : voie === "delicate"
+              ? "Produit pH neutre, sechage plus long, intervention plus lente : le tarif ci-dessous en tient compte."
+              : "Coton, polypropylene, polyester, acrylique."}
+        </p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Nous confirmons la matiere sur place par un test discret en coin cache.
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-2">
         {(Object.keys(PRICING.tapis) as TapisOption[]).map((size) => {
-          const price = prixTapis(size, delicate)
+          const price = prixTapis(size, voie)
           return (
             <button
               key={size}
@@ -247,8 +259,10 @@ function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id"
                   type: "tapis",
                   value: size,
                   price,
-                  label: `Tapis ${TAPIS_LABELS[size] || size}${delicate ? " — laine/soie" : ""}`,
-                  matiereDelicate: delicate,
+                  label: `Tapis ${TAPIS_LABELS[size] || size}${
+                    voie === "sec" ? " — soie/viscose" : voie === "delicate" ? " — laine" : ""
+                  }`,
+                  matiere: voie,
                 })
               }
               className="rounded-lg border-2 border-secondary/30 bg-background px-3 py-3 text-sm transition-all hover:border-primary/50 hover:bg-primary/5 text-left flex justify-between items-center"
