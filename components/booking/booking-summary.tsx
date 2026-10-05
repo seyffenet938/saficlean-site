@@ -9,6 +9,15 @@ export function BookingSummary() {
   const deplacement = getDeplacement()
   const totalDu = getTotalAvecDeplacement()
 
+  // Les services se choisissent a l'etape 1, les options a l'etape 2 : tant que
+  // selectedOptions est vide, il n'y a aucun montant a totaliser. Depuis que le
+  // code postal est demande des l'etape 1, la zone peut etre connue AVANT le
+  // premier prix — le panneau affichait alors « Total estime 20,00 € » sous
+  // « Selectionnez vos services pour voir le prix ». Un prix pour rien, sur
+  // l'etape la plus fréquentée. L'annonce precoce du deplacement reste faite,
+  // mais par le message sous le champ CP, pas par un total sans contenu.
+  const aUnPrix = state.selectedOptions.length > 0
+
   const subtotal = getSubtotal()
   const discount = calculateDiscount()
   const total = calculateTotal()
@@ -71,20 +80,27 @@ export function BookingSummary() {
       )}
 
       {/*
-        🔴 LE DÉPLACEMENT S'AFFICHE DÈS QUE LE CODE POSTAL EST CONNU.
+        🔴 LE DEPLACEMENT EST ANNONCE AVANT LA CONFIRMATION, PAS A L'APPEL.
         Carte rect2dipOkBmLmPEH (P1) : le 24/09, deux clients ont decouvert
         les +20 € de Paris AU TELEPHONE, apres avoir reserve. L'un a
         renonce, l'autre a dit « j'ai confirme sur la base du prix affiche
         sur le site ». Le montant n'etait pas en cause — c'etait le moment.
         Paris est la seule zone deductible sans inventer de mapping.
+
+        Repartition des roles, depuis que le CP est demande des l'etape 1 :
+        le MESSAGE sous le champ CP fait l'annonce (« +20 €, offert des
+        150 € »), des l'etape 1 et sans qu'aucun prix existe encore ; CETTE
+        LIGNE-CI fait l'arithmetique, donc seulement quand il y a un montant
+        auquel l'ajouter. Sans ce garde-fou le panneau affichait
+        « Total estime 20,00 € » sous « Selectionnez vos services ».
       */}
-      {zone === "paris" && deplacement > 0 && (
+      {aUnPrix && zone === "paris" && deplacement > 0 && (
         <div className="mb-2 flex justify-between text-sm">
           <span>Deplacement Paris</span>
           <span>+{formatPrice(deplacement)}</span>
         </div>
       )}
-      {zone === "paris" && deplacement === 0 && totalDu > 0 && (
+      {aUnPrix && zone === "paris" && deplacement === 0 && totalDu > 0 && (
         <div className="mb-2 flex justify-between text-sm">
           <span>Deplacement Paris</span>
           <span className="line-through opacity-70">
@@ -93,11 +109,13 @@ export function BookingSummary() {
         </div>
       )}
 
-      <div className="bg-primary-foreground/20 rounded-lg p-3">
-        <div className="text-sm text-primary-foreground/80 mb-1">Total estime</div>
-        <div className="text-3xl font-bold">{totalDu.toFixed(2)} €</div>
-        <div className="text-xs text-primary-foreground/60 mt-1">Paiement apres intervention</div>
-      </div>
+      {aUnPrix && (
+        <div className="bg-primary-foreground/20 rounded-lg p-3">
+          <div className="text-sm text-primary-foreground/80 mb-1">Total estime</div>
+          <div className="text-3xl font-bold">{totalDu.toFixed(2)} €</div>
+          <div className="text-xs text-primary-foreground/60 mt-1">Paiement apres intervention</div>
+        </div>
+      )}
 
       {zone === "paris" && deplacement === 0 && totalDu > 0 && (
         <p className="mt-3 text-xs leading-relaxed text-primary-foreground/70">
