@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, Suspense } from "react"
+import { codePostalAccepte } from "@/lib/departements"
 import { useRouter, useSearchParams } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
@@ -17,7 +18,10 @@ import { submitBooking } from "./actions"
 import { trackBookingStep, trackBookingSubmitted, trackBookingFailed } from "@/lib/analytics"
 
 const STEPS = [
-  { id: 1, title: "Services", validate: (state: any) => state.selectedServices.length > 0 },
+  // Le code postal est demandé dès l'étape 1 depuis le 05/10 : il sert le
+  // calcul du déplacement et évite qu'un visiteur hors zone remplisse
+  // quatre étapes avant qu'on lui dise non. Cf. service-selection.tsx.
+  { id: 1, title: "Services", validate: (state: any) => state.selectedServices.length > 0 && codePostalAccepte(state.postalCode) },
   { id: 2, title: "Options", validate: (state: any) => {
     // If only moquette is selected, check moquette fields
     const hasMoquetteOnly = state.selectedServices.length === 1 && state.selectedServices.includes("moquette")
@@ -37,8 +41,7 @@ const STEPS = [
     state.phone.trim() && 
     state.email.includes("@") &&
     state.address.trim() &&
-    state.postalCode.length === 5 &&
-    ["75", "77", "78", "91", "92", "93", "94", "95"].includes(state.postalCode.slice(0, 2)) &&
+    codePostalAccepte(state.postalCode) &&
     state.city.trim()
   },
   { id: 5, title: "Recapitulatif", validate: (state: any) => state.acceptContact },

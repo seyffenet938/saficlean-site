@@ -1,3 +1,5 @@
+import { DEPARTEMENTS_RESERVATION } from "./departements"
+
 /**
  * ════════════════════════════════════════════════════════════════════
  *  PONT SITE → PIPELINE (n8n → Airtable v4)
@@ -62,7 +64,7 @@ export function departementFromCP(postalCode: string): string {
   const cp = (postalCode || "").replace(/\D/g, "")
   if (cp.length !== 5) return "inconnu"
   const dep = cp.slice(0, 2)
-  return ["75", "77", "78", "91", "92", "93", "94", "95"].includes(dep) ? dep : "hors_idf"
+  return (DEPARTEMENTS_RESERVATION as readonly string[]).includes(dep) ? dep : "hors_idf"
 }
 
 /**

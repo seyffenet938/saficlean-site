@@ -127,3 +127,23 @@ export function getDepartement(slug: string): Departement | undefined {
 
 /** Les départements qui ont une page. Source de generateStaticParams + sitemap. */
 export const DEPARTEMENTS_PAGES = DEPARTEMENTS.filter((d) => d.page)
+
+/**
+ * Départements acceptés par le tunnel de réservation.
+ *
+ * ⚠️ PLUS LARGE que `DEPARTEMENTS` ci-dessus, et c'est voulu : la liste
+ * au-dessus est celle où des communes sont réellement couvertes et où
+ * des pages existent ; celle-ci est celle où l'on accepte une demande.
+ * Le 77 et le 91 n'ont aucune commune couverte — le site les annonce
+ * « hors zone habituelle, sur devis » — mais refuser leur réservation
+ * ferait perdre un contact qu'un appel peut qualifier.
+ *
+ * Était recopiée dans `contact-step.tsx` et `app/reserver/page.tsx`.
+ */
+export const DEPARTEMENTS_RESERVATION = ["75", "77", "78", "91", "92", "93", "94", "95"] as const
+
+/** Le code postal est-il dans la zone acceptée ? 5 chiffres exigés. */
+export function codePostalAccepte(cp: string): boolean {
+  const c = (cp || "").replace(/\D/g, "")
+  return c.length === 5 && (DEPARTEMENTS_RESERVATION as readonly string[]).includes(c.slice(0, 2))
+}

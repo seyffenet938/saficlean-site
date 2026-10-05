@@ -1,19 +1,19 @@
 "use client"
 
 import { useBooking } from "@/lib/booking-context"
+import { codePostalAccepte } from "@/lib/departements"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { User, Phone, Mail, MapPin } from "lucide-react"
 
-const DEPARTMENTS = ["75", "77", "78", "91", "92", "93", "94", "95"]
 
 export function ContactStep() {
   const { state, updateField } = useBooking()
 
   const isValidPostalCode = () => {
     if (state.postalCode.length !== 5) return true
-    return DEPARTMENTS.includes(state.postalCode.slice(0, 2))
+    return codePostalAccepte(state.postalCode)
   }
 
   return (
@@ -94,6 +94,7 @@ export function ContactStep() {
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="postalCode">Code postal</Label>
+            {/* Pré-rempli depuis l'étape 1, modifiable ici si le client se corrige. */}
             <Input
               id="postalCode"
               placeholder="75001"

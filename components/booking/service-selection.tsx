@@ -1,6 +1,11 @@
 "use client"
 
 import { useBooking } from "@/lib/booking-context"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { MapPin } from "lucide-react"
+import { codePostalAccepte } from "@/lib/departements"
+import { DEPLACEMENT, formatPrice, zoneDepuisCP } from "@/lib/pricing"
 import { PRICING } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
@@ -16,7 +21,11 @@ const SERVICES = [
 ]
 
 export function ServiceSelectionStep() {
-  const { state, toggleService } = useBooking()
+  const { state, toggleService, updateField } = useBooking()
+  const cp = state.postalCode
+  const cpComplet = cp.replace(/\D/g, "").length === 5
+  const horsZone = cpComplet && !codePostalAccepte(cp)
+  const paris = zoneDepuisCP(cp) === "paris"
 
   return (
     <div className="space-y-6">
@@ -55,6 +64,55 @@ export function ServiceSelectionStep() {
             </button>
           )
         })}
+      </div>
+
+      {/*
+        🔴 LE CODE POSTAL EST DEMANDE ICI, ET PLUS A L'ETAPE 4.
+        Deux raisons, mesurees toutes les deux.
+        (1) Le deplacement : le 24/09, deux clients ont decouvert les
+            +20 € de Paris au telephone APRES avoir reserve — l'un a
+            renonce, l'autre a dit « j'ai confirme sur la base du prix
+            affiche ». Connu des l'etape 1, le supplement apparait dans
+            le recapitulatif lateral des qu'il y a un prix, donc AVANT
+            le choix du creneau. Carte rect2dipOkBmLmPEH.
+        (2) Hors zone : un visiteur de Lyon remplissait QUATRE etapes
+            avant qu'on lui dise non. Il le sait maintenant tout de suite.
+        ⚠️ Ca ajoute un champ obligatoire a l'etape qui recoit le plus de
+        monde (135 visiteurs en septembre). A surveiller : si le passage
+        etape 1 → etape 2 se degrade en octobre, c'est ce champ.
+      */}
+      <div className="space-y-2">
+        <Label htmlFor="cp-etape1" className="flex items-center gap-2">
+          <MapPin className="h-4 w-4 text-primary" />
+          Votre code postal
+        </Label>
+        <Input
+          id="cp-etape1"
+          inputMode="numeric"
+          maxLength={5}
+          placeholder="95100"
+          value={cp}
+          onChange={(e) => updateField("postalCode", e.target.value.replace(/\D/g, ""))}
+          className="max-w-[10rem]"
+          aria-invalid={horsZone}
+        />
+        {horsZone ? (
+          <p className="text-sm text-destructive">
+            Nous intervenons en Ile-de-France uniquement. Appelez-nous au 07 56 88 13 39 :
+            selon votre situation, on trouve parfois une solution.
+          </p>
+        ) : paris ? (
+          <p className="text-sm text-muted-foreground">
+            Paris : un deplacement de{" "}
+            <strong className="text-foreground">{formatPrice(20)}</strong> s{"'"}ajoute
+            (acces et stationnement), <strong className="text-foreground">offert des{" "}
+            {formatPrice(DEPLACEMENT.offertDes)}</strong> de prestation.
+          </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Il nous sert a calculer votre deplacement des maintenant, sans surprise a l{"'"}appel.
+          </p>
+        )}
       </div>
     </div>
   )
