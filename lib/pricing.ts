@@ -256,6 +256,31 @@ export function prixTapis(taille: TapisOption, voie: VoieTapis = "synthetique"):
   return PRICING.tapis[taille]
 }
 
+/**
+ * 🔴 Zone de déplacement déduite du CODE POSTAL — uniquement quand elle
+ * est CERTAINE.
+ *
+ * Paris intra-muros est la SEULE zone déductible sans inventer de
+ * correspondance commune → zone : 30_TARIFS la tarife explicitement à
+ * +20 €, et tout code postal en 75 est dans Paris. Partout ailleurs la
+ * grille raisonne en distance depuis Épinay — aucune fiche ne dit dans
+ * quelle tranche tombe Sarcelles ou Créteil, et l'inventer produirait
+ * des devis faux (décision du 10/09, toujours valable).
+ *
+ * ⚠️ POURQUOI CETTE FONCTION EXISTE — carte `rect2dipOkBmLmPEH`, P1.
+ * Le 24/09, DEUX clients ont découvert les +20 € au téléphone après
+ * avoir réservé. L'un a renoncé (« à 80 €, autant que je m'achète un
+ * tapis »), l'autre a dit : « j'ai confirmé sur la base du prix affiché
+ * sur le site, ce qui est je pense la norme » — et a conditionné le
+ * supplément au résultat. Le montant n'était pas en cause : c'est le
+ * MOMENT où il apparaissait.
+ */
+export function zoneDepuisCP(cp: string): ZoneDeplacement | null {
+  const c = (cp || "").replace(/\D/g, "")
+  if (c.length !== 5) return null
+  return c.startsWith("75") ? "paris" : null
+}
+
 export function fraisDeplacement(zone: ZoneDeplacement): number | null {
   return DEPLACEMENT.zones.find((z) => z.id === zone)?.frais ?? 0
 }

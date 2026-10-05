@@ -1,10 +1,13 @@
 "use client"
 
 import { useBooking } from "@/lib/booking-context"
-import { DEPLACEMENT, formatPrice } from "@/lib/pricing"
+import { DEPLACEMENT, fraisDeplacement, formatPrice } from "@/lib/pricing"
 
 export function BookingSummary() {
-  const { state, calculateTotal, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate } = useBooking()
+  const { state, calculateTotal, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate, getZoneDeplacement, getDeplacement, getTotalAvecDeplacement } = useBooking()
+  const zone = getZoneDeplacement()
+  const deplacement = getDeplacement()
+  const totalDu = getTotalAvecDeplacement()
 
   const subtotal = getSubtotal()
   const discount = calculateDiscount()
@@ -67,27 +70,56 @@ export function BookingSummary() {
         </div>
       )}
 
+      {/*
+        🔴 LE DÉPLACEMENT S'AFFICHE DÈS QUE LE CODE POSTAL EST CONNU.
+        Carte rect2dipOkBmLmPEH (P1) : le 24/09, deux clients ont decouvert
+        les +20 € de Paris AU TELEPHONE, apres avoir reserve. L'un a
+        renonce, l'autre a dit « j'ai confirme sur la base du prix affiche
+        sur le site ». Le montant n'etait pas en cause — c'etait le moment.
+        Paris est la seule zone deductible sans inventer de mapping.
+      */}
+      {zone === "paris" && deplacement > 0 && (
+        <div className="mb-2 flex justify-between text-sm">
+          <span>Deplacement Paris</span>
+          <span>+{formatPrice(deplacement)}</span>
+        </div>
+      )}
+      {zone === "paris" && deplacement === 0 && totalDu > 0 && (
+        <div className="mb-2 flex justify-between text-sm">
+          <span>Deplacement Paris</span>
+          <span className="line-through opacity-70">
+            {formatPrice(fraisDeplacement("paris") ?? 0)}
+          </span>
+        </div>
+      )}
+
       <div className="bg-primary-foreground/20 rounded-lg p-3">
         <div className="text-sm text-primary-foreground/80 mb-1">Total estime</div>
-        <div className="text-3xl font-bold">{total.toFixed(2)} €</div>
+        <div className="text-3xl font-bold">{totalDu.toFixed(2)} €</div>
         <div className="text-xs text-primary-foreground/60 mt-1">Paiement apres intervention</div>
       </div>
 
-      {/*
-        Le déplacement dépend de la commune (Paris +20 €, 15-25 km +15 €,
-        25-40 km +25 € — cf. 30_TARIFS.md). On ne l'ajoute PAS au total :
-        le code postal n'est saisi qu'à l'étape suivante, et surtout on n'a
-        pas de distance fiable par commune. Annoncer une zone fausse serait
-        pire que l'annoncer à l'appel. On dit donc la règle, pas un montant.
-      */}
-      {total > 0 && total < DEPLACEMENT.offertDes && (
+      {zone === "paris" && deplacement === 0 && totalDu > 0 && (
         <p className="mt-3 text-xs leading-relaxed text-primary-foreground/70">
-          Selon votre commune, des frais de deplacement peuvent s{"'"}ajouter — ils
-          sont <strong className="text-primary-foreground">offerts des {formatPrice(DEPLACEMENT.offertDes)}</strong> de
-          prestation. Nous vous le confirmons lors de l{"'"}appel.
+          Deplacement Paris offert : votre total depasse {formatPrice(DEPLACEMENT.offertDes)}.
         </p>
       )}
-      {total >= DEPLACEMENT.offertDes && (
+
+      {/*
+        Hors Paris, la grille raisonne en distance depuis Epinay et aucune
+        fiche ne donne de correspondance commune → zone. On annonce donc la
+        FOURCHETTE REELLE plutot qu'un montant invente — mais on l'annonce,
+        au lieu de laisser la decouverte a l'appel.
+      */}
+      {zone === null && totalDu > 0 && totalDu < DEPLACEMENT.offertDes && (
+        <p className="mt-3 text-xs leading-relaxed text-primary-foreground/70">
+          Selon votre commune, un deplacement de{" "}
+          <strong className="text-primary-foreground">0 a {formatPrice(25)}</strong> peut
+          s{"'"}ajouter — <strong className="text-primary-foreground">offert des {formatPrice(DEPLACEMENT.offertDes)}</strong> de
+          prestation. Le montant exact vous est donne avant toute confirmation.
+        </p>
+      )}
+      {zone === null && totalDu >= DEPLACEMENT.offertDes && (
         <p className="mt-3 text-xs leading-relaxed text-primary-foreground/70">
           Deplacement offert : votre total depasse {formatPrice(DEPLACEMENT.offertDes)}.
         </p>

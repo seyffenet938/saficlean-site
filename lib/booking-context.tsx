@@ -1,7 +1,7 @@
 "use client"
 
 import React, { createContext, useContext, useState, ReactNode } from "react"
-import { computePack } from "@/lib/pricing"
+import { computePack, computeQuote, zoneDepuisCP } from "@/lib/pricing"
 
 export interface SelectedOption {
   id: string // Unique identifier for each item
@@ -51,6 +51,9 @@ interface BookingContextType {
   getSubtotal: () => number
   getEligibleCount: () => number
   getDiscountRate: () => number
+  getZoneDeplacement: () => ReturnType<typeof zoneDepuisCP>
+  getDeplacement: () => number
+  getTotalAvecDeplacement: () => number
   reset: () => void
 }
 
@@ -118,6 +121,18 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   // implémentation partagée avec la soumission serveur.
   const pack = () => computePack(state.selectedOptions)
 
+  /**
+   * Devis complet, déplacement compris — dès que le code postal est connu.
+   * Zone inconnue → "proche" (0 €) : on n'ajoute rien qu'on n'ait pas
+   * déduit, et l'encart affiche la fourchette à la place.
+   */
+  const getZoneDeplacement = () => zoneDepuisCP(state.postalCode)
+  const devis = () =>
+    computeQuote(state.selectedOptions, getZoneDeplacement() ?? "proche")
+
+  const getDeplacement = () => devis().deplacement
+  const getTotalAvecDeplacement = () => devis().total
+
   const getSubtotal = () => pack().subtotal
   const getEligibleCount = () => pack().eligibleCount
   const getDiscountRate = () => pack().discountRate
@@ -142,6 +157,9 @@ export function BookingProvider({ children }: { children: ReactNode }) {
         getSubtotal,
         getEligibleCount,
         getDiscountRate,
+        getZoneDeplacement,
+        getDeplacement,
+        getTotalAvecDeplacement,
         reset,
       }}
     >

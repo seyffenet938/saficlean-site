@@ -7,7 +7,7 @@ import {
   type BookingEmailData,
 } from "@/lib/email"
 import { sendBookingToPipeline } from "@/lib/pipeline"
-import { computePack } from "@/lib/pricing"
+import { computeQuote, zoneDepuisCP } from "@/lib/pricing"
 
 const SERVICE_NAMES: Record<string, string> = {
   canape: "Canape & Fauteuil",
@@ -25,7 +25,14 @@ export async function submitBooking(bookingState: BookingState) {
 
     // Même calcul que celui affiché au client dans le tunnel : le montant
     // enregistré ne peut pas diverger de celui qu'il a validé.
-    const { subtotal, discount, total } = computePack(bookingState.selectedOptions)
+    // ⚠️ MÊME CALCUL QUE L'AFFICHAGE, déplacement compris. Un écart entre
+    // le prix validé par le client et le prix enregistré est un problème
+    // d'argent — c'est pour ça que computeQuote est l'unique implémentation.
+    const zone = zoneDepuisCP(bookingState.postalCode) ?? "proche"
+    const { sousTotal: subtotal, discount, total } = computeQuote(
+      bookingState.selectedOptions,
+      zone,
+    )
 
     // Format date for display
     const dateObj = new Date(bookingState.date)
