@@ -48,8 +48,12 @@ const STEPS = [
 ]
 
 function MobileTotalBar() {
-  const { calculateTotal, calculateDiscount, getDiscountRate, state } = useBooking()
-  const total = calculateTotal()
+  // Cette barre est LE prix que voit un visiteur mobile pendant tout le
+  // tunnel. Elle doit porter le total REEL — deplacement compris, donc
+  // getTotalAvecDeplacement() et non calculateTotal() — sinon elle contredit
+  // le recapitulatif et le montant enregistre. Cf. rect2dipOkBmLmPEH.
+  const { getTotalAvecDeplacement, calculateDiscount, getDiscountRate, state } = useBooking()
+  const total = getTotalAvecDeplacement()
   const discount = calculateDiscount()
   const discountRate = getDiscountRate()
 
@@ -79,7 +83,7 @@ function MobileTotalBar() {
 function BookingPageContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { state, updateStep, toggleService, addOption, updateField, calculateTotal } = useBooking()
+  const { state, updateStep, toggleService, addOption, updateField, getTotalAvecDeplacement } = useBooking()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [initialized, setInitialized] = useState(false)
@@ -157,7 +161,9 @@ function BookingPageContent() {
     try {
       const result = await submitBooking(state)
       if (result.success && result.bookingId) {
-        trackBookingSubmitted(state.selectedOptions.length, calculateTotal())
+        // Le montant mesure doit etre celui qui sera facture, deplacement
+        // compris — sinon le CA observe dans Vercel Analytics sous-estime.
+        trackBookingSubmitted(state.selectedOptions.length, getTotalAvecDeplacement())
         router.push(`/reserver/confirmation?id=${result.bookingId}`)
       } else {
         trackBookingFailed(result.error || "reponse_sans_succes")

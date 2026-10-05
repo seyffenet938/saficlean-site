@@ -4,7 +4,7 @@ import { useBooking } from "@/lib/booking-context"
 import { DEPLACEMENT, fraisDeplacement, formatPrice } from "@/lib/pricing"
 
 export function BookingSummary() {
-  const { state, calculateTotal, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate, getZoneDeplacement, getDeplacement, getTotalAvecDeplacement } = useBooking()
+  const { state, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate, getZoneDeplacement, getDeplacement, getTotalAvecDeplacement } = useBooking()
   const zone = getZoneDeplacement()
   const deplacement = getDeplacement()
   const totalDu = getTotalAvecDeplacement()
@@ -20,7 +20,6 @@ export function BookingSummary() {
 
   const subtotal = getSubtotal()
   const discount = calculateDiscount()
-  const total = calculateTotal()
   const eligibleCount = getEligibleCount()
   const discountRate = getDiscountRate()
 

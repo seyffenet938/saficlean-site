@@ -4,14 +4,28 @@ import { useBooking } from "@/lib/booking-context"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { MapPin, Calendar, Phone } from "lucide-react"
+import { DEPLACEMENT, fraisDeplacement, formatPrice } from "@/lib/pricing"
 
 export function SummaryStep() {
-  const { state, updateField, calculateTotal, calculateDiscount, getSubtotal, getDiscountRate } = useBooking()
+  const { state, updateField, calculateDiscount, getSubtotal, getDiscountRate, getZoneDeplacement, getDeplacement, getTotalAvecDeplacement } = useBooking()
 
   const subtotal = getSubtotal()
   const discount = calculateDiscount()
-  const total = calculateTotal()
   const discountRate = getDiscountRate()
+
+  /*
+    🔴 LE TOTAL D'ICI DOIT ETRE CELUI QUI SERA ENREGISTRE.
+    Cet ecran est celui que le client VALIDE. `actions.ts` enregistre
+    computeQuote(...).total, deplacement COMPRIS. Tant que ce bloc affichait
+    calculateTotal() — le total SANS deplacement — un client parisien
+    confirmait 89 € pendant que le serveur enregistrait 109 €.
+    C'est exactement le grief du 24/09 (carte rect2dipOkBmLmPEH) :
+    « j'ai confirme sur la base du prix affiche sur le site ».
+    getTotalAvecDeplacement() appelle le MEME computeQuote que le serveur.
+  */
+  const zone = getZoneDeplacement()
+  const deplacement = getDeplacement()
+  const total = getTotalAvecDeplacement()
 
   return (
     <div className="space-y-6">
@@ -50,12 +64,52 @@ export function SummaryStep() {
           </div>
         )}
 
+        {/* Deplacement — meme regle que le panneau lateral */}
+        {zone === "paris" && deplacement > 0 && (
+          <div className="border-b border-secondary/20 pb-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Deplacement Paris</span>
+              <span className="font-medium text-foreground">+{formatPrice(deplacement)}</span>
+            </div>
+          </div>
+        )}
+        {zone === "paris" && deplacement === 0 && (
+          <div className="border-b border-secondary/20 pb-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Deplacement Paris</span>
+              <span className="font-medium text-green-600">
+                <span className="line-through opacity-60 mr-1">{formatPrice(fraisDeplacement("paris") ?? 0)}</span>
+                offert
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Total */}
         <div className="bg-primary/5 rounded-lg p-3 border border-primary/20">
           <div className="flex justify-between">
             <span className="font-semibold text-foreground">TOTAL</span>
             <span className="text-2xl font-bold text-primary">{total.toFixed(2)} €</span>
           </div>
+          {/*
+            Hors Paris le site ne connait pas le montant exact (pas de
+            correspondance commune → zone sans geocodage). On le DIT ici,
+            sur l'ecran de validation, plutot que de laisser la decouverte
+            a l'appel — c'est la meme regle que le panneau lateral.
+          */}
+          {zone === null && total < DEPLACEMENT.offertDes && (
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              Selon votre commune, un deplacement de{" "}
+              <strong className="text-foreground">0 a {formatPrice(25)}</strong> peut s{"'"}ajouter,{" "}
+              <strong className="text-foreground">offert des {formatPrice(DEPLACEMENT.offertDes)}</strong>.
+              Le montant exact vous est confirme avant l{"'"}intervention.
+            </p>
+          )}
+          {zone === null && total >= DEPLACEMENT.offertDes && (
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              Deplacement offert : votre total depasse {formatPrice(DEPLACEMENT.offertDes)}.
+            </p>
+          )}
         </div>
 
         {/* Date & Time */}
