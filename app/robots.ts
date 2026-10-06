@@ -8,7 +8,9 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
       // La confirmation contient les données de la réservation : jamais indexée.
-      disallow: ["/reserver/confirmation", "/api/"],
+      // /rdv est le portail client : la fiche personnelle d'une intervention,
+      // ouverte par un jeton. Même raison, même traitement.
+      disallow: ["/reserver/confirmation", "/rdv", "/api/"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,
