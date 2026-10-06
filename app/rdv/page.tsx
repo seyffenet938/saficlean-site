@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Calendar, MapPin, Phone, CheckCircle2, AlertCircle } from "lucide-react"
-import { formatPrice } from "@/lib/pricing"
+import { formatPrice, formatPriceSpaced } from "@/lib/pricing"
 import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
 
 /*
@@ -87,7 +87,7 @@ function Introuvable() {
           <AlertCircle className="mx-auto h-10 w-10 text-muted-foreground" />
           <h1 className="mt-4 text-2xl font-bold text-foreground">Ce lien n{"'"}est plus valide</h1>
           <p className="mt-2 text-muted-foreground">
-            Il a peut-etre expire, ou le rendez-vous a change. Appelez-nous, on retrouve
+            Il a peut-être expiré, ou le rendez-vous a changé. Appelez-nous, on retrouve
             votre dossier tout de suite.
           </p>
           <a
@@ -99,7 +99,7 @@ function Introuvable() {
           </a>
           <p className="mt-6 text-sm">
             <Link href="/" className="text-primary underline">
-              Retour a l{"'"}accueil
+              Retour à l{"'"}accueil
             </Link>
           </p>
         </div>
@@ -138,7 +138,7 @@ export default async function PortailRdv({
               <Calendar className="mt-1 h-4 w-4 flex-shrink-0 text-primary" />
               <div>
                 <p className="font-medium capitalize text-foreground">{quand.jour}</p>
-                <p className="text-muted-foreground">a {quand.heure}</p>
+                <p className="text-muted-foreground">à {quand.heure}</p>
               </div>
             </div>
           )}
@@ -165,11 +165,11 @@ export default async function PortailRdv({
           {typeof rdv.montant === "number" && (
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-foreground">Montant estime</span>
+                <span className="font-semibold text-foreground">Montant estimé</span>
                 <span className="text-2xl font-bold text-primary">{formatPrice(rdv.montant)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Paiement apres l{"'"}intervention.
+                Paiement après l{"'"}intervention.
               </p>
             </div>
           )}
@@ -189,8 +189,8 @@ export default async function PortailRdv({
         <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
           <h2 className="font-semibold text-foreground">Pendant qu{"'"}on est chez vous</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            On peut traiter d{"'"}autres pieces dans le meme passage. Dites-le nous avant,
-            qu{"'"}on prevoie le temps.
+            On peut traiter d{"'"}autres pièces dans le même passage. Dites-le nous avant,
+            qu{"'"}on prévoie le temps.
           </p>
           <ul className="mt-4 space-y-2">
             {CATALOGUE_PORTAIL.map((g) => (
@@ -204,15 +204,15 @@ export default async function PortailRdv({
                     <span className="block text-xs text-muted-foreground">{g.exemple}</span>
                   </span>
                   <span className="flex-shrink-0 text-sm font-semibold text-primary">
-                    des {formatPrice(g.aPartirDe)}
+                    dès {formatPriceSpaced(g.aPartirDe)}
                   </span>
                 </Link>
               </li>
             ))}
           </ul>
           <p className="mt-3 text-xs text-muted-foreground">
-            Moquette, remise en etat apres travaux, interieur auto : possible aussi, mais
-            le prix depend de ce qu{"'"}on voit — demandez-nous par telephone.
+            Moquette, remise en état après travaux, intérieur auto : possible aussi, mais
+            le prix dépend de ce qu{"'"}on voit — demandez-nous par téléphone.
           </p>
         </div>
 
@@ -224,7 +224,7 @@ export default async function PortailRdv({
         */}
         <div className="mt-6 rounded-xl border border-secondary/30 bg-secondary/5 p-5 text-center">
           <p className="text-foreground">
-            Un imprevu, une precision a nous donner, ou vous voulez ajouter un article ?
+            Un imprévu, une précision à nous donner, ou vous voulez ajouter un article ?
           </p>
           <a
             href="tel:0756881339"
