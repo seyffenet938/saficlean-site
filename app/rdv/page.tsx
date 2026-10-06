@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Calendar, MapPin, Phone, CheckCircle2, AlertCircle } from "lucide-react"
 import { formatPrice } from "@/lib/pricing"
+import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
 
 /*
   PORTAIL CLIENT — la fiche de SON rendez-vous, ouverte par un lien signe.
@@ -172,6 +173,47 @@ export default async function PortailRdv({
               </p>
             </div>
           )}
+        </div>
+
+        {/*
+          CATALOGUE — l'objectif « panier moyen » de la note de conception.
+          Ce qui est propose vient de `lib/catalogue-portail`, qui encode le
+          statut `actif` du canal Particulier dans offres.json ; les prix
+          viennent de la grille. Rien n'est ecrit en dur ici.
+
+          Pas de bouton « ajouter » : le webhook `addon` n'existe pas encore
+          cote Pipeline, et la note dit qu'un add-on doit creer une DEMANDE,
+          jamais editer le montant directement. En attendant, le geste est
+          l'appel — ce qui est aussi l'occasion de qualifier.
+        */}
+        <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
+          <h2 className="font-semibold text-foreground">Pendant qu{"'"}on est chez vous</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            On peut traiter d{"'"}autres pieces dans le meme passage. Dites-le nous avant,
+            qu{"'"}on prevoie le temps.
+          </p>
+          <ul className="mt-4 space-y-2">
+            {CATALOGUE_PORTAIL.map((g) => (
+              <li key={g.cle}>
+                <Link
+                  href={g.href}
+                  className="flex items-baseline justify-between gap-3 rounded-lg border border-secondary/20 px-3 py-2 hover:border-primary/40"
+                >
+                  <span>
+                    <span className="font-medium text-foreground">{g.label}</span>
+                    <span className="block text-xs text-muted-foreground">{g.exemple}</span>
+                  </span>
+                  <span className="flex-shrink-0 text-sm font-semibold text-primary">
+                    des {formatPrice(g.aPartirDe)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Moquette, remise en etat apres travaux, interieur auto : possible aussi, mais
+            le prix depend de ce qu{"'"}on voit — demandez-nous par telephone.
+          </p>
         </div>
 
         {/*

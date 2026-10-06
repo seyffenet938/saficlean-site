@@ -3,7 +3,13 @@
  *  SOURCE UNIQUE DES PRIX DU SITE
  * ════════════════════════════════════════════════════════════════════
  *
- * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v2.1 — 9 septembre 2026).
+ * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v4.8 — 3 octobre 2026).
+ *
+ * Tables recollationnees avec la fiche le 06/10/2026 : canape, chaises,
+ * matelas et tapis correspondent au caractere pres. L'en-tete annoncait
+ * encore v2.1 alors que les valeurs etaient a jour — une provenance
+ * perimee est un piege, elle fait croire a un retard qui n'existe pas et
+ * invite a « resynchroniser » ce qui est deja juste.
  *
  * ⚠️  LA FICHE FAIT FOI. Ne jamais modifier un prix ici sans l'avoir lu
  *     et vérifié dans `30_TARIFS.md` d'abord. Jamais l'inverse.
