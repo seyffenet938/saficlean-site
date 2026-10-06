@@ -121,6 +121,18 @@ export default async function PortailRdv({
 
   const quand = rdv.date_heure ? dateParis(rdv.date_heure) : null
 
+  /*
+    PASSE OU A VENIR — ca change ce qu'on a le droit de dire.
+    Le workflow de minting frappe un jeton sur TOUTE intervention sans
+    jeton, historique compris : au 06/10 il y en a 94, dont des chantiers
+    faits en juillet. Un lien vers une intervention passee est donc
+    atteignable, et lui proposer « pendant qu'on est chez vous » n'a
+    aucun sens. Le texte suit l'etat reel, il ne suppose pas un futur.
+  */
+  const estPasse =
+    rdv.statut === "Faite" ||
+    (rdv.date_heure ? new Date(rdv.date_heure).getTime() < Date.now() : false)
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-lg px-4 py-10 lg:py-16">
@@ -165,11 +177,13 @@ export default async function PortailRdv({
           {typeof rdv.montant === "number" && (
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-foreground">Montant estimé</span>
+                <span className="font-semibold text-foreground">
+                {estPasse ? "Montant" : "Montant estimé"}
+              </span>
                 <span className="text-2xl font-bold text-primary">{formatPrice(rdv.montant)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Paiement après l{"'"}intervention.
+                {estPasse ? "Prestation réalisée." : "Paiement après l'intervention."}
               </p>
             </div>
           )}
@@ -187,10 +201,13 @@ export default async function PortailRdv({
           l'appel — ce qui est aussi l'occasion de qualifier.
         */}
         <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
-          <h2 className="font-semibold text-foreground">Pendant qu{"'"}on est chez vous</h2>
+          <h2 className="font-semibold text-foreground">
+            {estPasse ? "Autre chose à nettoyer ?" : "Pendant qu'on est chez vous"}
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            On peut traiter d{"'"}autres pièces dans le même passage. Dites-le nous avant,
-            qu{"'"}on prévoie le temps.
+            {estPasse
+              ? "On retrouve votre dossier et vos préférences : dites-nous ce qu'il vous faut."
+              : "On peut traiter d'autres pièces dans le même passage. Dites-le nous avant, qu'on prévoie le temps."}
           </p>
           <ul className="mt-4 space-y-2">
             {CATALOGUE_PORTAIL.map((g) => (
@@ -224,7 +241,9 @@ export default async function PortailRdv({
         */}
         <div className="mt-6 rounded-xl border border-secondary/30 bg-secondary/5 p-5 text-center">
           <p className="text-foreground">
-            Un imprévu, une précision à nous donner, ou vous voulez ajouter un article ?
+            {estPasse
+              ? "Une question sur cette intervention, ou besoin d'un nouveau rendez-vous ?"
+              : "Un imprévu, une précision à nous donner, ou vous voulez ajouter un article ?"}
           </p>
           <a
             href="tel:0756881339"
