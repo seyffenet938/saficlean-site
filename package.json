@@ -6,7 +6,8 @@
     "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "verifier:prix": "tsx scripts/verifier-monotonie-prix.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
