@@ -594,7 +594,7 @@ export const AUTO_OPTIONS = [
   { name: "Lavage exterieur (carrosserie + vitres)", price: PRICING.auto.options.exterieur },
   { name: "Nettoyage plafonnier (ciel de toit)", price: PRICING.auto.options.plafonnier },
   { name: "Dressing plastiques (protection + ravivage)", price: PRICING.auto.options.plastiques },
-  { name: "Desinfection antibacterienne (vapeur/ozone)", price: PRICING.auto.options.desinfection },
+  { name: "Assainissement vapeur, sans produit chimique", price: PRICING.auto.options.desinfection },
   { name: "Coffre profond (lavage + shampouinage)", price: PRICING.auto.options.coffre },
 ]
 

@@ -384,7 +384,7 @@ const AUTO_OPTIONS_LABELS: Record<string, string> = {
   exterieur: "Lavage exterieur (carrosserie + vitres)",
   plafonnier: "Nettoyage plafonnier (ciel de toit)",
   plastiques: "Dressing plastiques (protection + ravivage)",
-  desinfection: "Desinfection antibacterienne (vapeur/ozone)",
+  desinfection: "Assainissement vapeur, sans produit chimique",
   coffre: "Coffre profond (lavage + shampouinage)",
 }
 
@@ -498,7 +498,7 @@ function formatLabel(label: string): string {
     integral: "Integral",
     plafonnier: "Plafonnier",
     plastiques: "Plastiques",
-    desinfection: "Desinfection",
+    desinfection: "Assainissement vapeur",
     coffre: "Coffre",
   }
   return labels[label] || label.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")

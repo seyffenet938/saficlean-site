@@ -29,7 +29,7 @@ const faqsAuto = [
     id: "faq-auto-5",
     question: "Pouvez-vous eliminer les odeurs de cigarette ?",
     answer:
-      "Oui. Notre traitement anti-odeur est tres efficace contre le tabac. Pour les cas tenaces, on recommande l'option desinfection a l'ozone qui elimine les odeurs en profondeur.",
+      "Oui. Notre traitement anti-odeur est tres efficace contre le tabac : on neutralise a la source avec un traitement enzymatique, on ne masque pas. Pour les cas tenaces, on ajoute un passage vapeur a pres de 100 degres sur les zones de contact, sans aucun produit chimique.",
   },
   {
     id: "faq-auto-6",

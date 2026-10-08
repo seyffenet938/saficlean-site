@@ -509,7 +509,7 @@ export default async function TarifsPage() {
                     { option: "Lavage exterieur", detail: "Carrosserie + vitres", price: `+${formatPrice(PRICING.auto.options.exterieur)}` },
                     { option: "Nettoyage plafonnier", detail: "Ciel de toit", price: `+${formatPrice(PRICING.auto.options.plafonnier)}` },
                     { option: "Dressing plastiques", detail: "Protection + ravivage", price: `+${formatPrice(PRICING.auto.options.plastiques)}` },
-                    { option: "Desinfection antibacterienne", detail: "Vapeur ou ozone", price: `+${formatPrice(PRICING.auto.options.desinfection)}` },
+                    { option: "Assainissement vapeur", detail: "Vapeur a ~99 degres au contact, sans aucun produit chimique", price: `+${formatPrice(PRICING.auto.options.desinfection)}` },
                     { option: "Coffre profond", detail: "Lavage + shampouinage", price: `+${formatPrice(PRICING.auto.options.coffre)}` },
                   ].map((row, i) => (
                     <tr key={i} className="border-b border-border last:border-b-0">

@@ -43,7 +43,7 @@ const AUTO_OPTIONS_LABELS: Record<string, string> = {
   exterieur: "Lavage exterieur (carrosserie + vitres)",
   plafonnier: "Nettoyage plafonnier (ciel de toit)",
   plastiques: "Dressing plastiques (protection + ravivage)",
-  desinfection: "Desinfection antibacterienne (vapeur/ozone)",
+  desinfection: "Assainissement vapeur, sans produit chimique",
   coffre: "Coffre profond (lavage + shampouinage)",
 }
 
