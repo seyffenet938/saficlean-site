@@ -609,6 +609,54 @@ export default async function TarifsPage() {
               </p>
             </div>
 
+            {/*
+              Bouloché et vapeur : ANNONCÉS ici, pas vendables dans le tunnel.
+              Même traitement que les odeurs, et pour la même raison : leurs
+              exclusions demandent de connaître la matière et d'avoir vu le
+              tissu. Un client ne doit pas pouvoir cocher « vapeur » sur un
+              canapé en laine ou en cuir.
+            */}
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="font-semibold text-foreground text-lg">
+                Renovation tissu bouloche
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {SUPPLEMENTS.bouloche.raison}.
+              </p>
+              <p className="mt-3 flex items-baseline justify-between gap-3 text-sm">
+                <span className="text-muted-foreground">Par article traite</span>
+                <span className="shrink-0 font-bold text-primary">
+                  +{formatPrice(SUPPLEMENTS.bouloche.prix)}
+                </span>
+              </p>
+              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                Un canape parfaitement nettoye mais bouloche reste laid : c{"'"}est la
+                seule option dont vous jugez le resultat vous-meme, apres. Nous ne la
+                proposons pas sur les chaises et sieges en volume.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-card p-6">
+              <h3 className="font-semibold text-foreground text-lg">
+                Assainissement vapeur, sans produit
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {SUPPLEMENTS.vapeur.raison}.
+              </p>
+              <p className="mt-3 flex items-baseline justify-between gap-3 text-sm">
+                <span className="text-muted-foreground">Par article traite</span>
+                <span className="shrink-0 font-bold text-primary">
+                  +{formatPrice(SUPPLEMENTS.vapeur.prix)}
+                </span>
+              </p>
+              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                Nous traitons les <strong className="text-foreground">zones de contact</strong>{" "}
+                — couchage d{"'"}un matelas, accoudoirs, appuie-tete — et non une surface
+                entiere : c{"'"}est ce qui rend la promesse tenable. Impossible sur{" "}
+                {SUPPLEMENTS.vapeur.exclues.join(", ")}, ni sur les chaises et sieges en volume.
+              </p>
+            </div>
+
             {/* Odeurs et souillures */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h3 className="font-semibold text-foreground text-lg">

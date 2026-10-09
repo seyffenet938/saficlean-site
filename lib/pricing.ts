@@ -208,6 +208,49 @@ export const SUPPLEMENTS = {
       "produit pH neutre obligatoire, risque de feutrage et de dégorgement, séchage plus long, intervention plus lente",
   },
   /**
+   * 🪒 RÉNOVATION TISSU BOULOCHÉ — 20 €/article, validé le 01/10/2026.
+   *
+   * 🔑 Pourquoi celle-ci se vend alors que d'autres options ont été
+   * écartées : le client VOIT le résultat. C'est un bien d'expérience, il
+   * vérifie après — un canapé bouloché parfaitement nettoyé reste laid.
+   *
+   * ⛔ Pas sur les sièges en volume : à 15-17 €/u, 20 € de supplément est
+   *    incohérent.
+   * 🔴 Contrainte qui tient le prix : ≤ 12 min/article (20 € ÷ 110 €/h =
+   *    10,9 min). ⏳ Si l'essai montre 20 min, ce n'est PAS le prix qu'il
+   *    faut monter, c'est l'option qu'il faut abandonner — 37 € dépasserait
+   *    le plafond de nocivité de 25 % du prix de l'article.
+   */
+  bouloche: {
+    prix: 20,
+    raison: "le rasoir antibouloche retire les peluches : le rendu se voit, il ne se raconte pas",
+  },
+  /**
+   * 🦠 DÉSINFECTION CIBLÉE À LA VAPEUR — 25 €/article, tranchée le 07/10/2026.
+   *
+   * 🔑 Ce qu'on vend exactement : des ZONES DE CONTACT, jamais une surface
+   * entière. 120 secondes par zone, six zones par article — c'est la mesure
+   * qui donne les 4,9 log₁₀, et c'est elle qui tient le prix
+   * (25 € ÷ 110 €/h = 13,6 min). Un matelas entier « désinfecté » n'est pas
+   * faisable à ce prix.
+   *
+   * ⛔ JAMAIS sur : laine, soie, viscose, CUIR, Alcantara, velours acrylique.
+   * ⛔ Ni sur les sièges en volume.
+   * 🔴 Ni sur une tache protéique non traitée à froid d'abord : la chaleur
+   *    la cuit dans la fibre, c'est irréversible.
+   *
+   * ⚠️ C'est pour ces exclusions que ni cette option ni le bouloché ne sont
+   *    vendables en libre-service dans le tunnel : elles demandent de savoir
+   *    la matière et d'avoir vu le tissu. Même traitement que les odeurs,
+   *    annoncées ici et qualifiées à l'appel.
+   */
+  vapeur: {
+    prix: 25,
+    exclues: ["laine", "soie", "viscose", "cuir", "Alcantara", "velours acrylique"],
+    raison:
+      "près de 100 °C au contact, sans aucun produit — on traite les zones de contact, pas une surface entière",
+  },
+  /**
    * Traitement odeurs et souillures organiques : FORFAIT PAR ZONE, pas un
    * pourcentage. Une tache d'urine demande le même travail sur un petit
    * tapis à 50 € que sur un XXL à 120 €.
@@ -474,6 +517,10 @@ export type QuoteItem = PackItem & {
   prixDelicate?: number
   /** Souillure organique → forfait par zone traitée. */
   odeurs?: OdeurNiveau | null
+  /** Rénovation tissu bouloché → forfait par article. */
+  bouloche?: boolean
+  /** Désinfection ciblée à la vapeur → forfait par article. */
+  vapeur?: boolean
 }
 
 export type QuoteResult = {
@@ -481,6 +528,8 @@ export type QuoteResult = {
   base: number
   supplementMatiere: number
   supplementOdeurs: number
+  /** Bouloché + vapeur : forfaits par article. */
+  supplementForfaits: number
   /** base + suppléments — l'assiette sur laquelle porte la remise. */
   sousTotal: number
   eligibleCount: number
@@ -506,6 +555,7 @@ export function computeQuote(
   // Étapes 1 et 2 : chaque article porte ses propres suppléments.
   let supplementMatiere = 0
   let supplementOdeurs = 0
+  let supplementForfaits = 0
   const ajustes: PackItem[] = items.map((i) => {
     const m = !i.matiereDelicate
       ? 0
@@ -513,11 +563,14 @@ export function computeQuote(
         ? i.prixDelicate - i.price // valeur arrondie de la grille
         : i.price * SUPPLEMENTS.matiereDelicate.rate
     const o = i.odeurs ? SUPPLEMENTS.odeurs[i.odeurs] : 0
+    // Forfaits par article, à l'étape 2 comme matière et odeurs.
+    const f = (i.bouloche ? SUPPLEMENTS.bouloche.prix : 0) + (i.vapeur ? SUPPLEMENTS.vapeur.prix : 0)
     supplementMatiere += m
     supplementOdeurs += o
+    supplementForfaits += f
     // L'éligibilité au pack se juge sur le prix suppléments compris :
     // c'est ce qui est réellement facturé pour cet article.
-    return { type: i.type, price: i.price + m + o }
+    return { type: i.type, price: i.price + m + o + f }
   })
 
   // Étapes 3 et 4 : une seule implémentation de la remise, celle du pack.
@@ -534,6 +587,7 @@ export function computeQuote(
     base: round2(base),
     supplementMatiere: round2(supplementMatiere),
     supplementOdeurs: round2(supplementOdeurs),
+    supplementForfaits: round2(supplementForfaits),
     sousTotal: pack.subtotal,
     eligibleCount: pack.eligibleCount,
     discountRate: pack.discountRate,
