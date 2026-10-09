@@ -3,7 +3,7 @@
 import { Sparkles, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useBooking } from "@/lib/booking-context"
-import { computePack, formatPrice, PRICING, PACK_RULES } from "@/lib/pricing"
+import { computePack, formatPrice, PRICING, PACK_RULES, prixMatelasAnnonce } from "@/lib/pricing"
 
 /**
  * ════════════════════════════════════════════════════════════════════
@@ -36,7 +36,8 @@ const SUGGESTIONS = [
   {
     service: "matelas",
     value: "2-places",
-    price: PRICING.matelas["2-places"].recto,
+    // Une proposition est une ANNONCE : on propose les deux faces.
+    price: prixMatelasAnnonce("2-places"),
     label: "Matelas 2 places — recto",
     accroche: "votre matelas",
   },

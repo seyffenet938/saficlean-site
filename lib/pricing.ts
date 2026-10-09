@@ -463,6 +463,23 @@ export const VARIANTE_ANNONCEE = {
   matelas: "rectoVerso",
 } as const
 
+/**
+ * Prix d'un matelas DANS LA VARIANTE ANNONCÉE.
+ *
+ * 🔑 À utiliser partout où le site ANNONCE un prix (carte d'accueil, pages
+ * locales, proposition de pack). Les tables comparatives, elles, montrent
+ * les deux colonnes : c'est leur sujet.
+ *
+ * ⚠️ Ce helper existe parce que corriger `startingFrom` n'a pas suffi : la
+ * carte d'accueil lisait encore `.recto` en direct et affichait « à partir
+ * de 55 € » au-dessus de « Bébé 40 € », dans le même encart. Un accès
+ * direct à une variante est une politique implicite de plus — celle-ci
+ * passe par la déclaration.
+ */
+export function prixMatelasAnnonce(taille: MatelasOption): number {
+  return PRICING.matelas[taille][VARIANTE_ANNONCEE.matelas]
+}
+
 export function startingFrom(
   service: "canape" | "matelas" | "tapis" | "auto" | "chaises",
 ): number {

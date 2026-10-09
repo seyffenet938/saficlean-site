@@ -1,4 +1,4 @@
-import { formatPrice, PRICING, startingFrom } from "@/lib/pricing"
+import { formatPrice, PRICING, startingFrom, prixMatelasAnnonce } from "@/lib/pricing"
 
 /**
  * ════════════════════════════════════════════════════════════════════
@@ -53,8 +53,8 @@ export const SERVICES_LOCAUX: ServiceLocal[] = [
     argument:
       "Traitement anti-acariens et désodorisation en profondeur. Un matelas concentre transpiration, allergènes et poussière : le nettoyer change la qualité du sommeil.",
     details: [
-      `Bébé ${formatPrice(PRICING.matelas.bebe.recto)} · 1 place ${formatPrice(PRICING.matelas["1-place"].recto)} · 2 places ${formatPrice(PRICING.matelas["2-places"].recto)}`,
-      `Queen/King ${formatPrice(PRICING.matelas["queen-king"].recto)} · recto-verso recommandé pour un assainissement complet`,
+      `Bébé ${formatPrice(prixMatelasAnnonce("bebe"))} · 1 place ${formatPrice(prixMatelasAnnonce("1-place"))} · 2 places ${formatPrice(prixMatelasAnnonce("2-places"))}`,
+      `Queen/King ${formatPrice(prixMatelasAnnonce("queen-king"))} · les deux faces sont chiffrées d'office, vous pouvez réduire`,
       "Aspiration profonde, pré-traitement des taches, extraction de l'humidité",
       "Utilisable le soir même, sec en 4 à 8h",
     ],

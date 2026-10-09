@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, Sparkles, ImageIcon } from "lucide-react"
-import { formatPrice, formatPriceSpaced, PRICING, startingFrom } from "@/lib/pricing"
+import { formatPrice, formatPriceSpaced, PRICING, startingFrom, prixMatelasAnnonce } from "@/lib/pricing"
 
 const services = [
   {
@@ -24,7 +24,10 @@ const services = [
     href: "/matelas",
     badge: null,
     price: `A partir de ${formatPriceSpaced(startingFrom("matelas"))}`,
-    priceDetail: `Bebe ${formatPrice(PRICING.matelas.bebe.recto)} · 1 place ${formatPrice(PRICING.matelas["1-place"].recto)} · 2 places ${formatPrice(PRICING.matelas["2-places"].recto)}`,
+    // Les deux faces sont chiffrees d'office (30_TARIFS §matelas, 09/10) :
+    // ce detail doit suivre la variante annoncee, sinon il contredit le
+    // « a partir de » juste au-dessus.
+    priceDetail: `Bebe ${formatPrice(prixMatelasAnnonce("bebe"))} · 1 place ${formatPrice(prixMatelasAnnonce("1-place"))} · 2 places ${formatPrice(prixMatelasAnnonce("2-places"))}`,
   },
   {
     title: "Nettoyage chaises",
