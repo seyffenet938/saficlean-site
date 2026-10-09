@@ -590,6 +590,19 @@ export default async function TarifsPage() {
                 </p>
               </div>
 
+              {/*
+                Le palier au m² ne concerne QUE la voie seche : c'est la
+                seule ou le forfait XXL couvrait « >= 7 m² » indifferemment.
+                La bascule est continue — 8 m² × 30 € = 240 €, le forfait XXL.
+              */}
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                Au-dela de <strong className="text-foreground">{PRICING.tapisSecAuM2.seuilM2} m²</strong>{" "}
+                en voie seche, le prix passe au metre carre :{" "}
+                <strong className="text-foreground">{formatPrice(PRICING.tapisSecAuM2.prixM2)}/m²</strong>.
+                A {PRICING.tapisSecAuM2.seuilM2} m² les deux donnent le meme montant, il n{"'"}y a
+                donc pas de saut de prix.
+              </p>
+
               <div className="mt-3 rounded-lg bg-background p-4">
                 <p className="font-medium text-foreground">
                   {SUPPLEMENTS.matiereSec.matieres.join(", ")}{" "}

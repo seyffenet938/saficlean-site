@@ -3,10 +3,11 @@
  *  SOURCE UNIQUE DES PRIX DU SITE
  * ════════════════════════════════════════════════════════════════════
  *
- * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v4.8 — 3 octobre 2026).
+ * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v4.12 — 9 octobre 2026).
  *
- * Tables recollationnees avec la fiche le 06/10/2026 : canape, chaises,
- * matelas et tapis correspondent au caractere pres. L'en-tete annoncait
+ * Tables recollationnees avec la fiche le 09/10/2026 : canape (tissu et
+ * cuir), chaises, matelas (recto et recto-verso) et tapis (trois voies)
+ * correspondent au caractere pres — 8 tables sur 8. L'en-tete annoncait
  * encore v2.1 alors que les valeurs etaient a jour — une provenance
  * perimee est un piege, elle fait croire a un retard qui n'existe pas et
  * invite a « resynchroniser » ce qui est deja juste.
@@ -89,6 +90,18 @@ export const PRICING = {
    * le consommable (2 € d'écart).
    * Valeurs exactement doublées, sans arrondi, contrairement au +40 %.
    */
+  /**
+   * 🆕 VOIE SÈCHE AU-DELÀ DE 8 m² — 30 €/m², ajouté par 30_TARIFS v4.9.
+   *
+   * 🔑 Pourquoi 30 : 8 m² × 30 € = 240 €, exactement le forfait XXL. La
+   * bascule est CONTINUE, il n'y a aucun effet de seuil — c'est la règle
+   * posée le 19/09.
+   *
+   * 🔴 Ce que ça corrige : le forfait XXL couvrait « ≥ 7 m² »
+   * indifféremment, donc 8 m² comme 25 m². À 12 m² le site facturait
+   * 240 € quand le marché spécialiste est à ~720 €.
+   */
+  tapisSecAuM2: { seuilM2: 8, prixM2: 30 },
   tapisSec: {
     petit: 100,
     moyen: 120,
@@ -334,8 +347,22 @@ export type ZoneDeplacement = (typeof DEPLACEMENT.zones)[number]["id"]
 export type VoieTapis = "synthetique" | "delicate" | "sec"
 
 /** Prix d'un tapis selon sa taille et sa voie — la grille, jamais un calcul. */
-export function prixTapis(taille: TapisOption, voie: VoieTapis = "synthetique"): number {
-  if (voie === "sec") return PRICING.tapisSec[taille]
+export function prixTapis(
+  taille: TapisOption,
+  voie: VoieTapis = "synthetique",
+  surfaceM2?: number,
+): number {
+  if (voie === "sec") {
+    /*
+      Au-dela du seuil, on quitte le forfait pour le m². La bascule est
+      continue : a 8 m² les deux donnent 240 €, donc pas de marche. En
+      dessous du seuil, ou sans surface connue, le forfait de la taille
+      s'applique — on n'invente pas une surface qu'on n'a pas demandee.
+    */
+    const { seuilM2, prixM2 } = PRICING.tapisSecAuM2
+    if (surfaceM2 !== undefined && surfaceM2 > seuilM2) return Math.round(surfaceM2 * prixM2)
+    return PRICING.tapisSec[taille]
+  }
   if (voie === "delicate") return PRICING.tapisDelicat[taille]
   return PRICING.tapis[taille]
 }

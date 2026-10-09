@@ -250,6 +250,17 @@ function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id"
   // un tapis en laine coûte jusqu'à +40 %. La poser ici évite d'avoir à
   // réajuster le prix devant le client le jour de l'intervention.
   const [voie, setVoie] = useState<VoieTapis>("synthetique")
+  /*
+    La surface n'est demandee QUE en voie seche et seulement sur le XXL :
+    c'est le seul cas ou elle change le prix (30_TARIFS v4.9, 30 €/m²
+    au-dela de 8 m²). Le forfait XXL couvrait « >= 7 m² » indifferemment,
+    donc 8 m² comme 25 m² — a 12 m² le site facturait 240 € pour un travail
+    que le marche specialiste chiffre ~720 €. Vide = on garde le forfait,
+    on n'invente pas une surface.
+  */
+  const [surfaceM2, setSurfaceM2] = useState<string>("")
+  const surface = Number.parseFloat(surfaceM2.replace(",", "."))
+  const surfaceConnue = Number.isFinite(surface) && surface > 0
 
   return (
     <div className="space-y-3">
@@ -291,11 +302,38 @@ function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id"
         <p className="mt-2 text-xs text-muted-foreground">
           Nous confirmons la matiere sur place par un test discret en coin cache.
         </p>
+
+        {voie === "sec" && (
+          <div className="mt-3 border-t border-secondary/20 pt-3">
+            <label htmlFor="surface-tapis" className="text-sm font-medium text-foreground">
+              Surface, si votre tapis depasse {PRICING.tapisSecAuM2.seuilM2} m²
+            </label>
+            <div className="mt-2 flex items-center gap-2">
+              <input
+                id="surface-tapis"
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="0.5"
+                value={surfaceM2}
+                onChange={(e) => setSurfaceM2(e.target.value)}
+                placeholder="12"
+                className="w-28 rounded-lg border-2 border-secondary/30 bg-background px-3 py-2 text-sm"
+              />
+              <span className="text-sm text-muted-foreground">m²</span>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+              Au-dela de {PRICING.tapisSecAuM2.seuilM2} m², le prix passe au metre carre
+              ({formatPrice(PRICING.tapisSecAuM2.prixM2)}/m²). En dessous, le forfait de
+              la taille s{"'"}applique — laissez vide si vous ne savez pas.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 gap-2">
         {(Object.keys(PRICING.tapis) as TapisOption[]).map((size) => {
-          const price = prixTapis(size, voie)
+          const price = prixTapis(size, voie, surfaceConnue ? surface : undefined)
           return (
             <button
               key={size}
