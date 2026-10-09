@@ -41,18 +41,36 @@ type Rdv = {
   adresse?: string
 }
 
-async function resoudre(token: string): Promise<Rdv> {
+/*
+  DEUX ECHECS QUI N'ONT RIEN A VOIR, et qu'il ne faut pas confondre :
+  - `inconnu`     : le backend a repondu, il ne connait pas ce jeton.
+  - `injoignable` : n8n ne repond pas, ou met plus de 8 s. Le lien est bon,
+                    c'est le serveur qui dort.
+
+  Avant le 09/10/2026 les deux affichaient « Ce lien n'est plus valide ». Un
+  client dont le RDV est demain pouvait donc lire que son lien avait expire
+  parce que le webhook avait mis 9 secondes a repondre — un mensonge alarmant,
+  et il appelle pour rien.
+*/
+type Resolution =
+  | { etat: "ok"; rdv: Rdv }
+  | { etat: "inconnu" }
+  | { etat: "injoignable" }
+
+async function resoudre(token: string): Promise<Resolution> {
   try {
     const r = await fetch(`${RESOLVE_URL}?t=${encodeURIComponent(token)}`, {
       cache: "no-store",
       signal: AbortSignal.timeout(8000),
     })
-    if (!r.ok) return { found: false }
-    return (await r.json()) as Rdv
+    // Un non-2xx vient du backend, pas du jeton : c'est une panne, pas un lien mort.
+    if (!r.ok) return { etat: "injoignable" }
+    const rdv = (await r.json()) as Rdv
+    if (!rdv.found) return { etat: "inconnu" }
+    return { etat: "ok", rdv }
   } catch {
-    // Webhook injoignable ou lent : on ne casse pas la page, on retombe sur
-    // l'ecran « lien introuvable », qui porte deja le numero de telephone.
-    return { found: false }
+    // Timeout ou reseau : on ne casse pas la page, et on ne ment pas au client.
+    return { etat: "injoignable" }
   }
 }
 
@@ -79,16 +97,22 @@ function dateParis(iso: string): { jour: string; heure: string } | null {
   }
 }
 
-function Introuvable() {
+function Echec({ etat }: { etat: "inconnu" | "injoignable" }) {
+  const injoignable = etat === "injoignable"
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-lg px-4 py-16 lg:py-24">
         <div className="rounded-xl border border-secondary/30 bg-background p-6 text-center">
           <AlertCircle className="mx-auto h-10 w-10 text-muted-foreground" />
-          <h1 className="mt-4 text-2xl font-bold text-foreground">Ce lien n{"'"}est plus valide</h1>
+          <h1 className="mt-4 text-2xl font-bold text-foreground">
+            {injoignable
+              ? <>On n{"'"}arrive pas à afficher votre rendez-vous</>
+              : <>Ce lien n{"'"}est plus valide</>}
+          </h1>
           <p className="mt-2 text-muted-foreground">
-            Il a peut-être expiré, ou le rendez-vous a changé. Appelez-nous, on retrouve
-            votre dossier tout de suite.
+            {injoignable
+              ? "Votre rendez-vous n'est pas annulé : c'est notre système qui ne répond pas en ce moment. Réessayez dans un instant, ou appelez-nous."
+              : "Il a peut-être expiré, ou le rendez-vous a changé. Appelez-nous, on retrouve votre dossier tout de suite."}
           </p>
           <a
             href="tel:0756881339"
@@ -114,10 +138,11 @@ export default async function PortailRdv({
   searchParams: Promise<{ t?: string }>
 }) {
   const { t } = await searchParams
-  if (!t) return <Introuvable />
+  if (!t) return <Echec etat="inconnu" />
 
-  const rdv = await resoudre(t)
-  if (!rdv.found) return <Introuvable />
+  const resolution = await resoudre(t)
+  if (resolution.etat !== "ok") return <Echec etat={resolution.etat} />
+  const rdv = resolution.rdv
 
   const quand = rdv.date_heure ? dateParis(rdv.date_heure) : null
 
@@ -132,6 +157,15 @@ export default async function PortailRdv({
   const estPasse =
     rdv.statut === "Faite" ||
     (rdv.date_heure ? new Date(rdv.date_heure).getTime() < Date.now() : false)
+
+  /*
+    ANNULE : ni passe, ni a venir. Trouve le 09/10/2026 — un RDV annule dont la
+    date est encore dans le futur n'etait ni « Faite » ni depasse, donc la page
+    lui proposait « Pendant qu'on est chez vous, on peut traiter d'autres pieces
+    dans le meme passage » pour une visite qui n'aura pas lieu. Le catalogue
+    reste pertinent (il peut vouloir recaler), mais la phrase ne l'etait pas.
+  */
+  const estAnnule = rdv.statut === "Annulée"
 
   return (
     <main className="min-h-screen bg-background">
@@ -183,7 +217,11 @@ export default async function PortailRdv({
                 <span className="text-2xl font-bold text-primary">{formatPrice(rdv.montant)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                {estPasse ? "Prestation réalisée." : "Paiement après l'intervention."}
+                {estAnnule
+                  ? "Rendez-vous annulé — rien ne vous est facturé."
+                  : estPasse
+                    ? "Prestation réalisée."
+                    : "Paiement après l'intervention."}
               </p>
             </div>
           )}
@@ -202,12 +240,18 @@ export default async function PortailRdv({
         */}
         <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
           <h2 className="font-semibold text-foreground">
-            {estPasse ? "Autre chose à nettoyer ?" : "Pendant qu'on est chez vous"}
+            {estAnnule
+              ? "Reprendre rendez-vous"
+              : estPasse
+                ? "Autre chose à nettoyer ?"
+                : "Pendant qu'on est chez vous"}
           </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {estPasse
-              ? "On retrouve votre dossier et vos préférences : dites-nous ce qu'il vous faut."
-              : "On peut traiter d'autres pièces dans le même passage. Dites-le nous avant, qu'on prévoie le temps."}
+            {estAnnule
+              ? "Ce rendez-vous a été annulé. Dites-nous ce qu'il vous faut, on recale un créneau."
+              : estPasse
+                ? "On retrouve votre dossier et vos préférences : dites-nous ce qu'il vous faut."
+                : "On peut traiter d'autres pièces dans le même passage. Dites-le nous avant, qu'on prévoie le temps."}
           </p>
           <ul className="mt-4 space-y-2">
             {CATALOGUE_PORTAIL.map((g) => (
@@ -241,9 +285,11 @@ export default async function PortailRdv({
         */}
         <div className="mt-6 rounded-xl border border-secondary/30 bg-secondary/5 p-5 text-center">
           <p className="text-foreground">
-            {estPasse
-              ? "Une question sur cette intervention, ou besoin d'un nouveau rendez-vous ?"
-              : "Un imprévu, une précision à nous donner, ou vous voulez ajouter un article ?"}
+            {estAnnule
+              ? "Vous voulez reprendre un rendez-vous ? On vous rappelle quand vous voulez."
+              : estPasse
+                ? "Une question sur cette intervention, ou besoin d'un nouveau rendez-vous ?"
+                : "Un imprévu, une précision à nous donner, ou vous voulez ajouter un article ?"}
           </p>
           <a
             href="tel:0756881339"
