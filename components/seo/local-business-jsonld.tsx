@@ -8,7 +8,10 @@ import { getReviews } from "@/lib/reviews"
  * - Prix : importés de `lib/pricing.ts` (jamais réécrits à la main).
  * - Zone d'intervention déclarée SANS adresse postale : SafiClean intervient
  *   chez le client, l'adresse est un domicile privé et ne doit pas être publiée.
- * - Aucun service non confirmé opérationnel (cuir, rideaux) n'est listé.
+ * - Aucun service non confirmé opérationnel (**rideaux**) n'est listé.
+ *   Le cuir n'est plus concerné depuis le 09/10/2026 : il est autorisé.
+ *   Il n'ajoute pas d'entrée ici — c'est un palier de matière sur le
+ *   canapé, déjà listé, pas un service distinct.
  * - Aucune mention de crédit d'impôt (agrément SAP non obtenu).
  */
 
