@@ -36,6 +36,28 @@ export const PRICING = {
     "queen-king": { recto: 69, rectoVerso: 89 },
     xxl: { recto: 120, rectoVerso: 150 },
   },
+  /**
+   * 🆕 CUIR — +40 %, autorisé par Seyffe le 09/10/2026.
+   *
+   * ⚠️ Ce sont les valeurs ARRONDIES de 30_TARIFS §cuir, PAS price × 1,4 :
+   * la fiche écrit 125 € là où le calcul donne 124,60, et 111 € là où il
+   * donne 110,60. Même convention que `tapisDelicat` — la fiche fait foi,
+   * on affiche ce que Seyffe facture.
+   *
+   * 🔑 Le cuir n'ouvre PAS une grille nouvelle : c'est un palier de
+   * matière, comme la laine. Même article, autre voie technique.
+   *
+   * ⏳ Ce qui ferait monter à ×2 : UNE mesure. Si nettoyer et nourrir un
+   * 3 places dépasse 68 min, le +40 % tombe sous le plancher de 110 €/h
+   * et le palier doit changer. C'est le prix qui est posé, pas la cadence.
+   */
+  canapeCuir: {
+    fauteuil: 63,
+    "2-places": 111,
+    "3-places": 125,
+    "angle-4-5": 167,
+    "xxl-6+": 223,
+  },
   chaises: { 1: 20, 2: 34, 3: 48, 4: 60, 5: 75, 6: 90, 8: 120 },
   tapis: {
     petit: 50,
@@ -164,6 +186,19 @@ export const SUPPLEMENTS = {
     raison:
       "aucune extraction ni rinçage possible : aspiration lente, tamponnage et brossage à la main, et une auréole ne se rattrape pas",
   },
+  /**
+   * +40 % — nettoyage PUIS nourrissage, produit dédié, aucune extraction.
+   * Déclaré traité par Seyffe le 02/10, autorisé sur le site le 09/10.
+   * Pourquoi +40 % et pas ×2 : la règle du ×2 est « la cadence
+   * s'effondre », et ce n'est pas mesuré sur le cuir — on ne reprend pas
+   * un argument qu'on n'a pas.
+   */
+  matiereCuir: {
+    rate: 0.4,
+    matieres: ["cuir d'ameublement"],
+    raison:
+      "nettoyage puis nourrissage avec un produit dédié, sans extraction : le cuir ne se rince pas",
+  },
   /** +40 % — voie humide, pH neutre, eau ≤ 35-40 °C. */
   matiereDelicate: {
     rate: 0.4,
@@ -281,6 +316,20 @@ export function prixTapis(taille: TapisOption, voie: VoieTapis = "synthetique"):
  * supplément au résultat. Le montant n'était pas en cause : c'est le
  * MOMENT où il apparaissait.
  */
+/** Revêtement d'un canapé : tissu (grille) ou cuir (+40 %, valeurs de la fiche). */
+export type RevetementCanape = "tissu" | "cuir"
+
+/**
+ * Prix d'un canapé selon son revêtement. Même rôle que `prixTapis` pour
+ * la voie : UN seul endroit décide, et il lit la grille.
+ */
+export function prixCanape(
+  option: CanapeOption,
+  revetement: RevetementCanape = "tissu",
+): number {
+  return revetement === "cuir" ? PRICING.canapeCuir[option] : PRICING.canape[option]
+}
+
 export function zoneDepuisCP(cp: string): ZoneDeplacement | null {
   const c = (cp || "").replace(/\D/g, "")
   if (c.length !== 5) return null

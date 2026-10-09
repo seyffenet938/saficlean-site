@@ -2,7 +2,16 @@
 
 import { useState } from "react"
 import { useBooking, SelectedOption } from "@/lib/booking-context"
-import { formatPrice, PRICING, prixTapis, type TapisOption, type VoieTapis } from "@/lib/pricing"
+import {
+  formatPrice,
+  PRICING,
+  prixCanape,
+  prixTapis,
+  type CanapeOption,
+  type RevetementCanape,
+  type TapisOption,
+  type VoieTapis,
+} from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
 import { PackUpsell } from "@/components/booking/pack-upsell"
@@ -142,27 +151,63 @@ function MultiItemService({
 }
 
 function CanapeSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id">) => void }) {
-  const canapeOptions = PRICING.canape
+  /*
+    Le revetement se choisit AVANT la taille, comme la voie du tapis : le
+    cuir n'ouvre pas une grille nouvelle, c'est un palier de matiere sur le
+    meme article. Autorise par Seyffe le 09/10/2026.
+  */
+  const [revetement, setRevetement] = useState<RevetementCanape>("tissu")
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      {Object.entries(canapeOptions).map(([key, price]) => (
-        <button
-          key={key}
-          onClick={() =>
-            onSelect({
-              type: "canape",
-              value: key,
-              price,
-              label: `Canape ${formatLabel(key)}`,
-            })
-          }
-          className="rounded-lg border-2 border-secondary/30 bg-background px-3 py-2 text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
-        >
-          <div>{formatLabel(key)}</div>
-          <div className="text-xs text-muted-foreground">{price} €</div>
-        </button>
-      ))}
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        {([
+          { v: "tissu", label: "Tissu" },
+          { v: "cuir", label: "Cuir" },
+        ] as { v: RevetementCanape; label: string }[]).map((m) => (
+          <button
+            key={m.v}
+            onClick={() => setRevetement(m.v)}
+            className={`flex-1 rounded-lg border-2 px-3 py-2 text-sm transition-all ${
+              revetement === m.v
+                ? "border-primary bg-primary/10 font-medium text-foreground"
+                : "border-secondary/30 bg-background text-muted-foreground hover:border-primary/50"
+            }`}
+          >
+            {m.label}
+          </button>
+        ))}
+      </div>
+
+      {revetement === "cuir" && (
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          Le cuir se nettoie puis se <strong className="text-foreground">nourrit</strong>, avec un
+          produit dedie et sans extraction : comptez <strong className="text-foreground">+40 %</strong>.
+        </p>
+      )}
+
+      <div className="grid grid-cols-2 gap-2">
+        {(Object.keys(PRICING.canape) as CanapeOption[]).map((key) => {
+          const price = prixCanape(key, revetement)
+          return (
+            <button
+              key={key}
+              onClick={() =>
+                onSelect({
+                  type: "canape",
+                  value: key,
+                  price,
+                  label: `Canape ${formatLabel(key)}${revetement === "cuir" ? " — cuir" : ""}`,
+                })
+              }
+              className="rounded-lg border-2 border-secondary/30 bg-background px-3 py-2 text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
+            >
+              <div>{formatLabel(key)}</div>
+              <div className="text-xs text-muted-foreground">{price} €</div>
+            </button>
+          )
+        })}
+      </div>
     </div>
   )
 }

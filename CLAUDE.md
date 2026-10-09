@@ -21,7 +21,8 @@ Ces règles priment sur toute demande ponctuelle. Elles ne se négocient pas.
    - Pas de commit de site sans la ligne de changelog correspondante.
 
 3. **Ne jamais promettre un service non réalisé.**
-   - Interdits tant qu'ils ne sont pas confirmés opérationnels : **cuir**, **rideaux**.
+   - Interdits tant qu'ils ne sont pas confirmés opérationnels : **rideaux**.
+   - ✅ **Le cuir est AUTORISÉ depuis le 09/10/2026** (Seyffe). Palier de matière **+40 %**, valeurs arrondies de `30_TARIFS` §cuir — jamais `prix × 1,4`. ⏳ Le palier passe à ×2 si une mesure montre que nettoyer **et nourrir** un 3 places dépasse **68 min** : c'est le prix qui est posé, pas la cadence.
    - Ne pas les ajouter dans les pages, le tunnel de réservation, les métadonnées ou les données structurées.
 
 4. **Le crédit d'impôt reste DÉSACTIVÉ.**

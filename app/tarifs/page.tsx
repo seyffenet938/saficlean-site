@@ -552,8 +552,29 @@ export default async function TarifsPage() {
             <div className="rounded-xl border border-border bg-card p-6">
               <h3 className="font-semibold text-foreground text-lg">La matiere de votre textile</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                Deux familles demandent plus qu{"'"}un nettoyage standard, et pas pour la meme raison.
+                Trois familles demandent plus qu{"'"}un nettoyage standard, et pas pour la meme raison.
               </p>
+
+              {/*
+                Le cuir est autorise depuis le 09/10/2026. Il est presente ici
+                comme un PALIER DE MATIERE et non comme un service a part :
+                c'est le meme article, une autre voie technique. Les montants
+                viennent de PRICING.canapeCuir, jamais d'un calcul × 1,4 --
+                la fiche arrondit et c'est elle qui est facturee.
+              */}
+              <div className="mt-4 rounded-lg bg-background p-4">
+                <p className="font-medium text-foreground">
+                  {SUPPLEMENTS.matiereCuir.matieres.join(", ")}{" "}
+                  <span className="text-primary">+{Math.round(SUPPLEMENTS.matiereCuir.rate * 100)}%</span>
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {SUPPLEMENTS.matiereCuir.raison}.
+                </p>
+                <p className="mt-2 text-sm text-foreground">
+                  Un canape 3 places passe de {formatPrice(PRICING.canape["3-places"])} a{" "}
+                  <strong>{formatPrice(PRICING.canapeCuir["3-places"])}</strong>.
+                </p>
+              </div>
 
               <div className="mt-4 rounded-lg bg-background p-4">
                 <p className="font-medium text-foreground">
