@@ -213,32 +213,59 @@ function CanapeSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id
 }
 
 function MatelasSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id">) => void }) {
-  const matelasOptions = PRICING.matelas
-
+  /*
+    🔑 DEUX BOUTONS EQUIVALENTS, C'ETAIT LA QUESTION OUVERTE.
+    30_TARIFS §matelas, tranche le 09/10/2026 : « on ne demande plus "une
+    face ou deux ?", on annonce le recto+verso et le client reduit s'il le
+    souhaite. Une question ouverte invite au minimum ; une annonce invite a
+    confirmer. »
+    Donc le recto-verso porte le prix et la recommandation ; le recto reste
+    accessible, mais comme une REDUCTION demandee, pas comme un choix a
+    egalite. Le client garde la main, l'ecran ne l'invite plus au minimum.
+  */
   return (
     <div className="space-y-3">
-      {Object.entries(matelasOptions).map(([size, prices]) => (
-        <div key={size} className="space-y-2">
-          <p className="text-xs font-medium text-muted-foreground">{formatLabel(size)}</p>
-          <div className="grid grid-cols-2 gap-2">
-            {Object.entries(prices).map(([side, price]) => (
-              <button
-                key={`${size}-${side}`}
-                onClick={() =>
-                  onSelect({
-                    type: "matelas",
-                    value: `${size}-${side}`,
-                    price,
-                    label: `Matelas ${formatLabel(size)} ${side === "recto" ? "Recto" : "R/V"}`,
-                  })
-                }
-                className="rounded-lg border-2 border-secondary/30 bg-background px-3 py-2 text-sm transition-all hover:border-primary/50 hover:bg-primary/5"
-              >
-                <div>{side === "recto" ? "Recto" : "Recto-verso"}</div>
-                <div className="text-xs text-muted-foreground">{price} €</div>
-              </button>
-            ))}
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        Nous chiffrons les deux faces : on retourne le matelas et on traite l{"'"}autre
+        cote. Si vous preferez seulement le dessus, choisissez « une face ».
+      </p>
+      {Object.entries(PRICING.matelas).map(([size, prices]) => (
+        <div
+          key={size}
+          className="flex items-center justify-between gap-3 rounded-lg border-2 border-secondary/30 bg-background p-3"
+        >
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-foreground">{formatLabel(size)}</p>
+            <button
+              type="button"
+              onClick={() =>
+                onSelect({
+                  type: "matelas",
+                  value: `${size}-recto`,
+                  price: prices.recto,
+                  label: `Matelas ${formatLabel(size)} Recto`,
+                })
+              }
+              className="mt-1 text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
+            >
+              une face seulement — {formatPrice(prices.recto)}
+            </button>
           </div>
+          <button
+            type="button"
+            onClick={() =>
+              onSelect({
+                type: "matelas",
+                value: `${size}-rectoVerso`,
+                price: prices.rectoVerso,
+                label: `Matelas ${formatLabel(size)} R/V`,
+              })
+            }
+            className="shrink-0 rounded-lg border-2 border-primary/40 bg-primary/5 px-4 py-2 text-sm font-medium transition-all hover:border-primary hover:bg-primary/10"
+          >
+            <div className="text-foreground">Deux faces</div>
+            <div className="text-xs text-primary">{formatPrice(prices.rectoVerso)}</div>
+          </button>
         </div>
       ))}
     </div>

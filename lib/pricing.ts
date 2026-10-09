@@ -437,6 +437,32 @@ export function formatPriceSpaced(n: number): string {
 }
 
 /** Prix d'entrée d'un service, calculé depuis la grille. */
+/**
+ * ════════════════════════════════════════════════════════════════════
+ *  CE QU'ON ANNONCE — et pourquoi ce n'est pas toujours le moins cher
+ * ════════════════════════════════════════════════════════════════════
+ *
+ * 🔑 UNE DÉCISION DE COMPORTEMENT, ÉCRITE ICI COMME UNE DONNÉE.
+ *
+ * 30_TARIFS §matelas, tranché par Seyffe le 09/10/2026 : « ON CHIFFRE LES
+ * DEUX FACES D'OFFICE. On ne demande plus "une face ou deux ?", on annonce
+ * le recto+verso et le client réduit s'il le souhaite. Une question ouverte
+ * invite au minimum ; une annonce invite à confirmer. »
+ *
+ * 🔴 Tant que `startingFrom` calculait un MINIMUM, il annonçait 40 € alors
+ * qu'on chiffre 55 € — c'est-à-dire exactement l'écart affiché/annoncé qui
+ * a coûté deux leads le 24/09. Les deux nombres étaient justes ; c'est
+ * l'USAGE qui contredisait la décision, et aucun contrôle de prix ne peut
+ * voir ça.
+ *
+ * ▶ D'où cette table : la variante qu'on met en avant est DÉCLARÉE, pas
+ *   déduite. Elle devient vérifiable.
+ */
+export const VARIANTE_ANNONCEE = {
+  /** On annonce les deux faces, pas la moins chère. */
+  matelas: "rectoVerso",
+} as const
+
 export function startingFrom(
   service: "canape" | "matelas" | "tapis" | "auto" | "chaises",
 ): number {
@@ -444,7 +470,10 @@ export function startingFrom(
     case "canape":
       return Math.min(...Object.values(PRICING.canape))
     case "matelas":
-      return Math.min(...Object.values(PRICING.matelas).map((m) => m.recto))
+      // Le minimum de la variante ANNONCÉE, pas le minimum tout court.
+      return Math.min(
+        ...Object.values(PRICING.matelas).map((m) => m[VARIANTE_ANNONCEE.matelas]),
+      )
     case "tapis":
       return Math.min(...Object.values(PRICING.tapis))
     case "auto":
@@ -730,7 +759,9 @@ export const AUTO_OPTIONS = [
 
 // ── Exemples de packs (calculés, jamais figés) ──
 
-const PACK_2_TOTAL = PRICING.canape["3-places"] + PRICING.matelas["2-places"].recto
+// Même règle que startingFrom : le pack annonce les deux faces.
+const PACK_2_TOTAL =
+  PRICING.canape["3-places"] + PRICING.matelas["2-places"][VARIANTE_ANNONCEE.matelas]
 const PACK_3_TOTAL = PACK_2_TOTAL + PRICING.tapis.moyen
 
 export const PACK_EXAMPLES = [
