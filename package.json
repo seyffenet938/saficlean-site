@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verifier:prix": "tsx scripts/verifier-monotonie-prix.ts"
+    "verifier:prix": "tsx scripts/verifier-monotonie-prix.ts",
+    "verifier:grille": "python3 scripts/verifier-grille.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

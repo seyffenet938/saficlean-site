@@ -4,6 +4,26 @@
  *  baisser le total.
  * ════════════════════════════════════════════════════════════════════
  *
+ *  🔴 CE SCRIPT N'A JAMAIS TOURNE. NE PAS LE PRENDRE POUR UN GARDE-FOU.
+ *
+ *  Aucun runtime JS n'est installe sur la machine de travail — node, npx,
+ *  bun, deno et tsx sont les cinq absents, sans nvm ni volta. Il a donc ete
+ *  ecrit et pousse SANS avoir jamais ete execute une seule fois.
+ *
+ *  ⚠️ « Un controle qui ne trouve rien n'a pas prouve qu'il n'y a rien : il
+ *  a peut-etre prouve qu'il ne cherche pas. » Tant qu'il n'a pas tourne sur
+ *  un cas dont la reponse est connue, sa sortie ne vaut rien — y compris et
+ *  surtout si elle est verte.
+ *
+ *  LE CAS CONNU A LUI DONNER, derive A LA MAIN donc lui aussi a confirmer :
+ *  trois articles totalisant 186 € en zone eloignee, puis on AJOUTE un
+ *  fauteuil a 45 € → le total passerait de 173,80 € a 173,25 €. S'il ne le
+ *  retrouve pas, c'est soit mon raisonnement qui etait faux, soit le script
+ *  qui ne cherche pas. Les deux meritent d'etre sus.
+ *
+ *  📌 Son jumeau, lui, TOURNE et s'autoteste : `scripts/verifier-grille.py`,
+ *  ecrit en Python parce que Python est installe. Meme socle `exige()`.
+ *
  *  Lancer :  npx tsx scripts/verifier-monotonie-prix.ts
  *            (ou : npm run verifier:prix)
  *

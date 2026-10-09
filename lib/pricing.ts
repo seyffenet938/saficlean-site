@@ -3,17 +3,43 @@
  *  SOURCE UNIQUE DES PRIX DU SITE
  * ════════════════════════════════════════════════════════════════════
  *
- * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md` (v4.12 — 9 octobre 2026).
+ * Miroir de `../SafiClean-Docs/05-tarifs/30_TARIFS.md`. LA FICHE FAIT FOI.
  *
- * Tables recollationnees avec la fiche le 09/10/2026 : canape (tissu et
- * cuir), chaises, matelas (recto et recto-verso) et tapis (trois voies)
- * correspondent au caractere pres — 8 tables sur 8. L'en-tete annoncait
+ * ════════════════════════════════════════════════════════════════════
+ *  🔑 CET EN-TETE N'ANNONCE PLUS UNE VERSION. Arbitre le 09/10/2026.
+ * ════════════════════════════════════════════════════════════════════
+ *
+ * Il a annonce « miroir de v2.1 » pendant un mois, puis « v4.8 » pendant
+ * quatre versions. Les PRIX etaient justes les deux fois : c'est
+ * l'etiquette qui mentait. Et sept fois le meme jour, dans les deux
+ * depots, on a retrouve le meme defaut — une table qui annonce une
+ * version que personne ne relit.
+ *
+ * 🔴 UN NUMERO DE VERSION AFFIRME UN ETAT, et un etat pourrit en silence.
+ *    Une date de verification affirme un ACTE : elle ne pourrit pas, elle
+ *    vieillit, et ca se voit.
+ *
+ * ▶ DERNIERE COLLATION : 9 octobre 2026, 8 tables sur 8 conformes
+ *   (canape tissu et cuir, chaises, matelas recto et recto-verso, tapis
+ *   synthetique, delicat et voie seche).
+ *
+ * ▶ POUR LA REFAIRE, une commande, et elle se verifie elle-meme :
+ *       python3 scripts/verifier-grille.py
+ *   Elle lit la fiche ET ce fichier, compare les MONTANTS (pas les
+ *   numeros de version : la lecon du matelas est que deux nombres justes
+ *   peuvent cacher un usage faux), et commence par un autotest sur un cas
+ *   dont la reponse est connue.
+ *
+ * ⚠️ Elle ne peut tourner QUE sur une machine ou les deux depots
+ *    coexistent. `SafiClean-Docs` est un depot SEPARE : il n'existe pas
+ *    pendant le build Vercel, donc ce controle ne peut pas y etre branche.
+ *
+ * ⚠️  LA FICHE FAIT FOI. Ne jamais modifier un prix ici sans l'avoir lu
+ *     et verifie la-bas d'abord. Jamais l'inverse. L'en-tete annoncait
  * encore v2.1 alors que les valeurs etaient a jour — une provenance
  * perimee est un piege, elle fait croire a un retard qui n'existe pas et
  * invite a « resynchroniser » ce qui est deja juste.
- *
- * ⚠️  LA FICHE FAIT FOI. Ne jamais modifier un prix ici sans l'avoir lu
- *     et vérifié dans `30_TARIFS.md` d'abord. Jamais l'inverse.
+
  *
  * ⚠️  AUCUN PRIX EN DUR AILLEURS. Toute page, section, hero, FAQ ou
  *     métadonnée qui affiche un prix doit l'importer d'ici.
