@@ -4,6 +4,7 @@ import { Calendar, MapPin, Phone, CheckCircle2, AlertCircle } from "lucide-react
 import { formatPrice, formatPriceSpaced } from "@/lib/pricing"
 import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
 import { CorrigerAcces } from "@/components/portail/corriger-acces"
+import { AjouterArticle } from "@/components/portail/ajouter-article"
 
 /*
   PORTAIL CLIENT — la fiche de SON rendez-vous, ouverte par un lien signe.
@@ -243,10 +244,13 @@ export default async function PortailRdv({
           statut `actif` du canal Particulier dans offres.json ; les prix
           viennent de la grille. Rien n'est ecrit en dur ici.
 
-          Pas de bouton « ajouter » : le webhook `addon` n'existe pas encore
-          cote Pipeline, et la note dit qu'un add-on doit creer une DEMANDE,
-          jamais editer le montant directement. En attendant, le geste est
-          l'appel — ce qui est aussi l'occasion de qualifier.
+          🔑 DEPUIS LE 11/10/2026 IL Y A UN BOUTON, et la note est suivie a la
+          lettre : il cree une DEMANDE, il n'edite JAMAIS le montant. Le
+          webhook `portail-addon` (n8n Snz9rvd2XdAVjzWJ) IGNORE tout montant
+          qui lui arriverait — verifie en lui envoyant 9999. Le client repart
+          avec « Safi vous rappelle pour le prix », pas avec un devis : on ne
+          vend pas sans avoir vu, et le « des X EUR » de la liste est un
+          plancher annonce. L'appel reste le chemin des trois gestes `ouvert`.
         */}
         <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
           <h2 className="font-semibold text-foreground">
@@ -285,6 +289,18 @@ export default async function PortailRdv({
             Moquette, remise en état après travaux, intérieur auto : possible aussi, mais
             le prix dépend de ce qu{"'"}on voit — demandez-nous par téléphone.
           </p>
+
+          {/*
+            Masque si le RDV est passe ou annule : le webhook refuse ces cas
+            (`passe`, `faite`, `annulee`). Le telephone, lui, reste affiche en
+            bas sans condition.
+          */}
+          {!estPasse && !estAnnule && (
+            <AjouterArticle
+              token={t}
+              articles={CATALOGUE_PORTAIL.map((g) => ({ cle: g.cle, label: g.label }))}
+            />
+          )}
         </div>
 
         {/*
