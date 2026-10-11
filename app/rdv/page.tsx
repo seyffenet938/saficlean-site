@@ -3,6 +3,7 @@ import Link from "next/link"
 import { Calendar, MapPin, Phone, CheckCircle2, AlertCircle } from "lucide-react"
 import { formatPrice, formatPriceSpaced } from "@/lib/pricing"
 import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
+import { CorrigerAcces } from "@/components/portail/corriger-acces"
 
 /*
   PORTAIL CLIENT — la fiche de SON rendez-vous, ouverte par un lien signe.
@@ -13,10 +14,11 @@ import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
   pas devinable. Conception : 98-outputs/2026-10-03_portail-client-...md
   Carte site : recittePfuRzv1xS4 · Carte pipeline : recPkFC3shvAM48sc
 
-  v1 = LECTURE SEULE, et c'est delibere. Les webhooks d'ecriture
-  (`update-info`, `addon`, `report`) n'existent pas encore cote Pipeline :
-  afficher un bouton « corriger mon adresse » qui ne mene nulle part serait
-  pire que de ne rien afficher. Le chemin d'action v1 est le telephone.
+  v2 depuis le 11/10/2026 : LE CLIENT PEUT CORRIGER SON ACCES. Le webhook
+  `portail-update` (n8n LSKBjoScY0yKjD8o) existe et est ACTIF, donc le
+  formulaire a une destination reelle. `addon` et `report` n'existent
+  toujours PAS : pour eux le chemin reste le telephone, et on n'affiche
+  aucun bouton — un bouton qui ne mene nulle part est pire que rien.
 */
 
 export const metadata: Metadata = {
@@ -226,6 +228,14 @@ export default async function PortailRdv({
             </div>
           )}
         </div>
+
+        {/*
+          ECRITURE — le seul geste d'ecriture qui existe au 11/10/2026.
+          Masque si le RDV est passe ou annule : le webhook les refuse
+          (`passe`, `faite`, `annulee`), donc l'afficher la reviendrait a
+          montrer un bouton qui echoue toujours.
+        */}
+        {!estPasse && !estAnnule && <CorrigerAcces token={t} />}
 
         {/*
           CATALOGUE — l'objectif « panier moyen » de la note de conception.
