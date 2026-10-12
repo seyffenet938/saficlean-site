@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { Calendar, MapPin, Phone, CheckCircle2, AlertCircle } from "lucide-react"
+import { Calendar, MapPin, Phone, CheckCircle2, AlertCircle, FileText } from "lucide-react"
 import { formatPrice, formatPriceSpaced } from "@/lib/pricing"
 import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
 import { CorrigerAcces } from "@/components/portail/corriger-acces"
@@ -42,6 +42,17 @@ type Rdv = {
   service?: string
   montant?: number
   adresse?: string
+  /*
+    Le document n'arrive ICI que si la case « Document visible au client » est
+    cochee sur la fiche : le backend renvoie une chaine vide sinon. C'est la
+    porte qui fait tenir « generer n'est pas envoyer » — un devis engage
+    SafiClean, donc le produire ne doit pas suffire a le publier.
+    L'URL est signee par Airtable et expire en quelques heures : cette page
+    etant force-dynamic, elle est relue a chaque affichage. Ne jamais la
+    mettre en cache ni la stocker ailleurs.
+  */
+  document_url?: string
+  document_nom?: string
 }
 
 /*
@@ -229,6 +240,28 @@ export default async function PortailRdv({
             </div>
           )}
         </div>
+
+        {/*
+          DOCUMENT — affiche seulement si Seyffe l'a rendu visible. Le backend
+          ne renvoie l'URL que dans ce cas, donc il n'y a rien a decider ici.
+        */}
+        {rdv.document_url && (
+          <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
+            <h2 className="font-semibold text-foreground">Votre devis</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Le detail de la prestation et le prix, par ecrit.
+            </p>
+            <a
+              href={rdv.document_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-primary px-4 py-2 font-semibold text-primary"
+            >
+              <FileText className="h-4 w-4" />
+              Ouvrir le devis
+            </a>
+          </div>
+        )}
 
         {/*
           ECRITURE — le seul geste d'ecriture qui existe au 11/10/2026.
