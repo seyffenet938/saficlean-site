@@ -166,6 +166,25 @@ export function bornesCreneau(libelle: string): [number, number] | null {
 }
 
 /**
+ * Instant de DÉBUT d'un créneau, en epoch ms — `("2026-10-16", "08h - 10h")`
+ * → le 16/10 à 8 h **heure de Paris**. `null` si la date ou le libellé ne
+ * sont pas de la forme attendue.
+ *
+ * 🔑 Exposé pour que PERSONNE D'AUTRE ne refasse ce calcul. Le portail a
+ * besoin de l'instant exact d'un créneau pour écrire une date dans Airtable :
+ * s'il le recalculait de son côté, on aurait deux conversions de fuseau à
+ * tenir d'accord — exactement le piège évité sur le chiffrage de l'add-on,
+ * où le portail envoie un article et jamais un prix.
+ */
+export function instantCreneau(dateISO: string, libelleCreneau: string): number | null {
+  const bornes = bornesCreneau(libelleCreneau)
+  if (!bornes) return null
+  const jour = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateISO.trim())
+  if (!jour) return null
+  return depuisHeureParis(+jour[1], +jour[2], +jour[3], bornes[0], 0)
+}
+
+/**
  * Un créneau est occupé si une intervention le chevauche, battement compris.
  * ⚠️ En cas de doute (libellé illisible, aucune donnée) → LIBRE.
  * Cacher un créneau réellement libre coûte une réservation ; en montrer un
@@ -181,10 +200,24 @@ export function creneauOccupe(
   if (!bornes) return false
 
   const [h1, h2] = bornes
-  const debut = new Date(`${dateISO}T00:00:00`)
-  if (Number.isNaN(debut.getTime())) return false
-  const t1 = new Date(debut).setHours(h1, 0, 0, 0)
-  const t2 = new Date(debut).setHours(h2, 0, 0, 0)
+
+  /*
+    🔧 CORRIGÉ LE 15/10/2026 — ce bloc comparait des heures SERVEUR.
+    Il faisait `new Date(`${dateISO}T00:00:00`)` puis `setHours(h1)`, or
+    **Vercel tourne en UTC** : le créneau « 08h - 10h » était donc testé
+    comme 08:00-10:00 UTC, soit **10 h-12 h à Paris en été**. Les plages
+    occupées, elles, sont lues en heure de Paris par `depuisHeureParis`
+    (voir `lireDate`). Les deux côtés de la comparaison n'étaient pas dans
+    le même fuseau : **1 à 2 h de décalage selon la saison**, donc des
+    créneaux pris affichés libres et des créneaux libres masqués.
+    Le helper existait déjà dans ce fichier et servait à l'ICS : il sert
+    maintenant des deux côtés, ce qui est la seule manière de garantir
+    qu'on compare la même chose.
+  */
+  const jour = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateISO.trim())
+  if (!jour) return false
+  const t1 = depuisHeureParis(+jour[1], +jour[2], +jour[3], h1, 0)
+  const t2 = depuisHeureParis(+jour[1], +jour[2], +jour[3], h2, 0)
   const marge = BATTEMENT_MIN * 60_000
 
   return occupes.some((o) => o.debut - marge < t2 && o.fin + marge > t1)

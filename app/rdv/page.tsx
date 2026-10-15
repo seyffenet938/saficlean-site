@@ -5,6 +5,7 @@ import { formatPrice, formatPriceSpaced } from "@/lib/pricing"
 import { CATALOGUE_PORTAIL } from "@/lib/catalogue-portail"
 import { CorrigerAcces } from "@/components/portail/corriger-acces"
 import { AjouterArticle } from "@/components/portail/ajouter-article"
+import { ReporterRdv } from "@/components/portail/reporter-rdv"
 
 /*
   PORTAIL CLIENT — la fiche de SON rendez-vous, ouverte par un lien signe.
@@ -270,6 +271,13 @@ export default async function PortailRdv({
           montrer un bouton qui echoue toujours.
         */}
         {!estPasse && !estAnnule && <CorrigerAcces token={t} />}
+
+        {/*
+          Deplacer vient APRES corriger, et c'est un ordre, pas un hasard :
+          la plupart des clients veulent rectifier un detail, pas bouger la
+          date. Mettre le report en premier suggererait l'inverse.
+        */}
+        {!estPasse && !estAnnule && <ReporterRdv token={t} />}
 
         {/*
           CATALOGUE — l'objectif « panier moyen » de la note de conception.
