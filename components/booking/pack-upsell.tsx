@@ -38,7 +38,11 @@ const SUGGESTIONS = [
     value: "2-places",
     // Une proposition est une ANNONCE : on propose les deux faces.
     price: prixMatelasAnnonce("2-places"),
-    label: "Matelas 2 places — recto",
+    // 🔴 Disait « — recto » alors que le prix est celui des DEUX FACES.
+    // Introduit le 09/10 en changeant le prix sans toucher au libelle :
+    // declarer la variante annoncee ne suffit pas si le texte qui la
+    // decrit reste celui de l'ancienne.
+    label: "Matelas 2 places — deux faces",
     accroche: "votre matelas",
   },
   {
