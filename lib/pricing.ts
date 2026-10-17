@@ -638,6 +638,7 @@ export type QuoteResult = {
   prestations: number
   deplacement: number
   deplacementOffert: boolean
+  deplacementPlafonne: boolean
   deplacementSurDevis: boolean
   /** prestations + déplacement. Le montant réellement dû. */
   total: number
@@ -675,12 +676,35 @@ export function computeQuote(
   // Étapes 3 et 4 : une seule implémentation de la remise, celle du pack.
   const pack = computePack(ajustes)
 
-  // Étape 5 : le déplacement s'ajoute APRÈS la remise et n'est pas remisé.
+  /*
+    Étape 5 : le déplacement s'ajoute APRÈS la remise et n'est pas remisé.
+
+    🔴 ET IL EST PLAFONNÉ — correctif du 01/10 de 30_TARIFS, que le site
+    n'appliquait pas. La fiche écrit la règle en une ligne :
+
+        facture = min(sous-total + déplacement ; max(150 € ; sous-total))
+
+    🔑 POURQUOI CE PLAFOND EXISTE : sans lui, la facture BAISSE quand le
+    sous-total monte. Un panier à 148,80 € en zone éloignée payait 173,80 €
+    (148,80 + 25) ; en AJOUTANT un fauteuil le sous-total passait à 173,25 €,
+    le déplacement devenait offert, et la facture tombait à 173,25 €. Payer
+    plus coûtait moins.
+
+    Le plafond supprime la marche : personne ne paie plus que le seuil
+    tant que ses prestations sont sous le seuil. Mesuré avant correction :
+    8 cas, jusqu'à +24 € factures en trop, tous avec un sous-total juste
+    sous 150 €.
+  */
   const frais = fraisDeplacement(zone)
   const deplacementSurDevis = frais === null
-  const deplacementOffert =
-    !deplacementSurDevis && (frais ?? 0) > 0 && pack.total >= DEPLACEMENT.offertDes
-  const deplacement = deplacementSurDevis || deplacementOffert ? 0 : (frais ?? 0)
+  const brut = deplacementSurDevis ? 0 : (frais ?? 0)
+  // Le plafond absorbe aussi la règle « offert dès 150 € » : au-delà du
+  // seuil, max(seuil, sousTotal) vaut sousTotal, donc le déplacement tombe
+  // à zéro tout seul. Une seule règle au lieu de deux qui se superposent.
+  const plafond = Math.max(DEPLACEMENT.offertDes, pack.total)
+  const deplacement = round2(Math.min(pack.total + brut, plafond) - pack.total)
+  const deplacementOffert = brut > 0 && deplacement === 0
+  const deplacementPlafonne = brut > 0 && deplacement > 0 && deplacement < brut
 
   return {
     base: round2(base),
@@ -694,6 +718,8 @@ export function computeQuote(
     prestations: pack.total,
     deplacement,
     deplacementOffert,
+    /** Le déplacement a été réduit par le plafond, sans être offert. */
+    deplacementPlafonne,
     deplacementSurDevis,
     total: round2(pack.total + deplacement),
   }
