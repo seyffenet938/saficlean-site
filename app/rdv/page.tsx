@@ -57,6 +57,55 @@ type Rdv = {
 }
 
 /*
+  🔧 CORRIGÉ LE 17/10/2026 — le bloc document disait « Votre devis »
+  QUOI QU'IL ARRIVE.
+
+  Trouvé en ouvrant la porte pour la première fois sur une fiche réelle : la
+  facture `FP-2026-003` de Frédéric Nyek s'affichait sous le titre « Votre
+  devis », avec le bouton « Ouvrir le devis ». Sur un document comptable,
+  devant le client.
+
+  Le backend renvoie déjà `document_nom`, et le générateur préfixe le nom de
+  fichier par le type (`devis-`, `facture-`, `fiche-prestation-`). On lit donc
+  ce qu'on a, au lieu de supposer qu'un document est forcément un devis.
+
+  ⚠️ ET LE DÉFAUT ÉTAIT INVISIBLE TANT QUE LA CASE N'ÉTAIT PAS COCHÉE : le
+  bloc ne s'affichait jamais. Un garde-fou fermé masque aussi les défauts de
+  ce qu'il garde — d'où l'intérêt de l'avoir ouvert une fois sur une fiche
+  sans email, où aucun envoi n'était possible.
+*/
+function libelleDocument(nom: string | undefined) {
+  const n = (nom ?? "").toLowerCase()
+  if (n.startsWith("facture")) {
+    return {
+      titre: "Votre facture",
+      sous: "Le détail de la prestation et le montant, par écrit.",
+      bouton: "Ouvrir la facture",
+    }
+  }
+  if (n.startsWith("fiche-prestation")) {
+    return {
+      titre: "Votre fiche de prestation",
+      sous: "Ce qui a été fait, et à quelle heure c'est sec.",
+      bouton: "Ouvrir la fiche",
+    }
+  }
+  if (n.startsWith("devis")) {
+    return {
+      titre: "Votre devis",
+      sous: "Le détail de la prestation et le prix, par écrit.",
+      bouton: "Ouvrir le devis",
+    }
+  }
+  // Type inconnu : on ne devine pas. Un libellé neutre vaut mieux qu'un faux.
+  return {
+    titre: "Votre document",
+    sous: "Le détail de la prestation, par écrit.",
+    bouton: "Ouvrir le document",
+  }
+}
+
+/*
   DEUX ECHECS QUI N'ONT RIEN A VOIR, et qu'il ne faut pas confondre :
   - `inconnu`     : le backend a repondu, il ne connait pas ce jeton.
   - `injoignable` : n8n ne repond pas, ou met plus de 8 s. Le lien est bon,
@@ -248,9 +297,11 @@ export default async function PortailRdv({
         */}
         {rdv.document_url && (
           <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
-            <h2 className="font-semibold text-foreground">Votre devis</h2>
+            <h2 className="font-semibold text-foreground">
+              {libelleDocument(rdv.document_nom).titre}
+            </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Le detail de la prestation et le prix, par ecrit.
+              {libelleDocument(rdv.document_nom).sous}
             </p>
             <a
               href={rdv.document_url}
@@ -259,7 +310,7 @@ export default async function PortailRdv({
               className="mt-3 inline-flex items-center gap-2 rounded-lg border border-primary px-4 py-2 font-semibold text-primary"
             >
               <FileText className="h-4 w-4" />
-              Ouvrir le devis
+              {libelleDocument(rdv.document_nom).bouton}
             </a>
           </div>
         )}
