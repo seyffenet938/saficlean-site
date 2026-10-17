@@ -320,7 +320,17 @@ export default async function TarifsPage() {
           </div>
           
           <p className="mt-4 text-sm text-muted-foreground">
-            Recto+Verso recommande pour un assainissement complet. Reduit les acariens allergenes.
+            {/*
+              🔴 Disait « Reduit les acariens allergenes ». 30_TARIFS §matelas
+              a RETIRE cette formulation le 09/10, et 00_ARGUMENTAIRE regle 13
+              interdit « anti-acarien » -- pas pour une raison juridique, mais
+              parce que tuer l'acarien ne retire pas l'allergene, et c'est
+              l'allergene qui fait le symptome. La forme defendable decrit
+              l'ACTE : on retire par extraction, on ne pose aucun produit.
+            */}
+            Nous chiffrons les deux faces d{"'"}office : on retourne le matelas et on traite
+            l{"'"}autre cote. Ce qui agit, c{"'"}est le retrait par extraction — aucun produit
+            remanent n{"'"}est pose.
           </p>
         </div>
       </section>

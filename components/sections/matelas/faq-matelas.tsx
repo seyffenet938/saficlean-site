@@ -15,8 +15,17 @@ const faqsMatelas = [
   {
     id: "faq-matelas-2",
     question: "Est-ce efficace contre les acariens ?",
+    // 🔴 Disait « elimine jusqu'a 99% des acariens » et « ideal pour les
+    // personnes asthmatiques ou allergiques ». 00_ARGUMENTAIRE nomme
+    // EXACTEMENT cette phrase comme interdite — « un resultat chiffre non
+    // mesure : "99 % des acariens" » — et la regle 13 interdit
+    // « anti-acarien ». Ce n'est pas une prudence juridique : tuer
+    // l'acarien ne retire pas l'allergene, et c'est l'allergene qui fait le
+    // symptome. 🔑 La fiche en fait un POSITIONNEMENT : le marche affiche
+    // 99 % sans preuve ; dire ce qui est mesure ET ce qui ne l'est pas est
+    // ce qui distingue. La reponse ci-dessous est cette forme-la.
     answer:
-      "Oui, notre traitement elimine jusqu'a 99% des acariens et de leurs dejections. L'aspiration profonde combinee au shampouinage haute temperature detruit les allergenes. Ideal pour les personnes asthmatiques ou allergiques.",
+      "Nous retirons les acariens et leurs dejections par extraction : l'aspiration profonde puis le shampouinage a haute temperature les enlevent du matelas, ils ne sont pas simplement tues sur place. Nous ne posons aucun produit remanent, et nous ne promettons pas de pourcentage : les chiffres du type \u00ab 99 % \u00bb qui circulent dans le metier ne reposent sur aucune mesure verifiable. Ce qui agit ici, c'est le retrait physique.",
   },
   {
     id: "faq-matelas-3",
