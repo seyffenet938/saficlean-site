@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Phone, MapPin, KeyRound, Clock, Euro, AlertCircle } from "lucide-react"
 import { NoteChantier } from "@/components/chantier/note-chantier"
+import { DemanderCle } from "@/components/chantier/demander-cle"
 
 /*
   LA FICHE CHANTIER DU TECHNICIEN — ouverte le 18/10/2026.
@@ -82,8 +83,8 @@ export default async function ChantierPage({
   const { t = "", c = "" } = await searchParams
   const cle = process.env.CLE_CHANTIER
 
-  // Échec FERMÉ : pas de clé configurée = pas de page. Jamais de repli ouvert.
-  if (!cle || c !== cle || !/^[a-f0-9]{32}$/.test(t)) {
+  // Un jeton mal formé ne mène nulle part, et aucune clé n'y change rien.
+  if (!/^[a-f0-9]{32}$/.test(t)) {
     return (
       <Refus
         titre="Lien de chantier invalide"
@@ -91,6 +92,25 @@ export default async function ChantierPage({
       />
     )
   }
+
+  // Échec FERMÉ : pas de clé côté serveur = pas de page. Jamais de repli ouvert.
+  if (!cle) {
+    return (
+      <Refus
+        titre="Accès non configuré"
+        texte="La clé d'accès n'est pas installée sur le site. Prends contact avec Safi."
+      />
+    )
+  }
+
+  /*
+    🔑 LA CLÉ NE VOYAGE PAS DANS L'AGENDA. Le lien de l'événement ne porte
+    que le jeton ; si `c` manque, on la demande ICI et le téléphone la retient.
+    Une clé FAUSSE repasse par le même écran avec `erreur` — qui efface la
+    valeur mémorisée, sinon l'appareil boucterait sur un secret périmé.
+  */
+  if (!c) return <DemanderCle token={t} />
+  if (c !== cle) return <DemanderCle token={t} erreur />
 
   let fiche: Fiche
   try {
