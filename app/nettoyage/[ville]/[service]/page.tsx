@@ -198,7 +198,7 @@ export default async function ServiceVillePage({ params }: Props) {
             Nos autres prestations {aVille(ville)}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            À partir de 2 articles, le Pack Multi-Meubles applique −15 % à −25 % sur
+            À partir de 2 articles, le Pack Multi-Meubles applique −15 % à −20 % sur
             l{"'"}ensemble — tout est nettoyé dans la même intervention.
           </p>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">

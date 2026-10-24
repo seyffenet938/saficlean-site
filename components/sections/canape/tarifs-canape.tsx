@@ -77,7 +77,7 @@ export function TarifsCanape() {
             </Link>
           </Button>
           <p className="mt-3 text-sm text-muted-foreground">
-            Pack multi-meubles : -15% a -25% sur votre devis
+            Pack multi-meubles : -15% a -20% sur votre devis
           </p>
         </div>
       </div>

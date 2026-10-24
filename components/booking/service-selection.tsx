@@ -5,19 +5,22 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { MapPin } from "lucide-react"
 import { codePostalAccepte } from "@/lib/departements"
-import { DEPLACEMENT, formatPrice, zoneDepuisCP } from "@/lib/pricing"
-import { PRICING } from "@/lib/pricing"
+import { DEPLACEMENT, formatPrice, PRICING, startingFrom, zoneDepuisCP } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Check } from "lucide-react"
 import { Sofa, BedDouble, Footprints, Armchair, SquareStack, Layers, Car } from "lucide-react"
 
 const SERVICES = [
-  { id: "canape", label: "Canape & Fauteuil", icon: Sofa, minPrice: 45 },
-  { id: "matelas", label: "Matelas", icon: BedDouble, minPrice: 40 },
-  { id: "chaises", label: "Chaises", icon: SquareStack, minPrice: 20 },
-  { id: "tapis", label: "Tapis", icon: Footprints, minPrice: 50 },
+  { id: "canape", label: "Canape & Fauteuil", icon: Sofa, minPrice: startingFrom("canape") },
+  // 🔑 Tous les prix d'appel passent par startingFrom : il porte la grille ET
+  // la variante annoncee. En dur, « matelas » affichait encore 40 € (une
+  // face) alors que la decision du 09/10 annonce les deux faces, et
+  // « canape » 45 € apres le passage du fauteuil a 65 € le 18/10.
+  { id: "matelas", label: "Matelas", icon: BedDouble, minPrice: startingFrom("matelas") },
+  { id: "chaises", label: "Chaises", icon: SquareStack, minPrice: startingFrom("chaises") },
+  { id: "tapis", label: "Tapis", icon: Footprints, minPrice: startingFrom("tapis") },
   { id: "moquette", label: "Moquette", icon: Layers, minPrice: "devis" },
-  { id: "auto", label: "Interieur auto", icon: Car, minPrice: 50 },
+  { id: "auto", label: "Interieur auto", icon: Car, minPrice: startingFrom("auto") },
 ]
 
 export function ServiceSelectionStep() {

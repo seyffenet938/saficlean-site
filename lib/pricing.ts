@@ -19,7 +19,8 @@
  *    Une date de verification affirme un ACTE : elle ne pourrit pas, elle
  *    vieillit, et ca se voit.
  *
- * ▶ DERNIERE COLLATION : 9 octobre 2026, 8 tables sur 8 conformes
+ * ▶ DERNIERE COLLATION : 24 octobre 2026 contre 30_TARIFS v5.7 — alignement
+ *   sur la refonte d'assiette du 18/10 (v5.0). 8 tables sur 8 conformes
  *   (canape tissu et cuir, chaises, matelas recto et recto-verso, tapis
  *   synthetique, delicat et voie seche).
  *
@@ -50,7 +51,7 @@
 
 export const PRICING = {
   canape: {
-    fauteuil: 45,
+    fauteuil: 65,
     "2-places": 79,
     "3-places": 89,
     "angle-4-5": 119,
@@ -79,11 +80,11 @@ export const PRICING = {
    * et le palier doit changer. C'est le prix qui est posé, pas la cadence.
    */
   canapeCuir: {
-    fauteuil: 63,
-    "2-places": 111,
-    "3-places": 125,
-    "angle-4-5": 167,
-    "xxl-6+": 223,
+    fauteuil: 100,
+    "2-places": 120,
+    "3-places": 135,
+    "angle-4-5": 180,
+    "xxl-6+": 240,
   },
   chaises: { 1: 20, 2: 34, 3: 48, 4: 60, 5: 75, 6: 90, 8: 120 },
   tapis: {
@@ -100,11 +101,11 @@ export const PRICING = {
    * 110,60. La fiche fait foi — on affiche ce que Seyffe facture.
    */
   tapisDelicat: {
-    petit: 70,
-    moyen: 85,
-    grand: 110,
-    "tres-grand": 125,
-    xxl: 170,
+    petit: 75,
+    moyen: 90,
+    grand: 120,
+    "tres-grand": 135,
+    xxl: 180,
   },
   /**
    * 🔴 VOIE SÈCHE — ×2, arbitré par Seyffe le 19/09/2026.
@@ -203,7 +204,12 @@ export const PACK_RULES = {
   minPrice: 40,
   excluded: ["chaises", "moquette"],
   autoCap: 0.1,
-  discounts: { 2: 0.15, 3: 0.2, 4: 0.25 },
+  /*
+    🔴 v5.0 du 18/10 : le −25 % EST SUPPRIME. Le bareme est desormais
+    « 2 articles −15 %, 3 articles ET PLUS −20 % ». Quatre articles ne
+    donnent plus un palier de plus — la marge ne le supportait pas.
+  */
+  discounts: { 2: 0.15, 3: 0.2 },
 } as const
 
 // ── Suppléments article (v2.0 / v2.1) ───────────────────────────────────
@@ -233,14 +239,14 @@ export const SUPPLEMENTS = {
    * un argument qu'on n'a pas.
    */
   matiereCuir: {
-    rate: 0.4,
+    rate: 0.5,
     matieres: ["cuir d'ameublement"],
     raison:
       "nettoyage puis nourrissage avec un produit dédié, sans extraction : le cuir ne se rince pas",
   },
   /** +40 % — voie humide, pH neutre, eau ≤ 35-40 °C. */
   matiereDelicate: {
-    rate: 0.4,
+    rate: 0.5,
     matieres: ["laine", "berbère noué main"],
     /** Ce qui justifie le supplément — à dire au client, pas à cacher. */
     raison:
@@ -570,11 +576,10 @@ export function computePack(items: PackItem[]): PackResult {
   const eligibleCount = items.filter(isEligible).length
 
   const discountRate =
-    eligibleCount >= 4
-      ? PACK_RULES.discounts[4]
-      : eligibleCount === 3
-        ? PACK_RULES.discounts[3]
-        : eligibleCount === 2
+    // 3 articles ET PLUS : meme taux. Le palier 4 n'existe plus (v5.0).
+    eligibleCount >= 3
+      ? PACK_RULES.discounts[3]
+      : eligibleCount === 2
           ? PACK_RULES.discounts[2]
           : 0
 

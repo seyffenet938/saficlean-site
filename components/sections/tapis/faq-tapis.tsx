@@ -46,7 +46,7 @@ const faqsTapis = [
     id: "faq-tapis-7",
     question: "Proposez-vous des reductions pour plusieurs tapis ?",
     answer:
-      "Oui. Si vous faites nettoyer plusieurs tapis, ou tapis + canape, vous beneficiez d'une remise de -15% a -25% selon le nombre de meubles. Demandez votre devis pack multi-meubles.",
+      "Oui. Si vous faites nettoyer plusieurs tapis, ou tapis + canape, vous beneficiez d'une remise de -15% a -20% selon le nombre de meubles. Demandez votre devis pack multi-meubles.",
   },
 ]
 

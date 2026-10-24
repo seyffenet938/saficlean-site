@@ -61,13 +61,13 @@ export function BookingSummary() {
 
             {eligibleCount === 2 && (
               <div className="text-xs text-green-200 bg-primary-foreground/10 rounded p-2">
-                +1 service = -20% | +2 services = -25%
+                +1 service eligible = -20%
               </div>
             )}
 
             {eligibleCount === 3 && (
               <div className="text-xs text-green-200 bg-primary-foreground/10 rounded p-2">
-                +1 service pour passer a -25%
+                Remise maximale atteinte
               </div>
             )}
           </div>

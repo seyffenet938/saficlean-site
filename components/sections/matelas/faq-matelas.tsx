@@ -55,7 +55,7 @@ const faqsMatelas = [
     id: "faq-matelas-7",
     question: "Proposez-vous des reductions pour plusieurs matelas ?",
     answer:
-      "Oui. Si vous faites nettoyer plusieurs matelas, ou matelas + canape, vous beneficiez d'une remise de -15% a -25% selon le nombre de meubles. Demandez votre devis pack multi-meubles.",
+      "Oui. Si vous faites nettoyer plusieurs matelas, ou matelas + canape, vous beneficiez d'une remise de -15% a -20% selon le nombre de meubles. Demandez votre devis pack multi-meubles.",
   },
 ]
 

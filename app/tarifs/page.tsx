@@ -133,7 +133,7 @@ export default async function TarifsPage() {
               Le + economique
             </span>
             <h2 className="text-2xl md:text-3xl font-bold mb-4">
-              Combinez vos prestations et economisez jusqu'a 25%
+              Combinez vos prestations et economisez jusqu'a 20%
             </h2>
           </div>
           

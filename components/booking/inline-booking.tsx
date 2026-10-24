@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { PRICING } from "@/lib/pricing"
+import { computePack, PRICING } from "@/lib/pricing"
 import { ArrowRight, Check, Plus, Trash2 } from "lucide-react"
 
 interface SelectedOption {
@@ -83,35 +83,25 @@ export function InlineBooking({ service }: InlineBookingProps) {
     setSelectedOptions((prev) => prev.filter((opt) => opt.id !== id))
   }
 
-  const getSubtotal = () => selectedOptions.reduce((sum, opt) => sum + opt.price, 0)
+  /*
+    🔴 CE BLOC RECALCULAIT LE PACK A LA MAIN — eligibilite, bareme et
+    plafond auto, tout en dur. Il a donc rate la refonte v5.0 du 18/10 et
+    rendait encore −25 % a 4 articles quand la grille dit −20 % a partir
+    de 3. Deux implementations du meme prix, c'est l'erreur 89/109 du
+    05/10 sous une autre forme.
 
-  const getEligibleCount = () => {
-    return selectedOptions.filter(
-      (opt) => opt.price >= 40 && !["chaises", "moquette"].includes(opt.type) && !opt.type.startsWith("auto-option")
-    ).length
-  }
+    Desormais il appelle `computePack`, la seule implementation. Les
+    regles d'eligibilite et le bareme vivent dans PACK_RULES, et ce
+    composant les suit sans les connaitre.
+  */
+  const devis = () => computePack(selectedOptions.map((o) => ({ type: o.type, price: o.price })))
 
-  const getDiscountRate = () => {
-    const count = getEligibleCount()
-    if (count >= 4) return 0.25
-    if (count === 3) return 0.20
-    if (count === 2) return 0.15
-    return 0
-  }
+  const getSubtotal = () => devis().subtotal
+  const getEligibleCount = () => devis().eligibleCount
+  const getDiscountRate = () => devis().discountRate
+  const calculateDiscount = () => devis().discount
 
-  const calculateDiscount = () => {
-    const subtotal = getSubtotal()
-    const rate = getDiscountRate()
-    if (rate === 0) return 0
-    let discount = subtotal * rate
-    const autoOpt = selectedOptions.find((opt) => opt.type === "auto")
-    if (autoOpt) {
-      discount = Math.min(discount, autoOpt.price * 0.1)
-    }
-    return Math.round(discount * 100) / 100
-  }
-
-  const total = getSubtotal() - calculateDiscount()
+  const total = devis().total
 
   const canContinue = service === "moquette" 
     ? (moquetteType && moquetteSurface) 

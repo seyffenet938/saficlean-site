@@ -150,7 +150,7 @@ export async function LocalBusinessJsonLd() {
       "@type": "Offer",
       name: "Pack Multi-Meubles",
       description:
-        "Réduction progressive à partir de 2 articles nettoyés : -15 % pour 2 articles, -20 % pour 3, -25 % à partir de 4.",
+        "Réduction à partir de 2 articles nettoyés : -15 % pour 2 articles, -20 % à partir de 3.",
       url: `${SITE_URL}/tarifs#pack`,
     },
     potentialAction: {

@@ -182,7 +182,7 @@ function CanapeSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id
       {revetement === "cuir" && (
         <p className="text-xs leading-relaxed text-muted-foreground">
           Le cuir se nettoie puis se <strong className="text-foreground">nourrit</strong>, avec un
-          produit dedie et sans extraction : comptez <strong className="text-foreground">+40 %</strong>.
+          produit dedie et sans extraction : comptez <strong className="text-foreground">+50 %</strong>.
         </p>
       )}
 
@@ -274,7 +274,7 @@ function MatelasSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "i
 
 function TapisSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id">) => void }) {
   // La matière est LA question que Seyffe pose au téléphone (30_TARIFS.md) :
-  // un tapis en laine coûte jusqu'à +40 %. La poser ici évite d'avoir à
+  // un tapis en laine coûte +50 %. La poser ici évite d'avoir à
   // réajuster le prix devant le client le jour de l'intervention.
   const [voie, setVoie] = useState<VoieTapis>("synthetique")
   /*

@@ -261,7 +261,7 @@ export default async function DepartementPage({ params }: Props) {
 
           <p className="mt-6 text-sm text-muted-foreground">
             À partir de 2 articles, le <strong className="text-foreground">Pack Multi-Meubles</strong>{" "}
-            applique −15 % à −25 % sur l{"'"}ensemble — tout est nettoyé dans la même
+            applique −15 % à −20 % sur l{"'"}ensemble — tout est nettoyé dans la même
             intervention, sans second déplacement.
           </p>
         </div>
