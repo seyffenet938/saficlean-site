@@ -302,9 +302,10 @@ export const SUPPLEMENTS = {
    */
   odeurs: {
     leger: 25,
-    marque: 40,
-    /** Saturation profonde : sur devis, ce montant est un plancher. */
-    saturation: 60,
+    /** Souillure ancienne, ça a PÉNÉTRÉ. 40 → 45 € en v5.0 (18/10). */
+    marque: 45,
+    /** Imprégné À CŒUR. 60 → 80 € en v5.0, puis sur devis après constat. */
+    saturation: 80,
   },
 } as const
 
@@ -661,6 +662,16 @@ export function computeQuote(
   let supplementMatiere = 0
   let supplementOdeurs = 0
   let supplementForfaits = 0
+  /*
+    🔴 L'ASSIETTE A CHANGÉ EN v5.0 (18/10) : SEULE LA MATIÈRE Y ENTRE.
+    La fiche, étape 4bis de l'ordre d'application : « + ODEURS et OPTIONS
+    (vapeur, déboulochage, imperméabilisant, odorisation) — APRÈS la
+    remise, donc jamais rabotées. »
+    🔑 Le motif : c'est du temps qu'aucun lot ne raccourcit. Un pack ne
+    rend pas une urine plus rapide à traiter.
+    Avant ce correctif, odeurs et forfaits entraient dans le prix de
+    l'article AVANT computePack : ils étaient donc remisés de 15 à 20 %.
+  */
   const ajustes: PackItem[] = items.map((i) => {
     const m = !i.matiereDelicate
       ? 0
@@ -675,7 +686,8 @@ export function computeQuote(
     supplementForfaits += f
     // L'éligibilité au pack se juge sur le prix suppléments compris :
     // c'est ce qui est réellement facturé pour cet article.
-    return { type: i.type, price: i.price + m + o + f }
+    // Seule la matière entre dans l'assiette ; `o` et `f` s'ajoutent après.
+    return { type: i.type, price: i.price + m }
   })
 
   // Étapes 3 et 4 : une seule implémentation de la remise, celle du pack.
@@ -700,14 +712,18 @@ export function computeQuote(
     8 cas, jusqu'à +24 € factures en trop, tous avec un sous-total juste
     sous 150 €.
   */
+  // Étape 4bis : odeurs et options, APRÈS la remise et jamais rabotées.
+  const horsAssiette = round2(supplementOdeurs + supplementForfaits)
+  const prestations = round2(pack.total + horsAssiette)
+
   const frais = fraisDeplacement(zone)
   const deplacementSurDevis = frais === null
   const brut = deplacementSurDevis ? 0 : (frais ?? 0)
   // Le plafond absorbe aussi la règle « offert dès 150 € » : au-delà du
   // seuil, max(seuil, sousTotal) vaut sousTotal, donc le déplacement tombe
   // à zéro tout seul. Une seule règle au lieu de deux qui se superposent.
-  const plafond = Math.max(DEPLACEMENT.offertDes, pack.total)
-  const deplacement = round2(Math.min(pack.total + brut, plafond) - pack.total)
+  const plafond = Math.max(DEPLACEMENT.offertDes, prestations)
+  const deplacement = round2(Math.min(prestations + brut, plafond) - prestations)
   const deplacementOffert = brut > 0 && deplacement === 0
   const deplacementPlafonne = brut > 0 && deplacement > 0 && deplacement < brut
 
@@ -720,13 +736,13 @@ export function computeQuote(
     eligibleCount: pack.eligibleCount,
     discountRate: pack.discountRate,
     discount: pack.discount,
-    prestations: pack.total,
+    prestations,
     deplacement,
     deplacementOffert,
     /** Le déplacement a été réduit par le plafond, sans être offert. */
     deplacementPlafonne,
     deplacementSurDevis,
-    total: round2(pack.total + deplacement),
+    total: round2(prestations + deplacement),
   }
 }
 
