@@ -54,6 +54,7 @@ interface BookingContextType {
   toggleService: (service: string) => void
   addOption: (option: Omit<SelectedOption, "id">) => void
   removeOption: (optionId: string) => void
+  basculerVapeur: (id: string, actif: boolean) => void
   updateField: (field: keyof BookingState, value: any) => void
   calculateTotal: () => number
   calculateDiscount: () => number
