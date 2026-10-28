@@ -419,8 +419,51 @@ export function prixTapis(
  * supplément au résultat. Le montant n'était pas en cause : c'est le
  * MOMENT où il apparaissait.
  */
-/** Revêtement d'un canapé : tissu (grille) ou cuir (+40 %, valeurs de la fiche). */
+/** Revêtement d'un canapé : tissu (grille) ou cuir (+50 %, valeurs de la fiche). */
 export type RevetementCanape = "tissu" | "cuir"
+
+/**
+ * ════════════════════════════════════════════════════════════════════
+ *  LA VAPEUR EST-ELLE POSSIBLE SUR CET ARTICLE ?
+ * ════════════════════════════════════════════════════════════════════
+ *
+ * 🔑 UNE SEULE FONCTION DÉCIDE, et elle porte les exclusions de
+ * 30_TARIFS §vapeur. L'écran ne connaît pas la règle : il pose les
+ * questions et affiche le motif que cette fonction lui rend.
+ *
+ * 🔴 POURQUOI PAR QUESTION ET NON PAR PHOTO : une photo ne tranche pas la
+ * matière — `qualification.yaml` l'écrit, « soie et viscose se ressemblent
+ * à l'œil ». En revanche le client SAIT si son canapé est en cuir, et il
+ * voit si c'est de la laine ou du velours. La question coûte deux
+ * secondes ; la photo coûte un aller-retour et ne conclut pas.
+ *
+ * Exclusions de la fiche, telles quelles : laine · soie · viscose · cuir ·
+ * Alcantara · velours acrylique, et jamais sur les sièges en volume (à
+ * 15-17 €/u, 25 € de supplément est incohérent).
+ */
+export type ArticleVapeur = {
+  type: string
+  /** Canapé : tissu ou cuir, déjà demandé par le tunnel. */
+  revetement?: RevetementCanape
+  /** Tapis : la voie technique, déjà demandée par le tunnel. */
+  matiere?: VoieTapis
+  /** Canapé en tissu : laine, velours ou Alcantara ? Se répond à l'œil. */
+  tissuSensible?: boolean
+}
+
+export function vapeurPossible(a: ArticleVapeur): { ok: boolean; motif?: string } {
+  if (a.type === "chaises")
+    return { ok: false, motif: "sur un siège, le supplément dépasserait le prix du geste" }
+  if (a.revetement === "cuir")
+    return { ok: false, motif: "le cuir ne supporte pas la vapeur" }
+  if (a.matiere === "delicate")
+    return { ok: false, motif: "la laine ne supporte pas la vapeur" }
+  if (a.matiere === "sec")
+    return { ok: false, motif: "la soie et la viscose ne supportent pas la vapeur" }
+  if (a.tissuSensible)
+    return { ok: false, motif: "la laine, le velours et l'Alcantara ne supportent pas la vapeur" }
+  return { ok: true }
+}
 
 /**
  * Prix d'un canapé selon son revêtement. Même rôle que `prixTapis` pour

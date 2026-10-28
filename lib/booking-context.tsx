@@ -17,6 +17,15 @@ export interface SelectedOption {
    * Informatif ici : `price` porte déjà le montant facturé.
    */
   matiere?: import("@/lib/pricing").VoieTapis
+  /** Canapé : tissu ou cuir. Donnée, pas un bout de libellé. */
+  revetement?: import("@/lib/pricing").RevetementCanape
+  /** Canapé en tissu : laine, velours ou Alcantara ? Gate la vapeur. */
+  tissuSensible?: boolean
+  /**
+   * Assainissement vapeur sur CET article (+25 €). Lu par computeQuote
+   * comme un forfait hors assiette — jamais raboté par la remise.
+   */
+  vapeur?: boolean
 }
 
 export interface BookingState {
@@ -113,6 +122,16 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     }))
   }
 
+  /** Active ou retire l'assainissement vapeur sur UN article précis. */
+  const basculerVapeur = (id: string, actif: boolean) => {
+    setState((prev) => ({
+      ...prev,
+      selectedOptions: prev.selectedOptions.map((o) =>
+        o.id === id ? { ...o, vapeur: actif } : o,
+      ),
+    }))
+  }
+
   const updateField = (field: keyof BookingState, value: any) => {
     setState((prev) => ({ ...prev, [field]: value }))
   }
@@ -151,6 +170,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
         toggleService,
         addOption,
         removeOption,
+        basculerVapeur,
         updateField,
         calculateTotal,
         calculateDiscount,

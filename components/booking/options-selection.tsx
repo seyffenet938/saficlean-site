@@ -11,6 +11,8 @@ import {
   type RevetementCanape,
   type TapisOption,
   type VoieTapis,
+  SUPPLEMENTS,
+  vapeurPossible,
 } from "@/lib/pricing"
 import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
@@ -25,7 +27,7 @@ const TAPIS_LABELS: Record<string, string> = {
 }
 
 export function OptionsSelectionStep() {
-  const { state, addOption, removeOption } = useBooking()
+  const { state, addOption, removeOption, basculerVapeur } = useBooking()
 
   if (state.selectedServices.length === 0) {
     return (
@@ -50,6 +52,7 @@ export function OptionsSelectionStep() {
             options={state.selectedOptions.filter((opt) => opt.type === "canape")}
             addOption={addOption}
             removeOption={removeOption}
+            basculerVapeur={basculerVapeur}
           >
             <CanapeSelector onSelect={(opt) => addOption(opt)} />
           </MultiItemService>
@@ -61,6 +64,7 @@ export function OptionsSelectionStep() {
             options={state.selectedOptions.filter((opt) => opt.type === "matelas")}
             addOption={addOption}
             removeOption={removeOption}
+            basculerVapeur={basculerVapeur}
           >
             <MatelasSelector onSelect={(opt) => addOption(opt)} />
           </MultiItemService>
@@ -72,6 +76,7 @@ export function OptionsSelectionStep() {
             options={state.selectedOptions.filter((opt) => opt.type === "tapis")}
             addOption={addOption}
             removeOption={removeOption}
+            basculerVapeur={basculerVapeur}
           >
             <TapisSelector onSelect={(opt) => addOption(opt)} />
           </MultiItemService>
@@ -99,6 +104,7 @@ function MultiItemService({
   title,
   options,
   removeOption,
+  basculerVapeur,
   children,
 }: {
   serviceType: string
@@ -106,6 +112,7 @@ function MultiItemService({
   options: SelectedOption[]
   addOption: (opt: Omit<SelectedOption, "id">) => void
   removeOption: (id: string) => void
+  basculerVapeur: (id: string, actif: boolean) => void
   children: React.ReactNode
 }) {
   return (
@@ -122,15 +129,45 @@ function MultiItemService({
               key={opt.id}
               className="flex items-center justify-between bg-muted rounded-lg px-3 py-2"
             >
-              <div>
+              <div className="min-w-0">
                 <span className="text-sm font-medium text-foreground">{opt.label}</span>
                 <span className="ml-2 text-sm text-primary font-semibold">{opt.price} €</span>
+                {/*
+                  L'option vapeur est proposee PAR ARTICLE, et seulement
+                  quand elle est possible. Quand elle ne l'est pas, on DIT
+                  pourquoi au lieu de la masquer : un client qui ne voit
+                  rien croit qu'on ne la fait pas du tout.
+                */}
+                {(() => {
+                  const v = vapeurPossible(opt)
+                  if (!v.ok)
+                    return (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Vapeur impossible ici : {v.motif}.
+                      </p>
+                    )
+                  return (
+                    <label className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                      <input
+                        type="checkbox"
+                        checked={!!opt.vapeur}
+                        onChange={(e) => basculerVapeur(opt.id, e.target.checked)}
+                      />
+                      <span>
+                        Assainissement vapeur, zones de contact{" "}
+                        <strong className="text-foreground">
+                          +{formatPrice(SUPPLEMENTS.vapeur.prix)}
+                        </strong>
+                      </span>
+                    </label>
+                  )
+                })()}
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => removeOption(opt.id)}
-                className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                className="h-8 w-8 shrink-0 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -157,6 +194,14 @@ function CanapeSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id
     meme article. Autorise par Seyffe le 09/10/2026.
   */
   const [revetement, setRevetement] = useState<RevetementCanape>("tissu")
+  /*
+    Une seule question, et elle se repond A L'OEIL : pas besoin de photo.
+    Elle ne change PAS le prix -- 30_TARIFS ne donne pas de palier laine
+    sur le canape -- elle sert uniquement a savoir si la vapeur est
+    possible. Si un palier matiere canape est trancheun jour, c'est ici
+    qu'il se branchera.
+  */
+  const [tissuSensible, setTissuSensible] = useState(false)
 
   return (
     <div className="space-y-3">
@@ -179,6 +224,21 @@ function CanapeSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id
         ))}
       </div>
 
+      {revetement === "tissu" && (
+        <label className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+          <input
+            type="checkbox"
+            checked={tissuSensible}
+            onChange={(e) => setTissuSensible(e.target.checked)}
+            className="mt-0.5"
+          />
+          <span>
+            C{"'"}est de la <strong className="text-foreground">laine, du velours ou de l{"'"}Alcantara</strong>
+            {" "}— ces tissus demandent un protocole particulier.
+          </span>
+        </label>
+      )}
+
       {revetement === "cuir" && (
         <p className="text-xs leading-relaxed text-muted-foreground">
           Le cuir se nettoie puis se <strong className="text-foreground">nourrit</strong>, avec un
@@ -197,6 +257,8 @@ function CanapeSelector({ onSelect }: { onSelect: (opt: Omit<SelectedOption, "id
                   type: "canape",
                   value: key,
                   price,
+                  revetement,
+                  tissuSensible: revetement === "tissu" ? tissuSensible : undefined,
                   label: `Canape ${formatLabel(key)}${revetement === "cuir" ? " — cuir" : ""}`,
                 })
               }
