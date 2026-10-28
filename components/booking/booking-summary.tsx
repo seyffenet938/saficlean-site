@@ -4,8 +4,9 @@ import { useBooking } from "@/lib/booking-context"
 import { DEPLACEMENT, fraisDeplacement, formatPrice } from "@/lib/pricing"
 
 export function BookingSummary() {
-  const { state, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate, getZoneDeplacement, getDeplacement, getTotalAvecDeplacement } = useBooking()
+  const { state, calculateDiscount, getSubtotal, getEligibleCount, getDiscountRate, getZoneDeplacement, getForfaits, getDeplacement, getTotalAvecDeplacement } = useBooking()
   const zone = getZoneDeplacement()
+  const forfaits = getForfaits()
   const deplacement = getDeplacement()
   const totalDu = getTotalAvecDeplacement()
 
@@ -43,6 +44,20 @@ export function BookingSummary() {
               <span>Sous-total</span>
               <span>{subtotal.toFixed(2)} €</span>
             </div>
+
+            {/*
+              🔴 Les forfaits hors assiette (vapeur, bouloche) doivent se
+              VOIR. Sans cette ligne on passait de « sous-total 89 » a
+              « total 114 » sans rien entre les deux : le client voit 25 €
+              surgir de nulle part. Meme defaut que le deplacement en
+              octobre, et meme correctif.
+            */}
+            {forfaits > 0 && (
+              <div className="flex justify-between text-sm">
+                <span>Assainissement vapeur</span>
+                <span>+{forfaits.toFixed(2)} €</span>
+              </div>
+            )}
 
             {discount > 0 && (
               <div className="flex justify-between text-sm">

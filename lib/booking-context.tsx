@@ -62,6 +62,8 @@ interface BookingContextType {
   getEligibleCount: () => number
   getDiscountRate: () => number
   getZoneDeplacement: () => ReturnType<typeof zoneDepuisCP>
+  /** Bouloché + vapeur : forfaits ajoutés APRÈS la remise. */
+  getForfaits: () => number
   getDeplacement: () => number
   getTotalAvecDeplacement: () => number
   reset: () => void
@@ -150,6 +152,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
   const devis = () =>
     computeQuote(state.selectedOptions, getZoneDeplacement() ?? "proche")
 
+  const getForfaits = () => devis().supplementForfaits
   const getDeplacement = () => devis().deplacement
   const getTotalAvecDeplacement = () => devis().total
 
@@ -179,6 +182,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
         getEligibleCount,
         getDiscountRate,
         getZoneDeplacement,
+        getForfaits,
         getDeplacement,
         getTotalAvecDeplacement,
         reset,

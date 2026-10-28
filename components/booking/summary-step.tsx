@@ -7,7 +7,7 @@ import { MapPin, Calendar, Phone } from "lucide-react"
 import { DEPLACEMENT, fraisDeplacement, formatPrice } from "@/lib/pricing"
 
 export function SummaryStep() {
-  const { state, updateField, calculateDiscount, getSubtotal, getDiscountRate, getZoneDeplacement, getDeplacement, getTotalAvecDeplacement } = useBooking()
+  const { state, updateField, calculateDiscount, getSubtotal, getDiscountRate, getZoneDeplacement, getForfaits, getDeplacement, getTotalAvecDeplacement } = useBooking()
 
   const subtotal = getSubtotal()
   const discount = calculateDiscount()
@@ -24,6 +24,7 @@ export function SummaryStep() {
     getTotalAvecDeplacement() appelle le MEME computeQuote que le serveur.
   */
   const zone = getZoneDeplacement()
+  const forfaits = getForfaits()
   const deplacement = getDeplacement()
   const total = getTotalAvecDeplacement()
 
@@ -60,6 +61,16 @@ export function SummaryStep() {
             <div className="flex justify-between text-sm">
               <span className="text-green-600">Reduction pack (-{Math.round(discountRate * 100)}%)</span>
               <span className="font-medium text-green-600">-{discount.toFixed(2)} €</span>
+            </div>
+          </div>
+        )}
+
+        {/* Forfaits hors assiette — meme regle que le panneau lateral. */}
+        {forfaits > 0 && (
+          <div className="border-b border-secondary/20 pb-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">Assainissement vapeur</span>
+              <span className="font-medium text-foreground">+{formatPrice(forfaits)}</span>
             </div>
           </div>
         )}
