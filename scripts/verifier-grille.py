@@ -151,7 +151,9 @@ def controler(texte_fiche, texte_miroir):
 
     # Forfaits : un montant isolé de chaque côté.
     for nom, motif_fiche, cle in [
-        ("Bouloché", r"\*\*Prix\*\*\s*\|\s*\*\*(\d+)\s*€\*\*\s*\*\*par article", "bouloche"),
+        # Le gras autour de « par article » a disparu en v5.21 : le lecteur
+        # est devenu aveugle et ne l'a dit qu'en NOTES. On tolere les deux formes.
+        ("Bouloché", r"\*\*Prix\*\*\s*\|\s*\**(\d+)\s*€\**\s*\**par article", "bouloche"),
         ("Déplacement Paris", r'id:\s*"paris".*?frais:\s*(\d+)', None),
     ]:
         if cle:
