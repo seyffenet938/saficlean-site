@@ -44,10 +44,27 @@ type Rdv = {
   montant?: number
   adresse?: string
   /*
-    Le document n'arrive ICI que si la case « Document visible au client » est
-    cochee sur la fiche : le backend renvoie une chaine vide sinon. C'est la
-    porte qui fait tenir « generer n'est pas envoyer » — un devis engage
-    SafiClean, donc le produire ne doit pas suffire a le publier.
+    ⚠️ CE COMMENTAIRE DISAIT LE CONTRAIRE DE LA REALITE — corrige le 04/11/2026.
+
+    Il affirmait : « le document n'arrive ICI que si la case Document visible au
+    client est cochee : le backend renvoie une chaine vide sinon ». C'est FAUX
+    depuis le 01/11/2026 : le garde-fou a ete RETIRE de WF-PORTAIL (noeud
+    'Composer reponse') a la demande de Seyffe. Le backend renvoie desormais le
+    DERNIER document de la fiche sans regarder la case.
+
+    Donc, aujourd'hui : GENERER VAUT PUBLIER. Un document depose sur une fiche
+    est lisible immediatement par quiconque detient le lien portail — et ce
+    lien part automatiquement dans le SMS de confirmation de RDV
+    (WF-CONFIRMATION), donc le client l'a deja.
+
+    Mesure du 04/11 qui a revele le mensonge : fiche recGVhqqFsEY1qHvd, case
+    DECOCHEE, et la page servait quand meme « Votre facture → Ouvrir la
+    facture » avec l'URL de la piece jointe. Le champ 'Document visible au
+    client' n'est plus lu par personne (ni WF-PORTAIL, ni WF-ENVOI).
+
+    Pour re-armer la porte, c'est dans n8n, pas ici : WF-PORTAIL HMkRGgFNEbalH4fo
+    et WF-ENVOI crLx3f3gJtJcWwJq portent chacun le bloc a restaurer en commentaire.
+
     L'URL est signee par Airtable et expire en quelques heures : cette page
     etant force-dynamic, elle est relue a chaque affichage. Ne jamais la
     mettre en cache ni la stocker ailleurs.
