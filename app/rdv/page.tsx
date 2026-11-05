@@ -44,31 +44,37 @@ type Rdv = {
   montant?: number
   adresse?: string
   /*
-    ⚠️ CE COMMENTAIRE DISAIT LE CONTRAIRE DE LA REALITE — corrige le 04/11/2026.
+    CE QUE LE CLIENT VOIT EST CHOISI, DEPUIS LE 05/11/2026.
 
-    Il affirmait : « le document n'arrive ICI que si la case Document visible au
-    client est cochee : le backend renvoie une chaine vide sinon ». C'est FAUX
-    depuis le 01/11/2026 : le garde-fou a ete RETIRE de WF-PORTAIL (noeud
-    'Composer reponse') a la demande de Seyffe. Le backend renvoie desormais le
-    DERNIER document de la fiche sans regarder la case.
+    Historique en deux temps, parce que les deux comptent :
 
-    Donc, aujourd'hui : GENERER VAUT PUBLIER. Un document depose sur une fiche
-    est lisible immediatement par quiconque detient le lien portail — et ce
-    lien part automatiquement dans le SMS de confirmation de RDV
-    (WF-CONFIRMATION), donc le client l'a deja.
+    1. Jusqu'au 01/11, un document n'arrivait ici que si la case « Document
+       visible au client » etait cochee. Ce garde-fou a ete RETIRE de
+       WF-PORTAIL a la demande de Seyffe : generer valait publier. Le
+       commentaire qui vivait ici affirmait encore le contraire, et la mesure
+       du 04/11 l'a dementi (fiche recGVhqqFsEY1qHvd, case DECOCHEE, la page
+       servait quand meme la facture).
 
-    Mesure du 04/11 qui a revele le mensonge : fiche recGVhqqFsEY1qHvd, case
-    DECOCHEE, et la page servait quand meme « Votre facture → Ouvrir la
-    facture » avec l'URL de la piece jointe. Le champ 'Document visible au
-    client' n'est plus lu par personne (ni WF-PORTAIL, ni WF-ENVOI).
+    2. Mais « le dernier document de la fiche » ne savait ni cacher un
+       document perime, ni en montrer deux. Cas reel : une facture aux lignes
+       cassees puis sa reemission, les deux sur la meme fiche. Depuis le
+       05/11, WF-PORTAIL ne renvoie donc plus UN document mais la LISTE de
+       ceux dont la cle figure dans le champ Airtable « Documents publies » —
+       ecrit par WF-KIT a chaque generation (qui depublie le precedent du
+       meme type) et par le copilote sur ordre du technicien.
 
-    Pour re-armer la porte, c'est dans n8n, pas ici : WF-PORTAIL HMkRGgFNEbalH4fo
-    et WF-ENVOI crLx3f3gJtJcWwJq portent chacun le bloc a restaurer en commentaire.
+       Consequence ici : on affiche une LISTE, pas un bloc. Zero document
+       publie est un etat normal, pas une panne.
 
-    L'URL est signee par Airtable et expire en quelques heures : cette page
-    etant force-dynamic, elle est relue a chaque affichage. Ne jamais la
-    mettre en cache ni la stocker ailleurs.
+    `document_url` / `document_nom` sont l'ANCIENNE forme, que le backend
+    renvoie encore sur le premier document publie. On la garde en repli pour
+    ne pas dependre de l'ordre de deploiement entre n8n et Vercel.
+
+    Les URL sont signees par Airtable et expirent en quelques heures : cette
+    page etant force-dynamic, elles sont relues a chaque affichage. Ne jamais
+    les mettre en cache ni les stocker ailleurs.
   */
+  documents?: { nom: string; url: string }[]
   document_url?: string
   document_nom?: string
 }
@@ -248,6 +254,18 @@ export default async function PortailRdv({
   */
   const estAnnule = rdv.statut === "Annulée"
 
+  /*
+    UNE SEULE LISTE, quelle que soit la forme que le backend renvoie. Si
+    WF-PORTAIL repasse a une version qui ne connait que `document_url`, la
+    page continue d'afficher ce document au lieu de n'afficher rien.
+  */
+  const documents =
+    rdv.documents && rdv.documents.length > 0
+      ? rdv.documents
+      : rdv.document_url
+        ? [{ nom: rdv.document_nom ?? "", url: rdv.document_url }]
+        : []
+
   return (
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-lg px-4 py-10 lg:py-16">
@@ -309,28 +327,33 @@ export default async function PortailRdv({
         </div>
 
         {/*
-          DOCUMENT — affiche seulement si Seyffe l'a rendu visible. Le backend
-          ne renvoie l'URL que dans ce cas, donc il n'y a rien a decider ici.
+          DOCUMENTS — on affiche ce qui est PUBLIE, dans l'ordre ou le
+          technicien l'a voulu (c'est l'ordre du champ « Documents publies »).
+          Plusieurs documents a la fois est un cas voulu : un devis accepte a
+          cote de sa facture, deux factures quand la prestation s'est faite en
+          deux fois. Rien de publie n'affiche rien : ce n'est pas une panne.
         */}
-        {rdv.document_url && (
-          <div className="mt-6 rounded-xl border border-secondary/30 bg-background p-5">
-            <h2 className="font-semibold text-foreground">
-              {libelleDocument(rdv.document_nom).titre}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {libelleDocument(rdv.document_nom).sous}
-            </p>
-            <a
-              href={rdv.document_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-primary px-4 py-2 font-semibold text-primary"
+        {documents.map((doc) => {
+          const libelle = libelleDocument(doc.nom)
+          return (
+            <div
+              key={doc.url}
+              className="mt-6 rounded-xl border border-secondary/30 bg-background p-5"
             >
-              <FileText className="h-4 w-4" />
-              {libelleDocument(rdv.document_nom).bouton}
-            </a>
-          </div>
-        )}
+              <h2 className="font-semibold text-foreground">{libelle.titre}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{libelle.sous}</p>
+              <a
+                href={doc.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-2 rounded-lg border border-primary px-4 py-2 font-semibold text-primary"
+              >
+                <FileText className="h-4 w-4" />
+                {libelle.bouton}
+              </a>
+            </div>
+          )
+        })}
 
         {/*
           ECRITURE — le seul geste d'ecriture qui existe au 11/10/2026.
