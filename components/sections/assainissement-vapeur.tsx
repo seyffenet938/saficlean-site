@@ -94,25 +94,32 @@ import { Thermometer, Droplets, Timer, Clock } from "lucide-react"
  *    autres pages n'affichent aucune heure, et c'est voulu.
  *
  * ⛔ CE QUI N'EST TOUJOURS PAS DIT, ET CE N'EST PAS DE LA PRUDENCE :
- *   · PUNAISES DE LIT ET PUCES — ⚠️ CORRIGÉ LE 09/11 : elles sont
- *     maintenant NOMMÉES sur la page, mais pour dire qu'on ne les traite
- *     PAS. Demande de Seyffe (« nomme les micro organisme »), et c'est
- *     exactement le positionnement du §9 ② : dire ce qui est mesuré ET ce
- *     qui ne l'est pas est ce qui distingue dans une catégorie saturée de
- *     « jusqu'à 99 % » sans preuve. Fondement du refus de TRAITER :
- *     00_ARGUMENTAIRE §8 règle 3, « on ne traite pas les infestations :
- *     métier réglementé distinct ».
- *     🟠 LA PUNAISE EST LA SEULE DES DEUX QUI POURRAIT S'OUVRIR : la preuve
- *     thermique existe (100 % de mortalité tous stades, œufs compris, au
- *     contact, 1-3 cm/s, validé à 3,79 bar et le SG 4/4 est à 4 bar) et le
- *     §9 ③ écrit même la phrase client. CE QUI BLOQUE EST UNE SEULE CHOSE,
- *     et elle est écrite comme passant « AVANT la première vente » :
- *     L'ASSUREUR — une exclusion RC pro pour activité non déclarée ferait
- *     travailler sans couverture sur le geste le plus contentieux du
- *     catalogue (carte recras9iCCQoEp9sc). Un appel la lève ou la confirme.
- *     ⛔ LA PUCE, ELLE, N'A AUCUNE SOURCE : zéro mesure dans les deux
- *     fiches, ses deux seules mentions disent « JAMAIS de traitement
- *     d'infestation ». Elle ne s'ouvrira pas par un appel.
+ *   · PUNAISES DE LIT — ✅ ANNONCÉES DEPUIS LE 09/11, ET J'AVAIS CITÉ LA
+ *     MAUVAISE RÈGLE TROIS FOIS. Je refusais en invoquant 00_ARGUMENTAIRE
+ *     §8 règle 3, « on ne traite pas les infestations ». Or cette règle
+ *     N'A AUCUNE DATE — toutes les autres du §8 portent la leur — tandis
+ *     que le §9 ③, ajouté le 09/10/2026 SUR DEMANDE EXPLICITE DE SEYFFE
+ *     (« les presta Kärcher à communiquer, même sur punaise de lit s'il
+ *     faut »), écrit noir sur blanc la phrase client : « Sur un matelas ou
+ *     un canapé, le traitement thermique fonctionne : la vapeur au contact
+ *     tue tous les stades, œufs compris. »
+ *     🔑 PLUS RÉCENTE, PLUS SPÉCIFIQUE, AUTORISÉE PAR LUI : c'est le §9 ③
+ *     qui fait foi. La règle 3 reste vraie pour LE LOGEMENT, pas pour
+ *     l'objet — et c'est pour ça que la page porte DEUX lignes, l'objet et
+ *     le logement, au lieu d'un refus global.
+ *     Ce qui l'autorise : 100 % de mortalité tous stades, œufs compris,
+ *     buse large AU CONTACT, 1-3 cm/s, validé à 3,79 bar (le SG 4/4 est à
+ *     4 bar). Le protocole est dit sur la page — « au contact et lentement,
+ *     zone par zone » — parce que c'est lui qui rend la promesse tenable.
+ *     🔴 LE LOGEMENT RESTE REFUSÉ, et ce n'est pas de la prudence : le
+ *     traitement physique seul n'éradique que 36 % des logements à 6 mois.
+ *     ⏳ RESTE OUVERT, et c'est à Seyffe : l'ASSUREUR (AXA, RC pro). Le
+ *     §9 ③ écrit que la réserve « passe avant la première vente ». Elle le
+ *     sait et il a redemandé la mise en avant quatre fois ; la décision est
+ *     la sienne. Carte recqpEqxKXhALqeLf, avec la question à poser.
+ *     ⛔ LA PUCE N'EST PAS ANNONCÉE, et c'est un autre cas : elle n'a
+ *     AUCUNE source. Zéro mesure dans les deux fiches, et ses deux seules
+ *     mentions disent « jamais de traitement d'infestation ». Rien à citer.
  *     ⛔ CHAMPIGNONS, VIRUS, LEVURES : zéro occurrence dans technique-chimie
  *     comme dans 00_ARGUMENTAIRE. Les nommer serait les inventer.
  *     ⛔ ET LES ESPÈCES DE BACTÉRIES NON PLUS : l'étude donne une
@@ -238,12 +245,22 @@ export function AssainissementVapeur({
               </div>
               <div>
                 <dt className="inline font-medium text-foreground">
-                  Les infestations — punaises de lit, puces&nbsp;:{" "}
+                  Les punaises de lit&nbsp;:{" "}
                 </dt>
                 <dd className="inline">
-                  on ne les traite pas. C’est un métier réglementé à part, et le
-                  faire à moitié ne sert à rien. Nous, on retire œufs, déjections
-                  et débris.
+                  sur un matelas ou un canapé, le traitement thermique fonctionne —
+                  la vapeur au contact tue tous les stades, œufs compris. C’est long,
+                  parce qu’il faut avancer au contact et lentement, zone par zone.
+                </dd>
+              </div>
+              <div>
+                <dt className="inline font-medium text-foreground">
+                  Un logement infesté&nbsp;:{" "}
+                </dt>
+                <dd className="inline">
+                  là, non. Traiter un logement est un métier à part, et le faire à
+                  moitié ne sert à rien — on traite le meuble et la literie, pas
+                  l’appartement.
                 </dd>
               </div>
             </dl>
