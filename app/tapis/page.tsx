@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { formatPrice, startingFrom } from "@/lib/pricing"
+import { formatPrice, startingFrom, SUPPLEMENTS } from "@/lib/pricing"
 import { HeroTapis } from "@/components/sections/tapis/hero-tapis"
 import { SocialProof } from "@/components/sections/social-proof"
 import { TarifsTapis } from "@/components/sections/tapis/tarifs-tapis"
@@ -10,6 +10,7 @@ import { FAQTapis } from "@/components/sections/tapis/faq-tapis"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { getReviews } from "@/lib/reviews"
+import { AssainissementVapeur } from "@/components/sections/assainissement-vapeur"
 
 const description = `Nettoyage professionnel de tapis a domicile en Ile-de-France. Laine, synthetique, oriental. Couleurs ravivees. Des ${formatPrice(startingFrom("tapis"))}.`
 
@@ -37,6 +38,11 @@ export default async function TapisPage() {
       <HeroTapis />
       <SocialProof />
       <TarifsTapis />
+      <AssainissementVapeur
+        prix={SUPPLEMENTS.vapeur.prix}
+        zones="les zones de passage et de contact"
+        reserve="pas sur la laine, la soie ni la viscose — ces matières suivent une autre voie."
+      />
       <Process />
       <Testimonials googleReviews={reviews} />
       <WhySaficlean />

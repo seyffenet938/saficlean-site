@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { formatPrice, startingFrom } from "@/lib/pricing"
+import { formatPrice, startingFrom, SUPPLEMENTS } from "@/lib/pricing"
 import { HeroMatelas } from "@/components/sections/matelas/hero-matelas"
 import { SocialProof } from "@/components/sections/social-proof"
 import { TarifsMatelas } from "@/components/sections/matelas/tarifs-matelas"
@@ -10,6 +10,7 @@ import { FAQMatelas } from "@/components/sections/matelas/faq-matelas"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { getReviews } from "@/lib/reviews"
+import { AssainissementVapeur } from "@/components/sections/assainissement-vapeur"
 
 const description = `Nettoyage professionnel de matelas a domicile en Ile-de-France. Acariens, taches et odeurs retires par extraction. Resultat visible immediatement. Des ${formatPrice(startingFrom("matelas"))}.`
 
@@ -37,6 +38,10 @@ export default async function MatelasPage() {
       <HeroMatelas />
       <SocialProof />
       <TarifsMatelas />
+      <AssainissementVapeur
+        prix={SUPPLEMENTS.vapeur.prix}
+        zones="la zone de couchage et la tête de lit"
+      />
       <Process />
       <Testimonials googleReviews={reviews} />
       <WhySaficlean />

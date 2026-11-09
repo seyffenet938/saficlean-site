@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { formatPrice, startingFrom } from "@/lib/pricing"
+import { formatPrice, startingFrom, SUPPLEMENTS } from "@/lib/pricing"
 import { HeroCanape } from "@/components/sections/canape/hero-canape"
 import { SocialProof } from "@/components/sections/social-proof"
 import { TarifsCanape } from "@/components/sections/canape/tarifs-canape"
@@ -10,6 +10,7 @@ import { FAQCanape } from "@/components/sections/canape/faq-canape"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { getReviews } from "@/lib/reviews"
+import { AssainissementVapeur } from "@/components/sections/assainissement-vapeur"
 
 const description = `Nettoyage professionnel de canape et fauteuil a domicile en Ile-de-France. Tissu, microfibre, velours, lin. Resultat visible immediatement. Des ${formatPrice(startingFrom("canape"))}.`
 
@@ -37,6 +38,11 @@ export default async function CanapePage() {
       <HeroCanape />
       <SocialProof />
       <TarifsCanape />
+      <AssainissementVapeur
+        prix={SUPPLEMENTS.vapeur.prix}
+        zones="accoudoirs, appuie-tête, assises"
+        reserve="ni sur le cuir, ni sur la laine, le velours ou l’Alcantara — une question suffit à le savoir."
+      />
       <Process />
       <Testimonials googleReviews={reviews} />
       <WhySaficlean />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { SUPPLEMENTS } from "@/lib/pricing"
 import { HeroMoquette } from "@/components/sections/moquette/hero-moquette"
 import { SocialProof } from "@/components/sections/social-proof"
 import { InfoMoquette } from "@/components/sections/moquette/info-moquette"
@@ -9,6 +10,7 @@ import { FAQMoquette } from "@/components/sections/moquette/faq-moquette"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { getReviews } from "@/lib/reviews"
+import { AssainissementVapeur } from "@/components/sections/assainissement-vapeur"
 
 export const metadata: Metadata = {
   title: "Nettoyage moquette à domicile — devis gratuit sous 2h | SafiClean",
@@ -34,6 +36,11 @@ export default async function MoquettePage() {
       <HeroMoquette />
       <SocialProof />
       <InfoMoquette />
+      <AssainissementVapeur
+        prix={SUPPLEMENTS.vapeur.prix}
+        zones="les zones de passage, les seuils et les abords de siège"
+        reserve="pas sur une moquette en laine."
+      />
       <Process />
       <Testimonials googleReviews={reviews} />
       <WhySaficlean />

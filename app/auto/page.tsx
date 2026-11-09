@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { formatPrice, startingFrom } from "@/lib/pricing"
+import { formatPrice, startingFrom, PRICING } from "@/lib/pricing"
 import { HeroAuto } from "@/components/sections/auto/hero-auto"
 import { SocialProof } from "@/components/sections/social-proof"
 import { TarifsAuto } from "@/components/sections/auto/tarifs-auto"
@@ -10,6 +10,7 @@ import { FAQAuto } from "@/components/sections/auto/faq-auto"
 import { InlineBooking } from "@/components/booking/inline-booking"
 import { CTAFinal } from "@/components/sections/cta-final"
 import { getReviews } from "@/lib/reviews"
+import { AssainissementVapeur } from "@/components/sections/assainissement-vapeur"
 
 const description = `Nettoyage professionnel interieur auto a domicile en Ile-de-France. Sieges, moquettes, plastiques. Detailing professionnel. Des ${formatPrice(startingFrom("auto"))}.`
 
@@ -37,6 +38,11 @@ export default async function AutoPage() {
       <HeroAuto />
       <SocialProof />
       <TarifsAuto />
+      <AssainissementVapeur
+        prix={PRICING.auto.options.desinfection}
+        zones="volant, levier, poignées, ceintures et appuie-tête"
+        reserve="pas sur les selleries cuir."
+      />
       <Process />
       <Testimonials googleReviews={reviews} />
       <WhySaficlean />
