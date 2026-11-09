@@ -38,9 +38,17 @@ export default async function MatelasPage() {
       <HeroMatelas />
       <SocialProof />
       <TarifsMatelas />
+      {/*
+        ⏱️ `sechage` NE VA QUE SUR LE REMBOURRAGE ORDINAIRE D'INTÉRIEUR.
+        Observé terrain le 12/10/2026 par Seyffe : 6-8 h sans vapeur,
+        3-5 h avec (technique-chimie §3quinquies). On affiche la BORNE
+        HAUTE, jamais la fourchette ni « divisé par deux ».
+        ⛔ Hors périmètre, donc absent de /tapis, /moquette et /auto.
+      */}
       <AssainissementVapeur
         prix={SUPPLEMENTS.vapeur.prix}
         zones="la zone de couchage et la tête de lit"
+        sechage={{ avec: 5, sans: 8 }}
       />
       <Process />
       <Testimonials googleReviews={reviews} />

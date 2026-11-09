@@ -38,10 +38,18 @@ export default async function CanapePage() {
       <HeroCanape />
       <SocialProof />
       <TarifsCanape />
+      {/*
+        ⏱️ `sechage` NE VA QUE SUR LE REMBOURRAGE ORDINAIRE D'INTÉRIEUR.
+        Observé terrain le 12/10/2026 par Seyffe : 6-8 h sans vapeur,
+        3-5 h avec (technique-chimie §3quinquies). On affiche la BORNE
+        HAUTE, jamais la fourchette ni « divisé par deux ».
+        ⛔ Hors périmètre, donc absent de /tapis, /moquette et /auto.
+      */}
       <AssainissementVapeur
         prix={SUPPLEMENTS.vapeur.prix}
         zones="accoudoirs, appuie-tête, assises"
         reserve="ni sur le cuir, ni sur la laine, le velours ou l’Alcantara — une question suffit à le savoir."
+        sechage={{ avec: 5, sans: 8 }}
       />
       <Process />
       <Testimonials googleReviews={reviews} />
