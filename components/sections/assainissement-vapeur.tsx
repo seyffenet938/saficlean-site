@@ -117,9 +117,18 @@ import { Thermometer, Droplets, Timer, Clock } from "lucide-react"
  *     §9 ③ écrit que la réserve « passe avant la première vente ». Elle le
  *     sait et il a redemandé la mise en avant quatre fois ; la décision est
  *     la sienne. Carte recqpEqxKXhALqeLf, avec la question à poser.
- *     ⛔ LA PUCE N'EST PAS ANNONCÉE, et c'est un autre cas : elle n'a
- *     AUCUNE source. Zéro mesure dans les deux fiches, et ses deux seules
- *     mentions disent « jamais de traitement d'infestation ». Rien à citer.
+ *   · LA PUCE EST ANNONCÉE DEPUIS LE 09/11 AUSSI, mais PAS sur la même
+ *     preuve, et la page le dit. Instruction de Seyffe : « ajoute puce
+ *     aussi », après « ça agit sur les infestations en vrai ».
+ *     🔑 ELLE N'A AUCUNE MESURE dans le dépôt — zéro dans technique-chimie
+ *     comme dans 00_ARGUMENTAIRE. Ce qui la porte est la DÉCLARATION
+ *     TERRAIN de Seyffe, qui est l'opérateur : inscrite comme telle dans
+ *     technique-chimie §3septies (v4.5), datée du 09/11/2026.
+ *     ⛔ DONC LA PAGE NE LUI TRANSFÈRE PAS LE CHIFFRE DE LA PUNAISE. Elle
+ *     écrit « pour la punaise c'est documenté », « pour la puce, c'est ce
+ *     qu'on constate sur nos interventions » — même construction que les
+ *     heures de séchage, qui sont aussi une observation maison assumée
+ *     comme telle. Aucun « 100 % », aucun « tous les stades » sur la puce.
  *     ⛔ CHAMPIGNONS, VIRUS, LEVURES : zéro occurrence dans technique-chimie
  *     comme dans 00_ARGUMENTAIRE. Les nommer serait les inventer.
  *     ⛔ ET LES ESPÈCES DE BACTÉRIES NON PLUS : l'étude donne une
@@ -245,12 +254,14 @@ export function AssainissementVapeur({
               </div>
               <div>
                 <dt className="inline font-medium text-foreground">
-                  Les punaises de lit&nbsp;:{" "}
+                  Les punaises de lit et les puces&nbsp;:{" "}
                 </dt>
                 <dd className="inline">
-                  sur un matelas ou un canapé, le traitement thermique fonctionne —
-                  la vapeur au contact tue tous les stades, œufs compris. C’est long,
-                  parce qu’il faut avancer au contact et lentement, zone par zone.
+                  sur un matelas ou un canapé, le traitement thermique fonctionne.
+                  Pour la punaise c’est documenté&nbsp;: la vapeur au contact tue tous
+                  les stades, œufs compris. Pour la puce, c’est ce qu’on constate sur
+                  nos interventions. Dans les deux cas il faut avancer au contact et
+                  lentement, zone par zone — c’est long, et c’est ce qui marche.
                 </dd>
               </div>
               <div>
