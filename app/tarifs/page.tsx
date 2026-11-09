@@ -633,11 +633,17 @@ export default async function TarifsPage() {
             </div>
 
             {/*
-              Bouloché et vapeur : ANNONCÉS ici, pas vendables dans le tunnel.
-              Même traitement que les odeurs, et pour la même raison : leurs
-              exclusions demandent de connaître la matière et d'avoir vu le
-              tissu. Un client ne doit pas pouvoir cocher « vapeur » sur un
-              canapé en laine ou en cuir.
+              🔧 CORRIGÉ LE 09/11/2026 — CE COMMENTAIRE AFFIRMAIT UNE RÈGLE QUI
+              N'EXISTE PLUS. Il disait « Bouloché ET VAPEUR : annoncés ici, pas
+              vendables dans le tunnel ». Faux pour la vapeur depuis le
+              29/10/2026 : elle SE VEND dans le tunnel, parce que ses sept
+              exclusions sont tenues par `vapeurPossible()` et se tranchent par
+              une QUESTION, pas par une photo — la laine, le velours et
+              l'Alcantara se reconnaissent à l'œil.
+
+              ⛔ RESTE VRAI POUR LE BOULOCHÉ ET LES ODEURS : eux dépendent de
+              l'état réel du tissu, qu'aucune question ne tranche. Annoncés
+              ici, vendus au téléphone.
             */}
             <div className="rounded-xl border border-border bg-card p-6">
               <h3 className="font-semibold text-foreground text-lg">
