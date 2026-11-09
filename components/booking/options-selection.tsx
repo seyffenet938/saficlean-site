@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useBooking, SelectedOption } from "@/lib/booking-context"
 import {
   formatPrice,
+  formatPriceSpaced,
   PRICING,
   prixCanape,
   prixTapis,
@@ -137,6 +138,24 @@ function MultiItemService({
                   quand elle est possible. Quand elle ne l'est pas, on DIT
                   pourquoi au lieu de la masquer : un client qui ne voit
                   rien croit qu'on ne la fait pas du tout.
+
+                  🔑 LE LIBELLE DONNE LES DEUX PRIX, PAS UN SUPPLEMENT.
+                  Pose le 09/11/2026, go de Seyffe (« oui dans tunnel, mais
+                  pas pour toutes les matieres » -- le filtrage par matiere
+                  etait deja tenu par vapeurPossible(), c'est le libelle qui
+                  changeait). Motif, 00_ARGUMENTAIRE « Regle d'annonce des
+                  supplements, mesuree 7 sur 8 » : un supplement INTEGRE AU
+                  TOTAL passe 7 fois sur 8 ; le seul refus observe est le
+                  seul annonce en LIGNE SEPAREE apres le prix.
+                  ⚠️ Et c'est confirme sur nos propres fiches le 09/11 : ce
+                  qui est accepte est annonce en un seul prix (« 110 € vapeur
+                  incluse », « 109 + 25 = 134 €, accepte »), ce qui cale est
+                  annonce en « option +25 € a confirmer sur place » -- ~14
+                  interventions sur 48 sont mortes comme ca.
+                  ⛔ LA CASE RESTE DECOCHEE PAR DEFAUT. Une option PAYANTE
+                  pre-cochee est privee d'effet : le consentement a un
+                  paiement supplementaire doit etre EXPRES (directive
+                  2011/83/UE art. 22). On change les mots, pas le defaut.
                 */}
                 {(() => {
                   const v = vapeurPossible(opt)
@@ -147,17 +166,20 @@ function MultiItemService({
                       </p>
                     )
                   return (
-                    <label className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                    <label className="mt-1 flex items-start gap-2 text-xs text-muted-foreground">
                       <input
                         type="checkbox"
+                        className="mt-0.5 shrink-0"
                         checked={!!opt.vapeur}
                         onChange={(e) => basculerVapeur(opt.id, e.target.checked)}
                       />
                       <span>
-                        Assainissement vapeur, zones de contact{" "}
+                        Assainissement vapeur, zones de contact —{" "}
                         <strong className="text-foreground">
-                          +{formatPrice(SUPPLEMENTS.vapeur.prix)}
-                        </strong>
+                          {formatPriceSpaced(opt.price + SUPPLEMENTS.vapeur.prix)} au lieu
+                          de {formatPriceSpaced(opt.price)}
+                        </strong>{" "}
+                        pour cet article
                       </span>
                     </label>
                   )
