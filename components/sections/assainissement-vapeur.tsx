@@ -49,11 +49,15 @@ import { Thermometer, Droplets, Timer, Clock } from "lucide-react"
  *    nettoyage utilise ses produits, et ce qui ASSAINIT est de l'eau
  *    chaude — aucun désinfectant pulvérisé. C'est le vrai différenciant :
  *    les concurrents assainissent avec un biocide, nous avec la chaleur.
- *    ⛔ ET « ÇA RÉDUIT L'UTILISATION DE PRODUIT » N'EST PAS ÉCRIT, faute
- *    de savoir si c'est vrai du cas VENDU : le 01/10 la fiche note que
- *    l'avantage existe quand la vapeur REMPLACE une injection-extraction,
- *    « pas quand elle s'AJOUTE par-dessus » — et ici elle s'ajoute.
- *    Question posée à Seyffe le 09/11, non tranchée.
+ *    ✅ ET « MOINS DE PRODUIT » EST MAINTENANT ÉCRIT, parce que la question
+ *    a été posée au lieu d'être devinée. Seyffe, 09/11/2026 : « je dose
+ *    moins de produit au nettoyage » quand l'option est prise. Inscrit en
+ *    DÉCLARÉ TERRAIN dans technique-chimie §3sexies (v4.4) — et ça corrige
+ *    une extension abusive du 01/10, qui posait que l'avantage n'existe que
+ *    si la vapeur REMPLACE l'injection-extraction : vrai pour l'eau et le
+ *    séchage, faux pour la chimie.
+ *    ⛔ MAIS AUCUN CHIFFRE : le « de combien » n'est pas mesuré. La phrase
+ *    est une COMPARAISON avec le nettoyage seul, jamais un pourcentage.
  *    Seconde correction : la carte température annonçait 99,3 °C sans dire
  *    CE QUE ÇA DÉTRUIT — une mesure sans conclusion. Le résultat microbien
  *    existe et il est mesuré ; il est maintenant dit.
@@ -132,9 +136,9 @@ export type AssainissementVapeurProps = {
 const PREUVES = [
   {
     icon: Droplets,
-    titre: "Rien de chimique pour assainir",
+    titre: "Moins de produit qu’un nettoyage seul",
     texte:
-      "Le nettoyage, avant, utilise ses produits — c’est lui qui décroche la salissure. Ce qui assainit ensuite, c’est uniquement de l’eau à près de 100 °C : on ne pulvérise aucun désinfectant sur votre tissu.",
+      "Quand la vapeur passe derrière, on dose moins de produit au nettoyage : c’est la chaleur qui fait une partie du travail. Et pour assainir, on ne pulvérise aucun désinfectant — de l’eau à près de 100 °C, rien d’autre.",
   },
   {
     icon: Thermometer,
