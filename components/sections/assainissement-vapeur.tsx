@@ -37,8 +37,23 @@ import { Thermometer, Droplets, Timer, Clock } from "lucide-react"
  *    juste l'utilisation de produit ». L'absence de produit est vraie de
  *    L'ÉTAPE VAPEUR, pas de la prestation entière, et promettre zéro résidu
  *    serait exactement l'allégation trompeuse que règle 13 vise.
- *    ⇒ la carte dit maintenant ce qui est vrai : l'assainissement n'ajoute
- *    aucun produit par-dessus le nettoyage.
+ *    ⚠️ ET MA PREMIÈRE CORRECTION ÉTAIT ENCORE FAUSSE — Seyffe a dû le
+ *    redire : « je t'ai dit qu'on utilise justement des produits juste
+ *    avant ». J'avais écrit « la vapeur n'en ajoute aucun SUR LES ZONES QUE
+ *    VOUS TOUCHEZ » — or ce sont précisément les zones qui viennent de
+ *    recevoir du produit. La phrase laissait encore entendre que le tissu
+ *    est sans produit. 🔴 LE PIÈGE EST STABLE : toute formulation qui
+ *    attache « sans produit » AU TISSU est fausse ; seule une formulation
+ *    qui l'attache AU GESTE d'assainissement est vraie.
+ *    ⇒ la carte dit maintenant ce qui est vrai, et rien de plus : le
+ *    nettoyage utilise ses produits, et ce qui ASSAINIT est de l'eau
+ *    chaude — aucun désinfectant pulvérisé. C'est le vrai différenciant :
+ *    les concurrents assainissent avec un biocide, nous avec la chaleur.
+ *    ⛔ ET « ÇA RÉDUIT L'UTILISATION DE PRODUIT » N'EST PAS ÉCRIT, faute
+ *    de savoir si c'est vrai du cas VENDU : le 01/10 la fiche note que
+ *    l'avantage existe quand la vapeur REMPLACE une injection-extraction,
+ *    « pas quand elle s'AJOUTE par-dessus » — et ici elle s'ajoute.
+ *    Question posée à Seyffe le 09/11, non tranchée.
  *    Seconde correction : la carte température annonçait 99,3 °C sans dire
  *    CE QUE ÇA DÉTRUIT — une mesure sans conclusion. Le résultat microbien
  *    existe et il est mesuré ; il est maintenant dit.
@@ -117,9 +132,9 @@ export type AssainissementVapeurProps = {
 const PREUVES = [
   {
     icon: Droplets,
-    titre: "Pas un produit de plus",
+    titre: "Rien de chimique pour assainir",
     texte:
-      "L’assainissement, c’est de l’eau et de la chaleur, rien d’autre. Le nettoyage qui le précède a ses produits ; la vapeur, elle, n’en ajoute aucun sur les zones que vous touchez.",
+      "Le nettoyage, avant, utilise ses produits — c’est lui qui décroche la salissure. Ce qui assainit ensuite, c’est uniquement de l’eau à près de 100 °C : on ne pulvérise aucun désinfectant sur votre tissu.",
   },
   {
     icon: Thermometer,
