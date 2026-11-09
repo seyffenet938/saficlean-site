@@ -13,15 +13,35 @@ import { Thermometer, Droplets, Timer, Clock } from "lucide-react"
  * c'est l'indécision.
  *
  * 🔑 CE QUI EST DIT ICI, ET POURQUOI CHAQUE MOT EST AUTORISÉ.
- *   · « sans aucun produit » — littéralement vrai, et c'est le premier
- *     moteur d'achat relevé sur le marché (recherche du 09/11 : tous les
- *     acteurs vendent l'absence de résidu, pour enfants, animaux et
- *     personnes sensibles) ;
+ *   · « pas un produit de plus » — voir la correction ci-dessous ;
  *   · « près de 100 °C au contact » — mesuré, 99,3 °C en moins de 3 s
  *     (technique-chimie §6ter, DOI 10.1128/aem.00861-25) ;
- *   · « 120 secondes par zone » — le protocole. Le dire est une des DEUX
- *     conditions qui autorisent le mot « désinfection »
- *     (00_ARGUMENTAIRE §8 règle 13).
+ *   · « 4,9 log₁₀ de réduction microbienne à 120 s » — mesuré, même source.
+ *     00_ARGUMENTAIRE §9 ① ajoute le repère qui le rend lisible : « un
+ *     abattement de 4 à 5 log est l'ordre de grandeur qu'exigent les
+ *     normes de désinfection de surface » ;
+ *   · le mot « DÉSINFECTION » est employable, et c'est écrit : le règlement
+ *     (UE) 528/2012 encadre des PRODUITS, les procédés purement physiques
+ *     en sont exclus. DEUX CONDITIONS, les deux tenues ici — dire le
+ *     protocole (120 s, zone par zone) et ne JAMAIS citer prEN 16615.
+ *   · 🔴 ET ON VEND DES ZONES, JAMAIS « LE MATELAS DÉSINFECTÉ »
+ *     (00_ARGUMENTAIRE §9 ①). C'est pourquoi la promesse microbienne est
+ *     attachée à la zone traitée dans la phrase elle-même, pas à l'article.
+ *
+ * 🔧 DEUX CORRECTIONS DE SEYFFE, LE 09/11/2026 — la première est un défaut,
+ *    pas une nuance. La carte « Aucun produit » disait : « aucun résidu sur
+ *    lequel un enfant s'assoit ou un animal se couche ». 🔴 C'EST FAUX TEL
+ *    QUE LE CLIENT LE LIT : la vapeur est une OPTION AJOUTÉE à un nettoyage
+ *    de base qui, lui, utilise des produits. Seyffe : « si y'aura du
+ *    produit, c'est un nettoyage de base qu'on fait juste avant — ça réduit
+ *    juste l'utilisation de produit ». L'absence de produit est vraie de
+ *    L'ÉTAPE VAPEUR, pas de la prestation entière, et promettre zéro résidu
+ *    serait exactement l'allégation trompeuse que règle 13 vise.
+ *    ⇒ la carte dit maintenant ce qui est vrai : l'assainissement n'ajoute
+ *    aucun produit par-dessus le nettoyage.
+ *    Seconde correction : la carte température annonçait 99,3 °C sans dire
+ *    CE QUE ÇA DÉTRUIT — une mesure sans conclusion. Le résultat microbien
+ *    existe et il est mesuré ; il est maintenant dit.
  *
  * ⏱️ LE SÉCHAGE — CORRIGÉ LE 09/11/2026, ET LA PREMIÈRE VERSION DE CE
  *    FICHIER DISAIT L'INVERSE. Elle citait 00_ARGUMENTAIRE §7, « aucun
@@ -97,21 +117,21 @@ export type AssainissementVapeurProps = {
 const PREUVES = [
   {
     icon: Droplets,
-    titre: "Aucun produit",
+    titre: "Pas un produit de plus",
     texte:
-      "De l’eau et de la chaleur, rien d’autre. Pas de détergent, donc aucun résidu sur lequel un enfant s’assoit ou un animal se couche.",
+      "L’assainissement, c’est de l’eau et de la chaleur, rien d’autre. Le nettoyage qui le précède a ses produits ; la vapeur, elle, n’en ajoute aucun sur les zones que vous touchez.",
   },
   {
     icon: Thermometer,
-    titre: "Près de 100 °C au contact",
+    titre: "Près de 100 °C, et ce que ça détruit",
     texte:
-      "La vapeur arrive à près de 100 °C à la surface du textile, en moins de trois secondes. C’est la température qui travaille, pas un produit.",
+      "99,3 °C à la surface du tissu, atteints en moins de trois secondes. Au bout des deux minutes, la réduction microbienne mesurée sur la zone traitée est de 4,9 log₁₀ — environ un survivant sur 80 000.",
   },
   {
     icon: Timer,
     titre: "120 secondes par zone",
     texte:
-      "On reste deux minutes sur chaque zone. C’est long, et c’est pour ça qu’on traite des zones de contact et non un meuble entier.",
+      "C’est la durée qui fait le travail, et c’est l’ordre de grandeur qu’exigent les normes de désinfection de surface. C’est aussi pourquoi on traite des zones de contact, et non un meuble entier.",
   },
 ]
 
@@ -130,13 +150,15 @@ export function AssainissementVapeur({
           </p>
 
           <h2 className="mt-2 text-balance text-2xl font-bold text-foreground sm:text-3xl">
-            Assainissement vapeur, sans aucun produit
+            Assainissement vapeur, sans aucun produit chimique
           </h2>
 
           <p className="mt-4 max-w-2xl text-pretty leading-relaxed text-muted-foreground">
             Le nettoyage retire ce qui salit. La vapeur, elle, traite ce qu’on ne
             voit pas, là où la peau touche le tissu&nbsp;:{" "}
-            <strong className="text-foreground">{zones}</strong>.
+            <strong className="text-foreground">{zones}</strong>. Ce sont ces zones
+            qui sont désinfectées, deux minutes chacune — pas l’article entier, et
+            on vous le dit comme ça parce que c’est comme ça qu’on le fait.
           </p>
 
           <dl className="mt-8 grid gap-6 sm:grid-cols-3">
