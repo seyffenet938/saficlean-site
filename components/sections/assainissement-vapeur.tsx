@@ -94,18 +94,39 @@ import { Thermometer, Droplets, Timer, Clock } from "lucide-react"
  *    autres pages n'affichent aucune heure, et c'est voulu.
  *
  * ⛔ CE QUI N'EST TOUJOURS PAS DIT, ET CE N'EST PAS DE LA PRUDENCE :
- *   · PUNAISES DE LIT ET PUCES. 00_ARGUMENTAIRE §8 règle 3 : « on ne
- *     traite pas les infestations : métier réglementé distinct ».
- *     technique-chimie relève bien 100 % de mortalité SUR UN OBJET, mais
- *     avec trois réserves non levées, l'assureur d'abord (carte
- *     recras9iCCQoEp9sc), et le certibiocide n'est pas détenu. Promettre
- *     la punaise sur un site, c'est vendre un geste non exécutable.
+ *   · PUNAISES DE LIT ET PUCES — ⚠️ CORRIGÉ LE 09/11 : elles sont
+ *     maintenant NOMMÉES sur la page, mais pour dire qu'on ne les traite
+ *     PAS. Demande de Seyffe (« nomme les micro organisme »), et c'est
+ *     exactement le positionnement du §9 ② : dire ce qui est mesuré ET ce
+ *     qui ne l'est pas est ce qui distingue dans une catégorie saturée de
+ *     « jusqu'à 99 % » sans preuve. Fondement du refus de TRAITER :
+ *     00_ARGUMENTAIRE §8 règle 3, « on ne traite pas les infestations :
+ *     métier réglementé distinct ».
+ *     🟠 LA PUNAISE EST LA SEULE DES DEUX QUI POURRAIT S'OUVRIR : la preuve
+ *     thermique existe (100 % de mortalité tous stades, œufs compris, au
+ *     contact, 1-3 cm/s, validé à 3,79 bar et le SG 4/4 est à 4 bar) et le
+ *     §9 ③ écrit même la phrase client. CE QUI BLOQUE EST UNE SEULE CHOSE,
+ *     et elle est écrite comme passant « AVANT la première vente » :
+ *     L'ASSUREUR — une exclusion RC pro pour activité non déclarée ferait
+ *     travailler sans couverture sur le geste le plus contentieux du
+ *     catalogue (carte recras9iCCQoEp9sc). Un appel la lève ou la confirme.
+ *     ⛔ LA PUCE, ELLE, N'A AUCUNE SOURCE : zéro mesure dans les deux
+ *     fiches, ses deux seules mentions disent « JAMAIS de traitement
+ *     d'infestation ». Elle ne s'ouvrira pas par un appel.
+ *     ⛔ CHAMPIGNONS, VIRUS, LEVURES : zéro occurrence dans technique-chimie
+ *     comme dans 00_ARGUMENTAIRE. Les nommer serait les inventer.
+ *     ⛔ ET LES ESPÈCES DE BACTÉRIES NON PLUS : l'étude donne une
+ *     « réduction microbienne », elle ne nomme aucun germe dans la fiche.
  *   · « TOUS les micro-organismes », « 99,9 % », tout résultat absolu —
  *     règle 13 : l'interdit porte sur une PREUVE qu'on n'a pas, pas sur
  *     un mot. On dit la température et la durée : vérifiables.
- *   · « ANTI-ACARIEN » — défaut de preuve : la vapeur réduit la
- *     population mais pas l'allergène (Ong 2014 p = 0,084 · Yu 2009 ·
- *     Wright 2009), et c'est l'allergène qui fait le symptôme.
+ *   · L'ACARIEN EST NOMMÉ, avec ses DEUX moitiés — c'est ce que le §9 ②
+ *     exige : « la vapeur réduit la population d'acariens » (mesuré, Ong
+ *     2014) ET « tuer ne retire pas l'allergène, et c'est l'allergène qui
+ *     fait le symptôme ». ⛔ Restent interdits dans la phrase : le mot
+ *     « ANTI-ACARIEN » (il suggère un acaricide rémanent qu'on ne pose
+ *     pas), TOUT pourcentage, et TOUTE allusion au soulagement d'une
+ *     allergie (L121-4 : trompeur per se). Aucun des trois n'est présent.
  *   · AUCUN NUMÉRO DE NORME. `prEN 16615` est obtenu sur sol PVC : c'est
  *     le seul interdit DUR, et il coûte 5 ans et 750 000 € quand il passe
  *     par un support numérique (L132-2). Un site en est un.
@@ -144,7 +165,7 @@ const PREUVES = [
     icon: Thermometer,
     titre: "Près de 100 °C, et ce que ça détruit",
     texte:
-      "99,3 °C à la surface du tissu, atteints en moins de trois secondes. Au bout des deux minutes, la réduction microbienne mesurée sur la zone traitée est de 4,9 log₁₀ — environ un survivant sur 80 000.",
+      "99,3 °C à la surface du tissu, atteints en moins de trois secondes. Au bout des deux minutes, la réduction des bactéries mesurée sur la zone traitée est de 4,9 log₁₀ — environ un survivant sur 80 000.",
   },
   {
     icon: Timer,
@@ -193,6 +214,40 @@ export function AssainissementVapeur({
               </div>
             ))}
           </dl>
+
+          <div className="mt-8 border-t border-border pt-6">
+            <h3 className="font-semibold text-foreground">
+              Ce que la chaleur atteint, et ce qu’elle n’atteint pas
+            </h3>
+            <dl className="mt-4 space-y-3 text-sm leading-relaxed text-muted-foreground">
+              <div>
+                <dt className="inline font-medium text-foreground">Les bactéries&nbsp;: </dt>
+                <dd className="inline">
+                  réduction mesurée de 4,9 log₁₀ sur la zone traitée, après deux
+                  minutes de vapeur au contact.
+                </dd>
+              </div>
+              <div>
+                <dt className="inline font-medium text-foreground">Les acariens&nbsp;: </dt>
+                <dd className="inline">
+                  la vapeur réduit leur population, c’est mesuré. Mais autant le
+                  dire franchement&nbsp;: tuer l’acarien ne retire pas l’allergène,
+                  et c’est l’allergène qui déclenche les symptômes. Ce qui le
+                  retire, c’est l’extraction — donc le nettoyage, pas la vapeur.
+                </dd>
+              </div>
+              <div>
+                <dt className="inline font-medium text-foreground">
+                  Les infestations — punaises de lit, puces&nbsp;:{" "}
+                </dt>
+                <dd className="inline">
+                  on ne les traite pas. C’est un métier réglementé à part, et le
+                  faire à moitié ne sert à rien. Nous, on retire œufs, déjections
+                  et débris.
+                </dd>
+              </div>
+            </dl>
+          </div>
 
           {/*
             ⏱️ Le séchage ne s'affiche que si la page l'a passé — voir le
