@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Phone, MapPin, KeyRound, Clock, Euro, AlertCircle } from "lucide-react"
+import { Phone, MapPin, KeyRound, Clock, Euro, AlertCircle, Camera } from "lucide-react"
 import { NoteChantier } from "@/components/chantier/note-chantier"
 import { DemanderCle } from "@/components/chantier/demander-cle"
 
@@ -54,6 +54,10 @@ type Fiche = {
   adresse?: string
   details?: string
   minutes?: number
+  encaissement?: string
+  photos_avant?: string[]
+  photos_apres?: string[]
+  videos?: string[]
 }
 
 function Refus({ titre, texte }: { titre: string; texte: string }) {
@@ -222,6 +226,76 @@ export default async function ChantierPage({
         </section>
       )}
 
+      {/*
+        📸 LES MÉDIAS SE LISENT ICI, ILS NE S'ENVOIENT PAS ICI — arbitré le
+        12/11/2026. Une requête serverless Vercel plafonne à ~4,5 Mo de corps :
+        une vidéo de téléphone ne passera jamais par saficlean.fr. Et sur
+        Telegram, `classer_media` fait déjà deux choses que ce formulaire ne
+        saurait pas faire : il range avant/après tout seul, et il borne le
+        chrono du chantier. Donc la porte reste Telegram, et cette page se
+        contente de prouver que la photo est bien arrivée.
+      */}
+      {(() => {
+        const av = fiche.photos_avant || []
+        const ap = fiche.photos_apres || []
+        const vi = fiche.videos || []
+        const groupes: { titre: string; liens: string[] }[] = [
+          { titre: "Avant", liens: av },
+          { titre: "Après", liens: ap },
+          { titre: "Vidéos", liens: vi },
+        ].filter((g) => g.liens.length > 0)
+
+        return (
+          <section className="mt-5">
+            <h2 className="flex items-center gap-2 font-semibold text-foreground">
+              <Camera className="h-4 w-4" />
+              Photos et vidéos
+            </h2>
+            {groupes.length === 0 ? (
+              <p className="mt-1 text-sm text-muted-foreground">
+                Rien d{"'"}attaché pour l{"'"}instant.
+              </p>
+            ) : (
+              <div className="mt-2 space-y-2">
+                {groupes.map((g) => (
+                  <div key={g.titre}>
+                    <p className="text-sm font-medium text-foreground">
+                      {g.titre} · {g.liens.length}
+                    </p>
+                    <ul className="mt-1 space-y-1">
+                      {g.liens.map((u, i) => (
+                        <li key={u}>
+                          <a
+                            href={u}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-sm text-primary underline"
+                          >
+                            Ouvrir {g.titre.toLowerCase()} {i + 1}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="mt-2 text-xs text-muted-foreground">
+              Pour en ajouter : envoie-les sur Telegram — elles se classent
+              avant/après toutes seules et déclenchent le chrono. Cette page ne
+              sait que les montrer.
+            </p>
+          </section>
+        )
+      })()}
+
+      {fiche.encaissement && (
+        <p className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
+          <Euro className="h-4 w-4" />
+          Réglé en {fiche.encaissement}
+        </p>
+      )}
+
       {fiche.minutes ? (
         <p className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
           <Clock className="h-4 w-4" />
@@ -229,7 +303,12 @@ export default async function ChantierPage({
         </p>
       ) : null}
 
-      <NoteChantier token={t} cle={c} minutesActuelles={fiche.minutes || 0} />
+      <NoteChantier
+        token={t}
+        cle={c}
+        minutesActuelles={fiche.minutes || 0}
+        statut={fiche.statut || ""}
+      />
     </main>
   )
 }
