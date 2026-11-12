@@ -109,6 +109,47 @@ def bloc_du_miroir(texte, cle, attendu):
     return valeurs
 
 
+def champ_du_miroir(texte, cle, champ, attendu):
+    """Valeurs du champ NOMMÉ `champ` dans le bloc `cle` de pricing.ts.
+
+    🔑 Pourquoi un lecteur de plus, et pas `bloc_du_miroir` : celui-ci lit
+    TOUS les `: nombre` d'un bloc, dans l'ordre du fichier. Ça va pour une
+    table homogène de cinq prix ; ça casse en silence sur un bloc qui mêle
+    des prix au m², un plancher et des forfaits — il suffit qu'on ajoute un
+    champ numérique ou qu'on réordonne pour que la comparaison se décale
+    d'un cran et compare 65 à 50 sans rien dire. Ici on demande le champ
+    par son nom : ajouter un champ ne casse rien, et en renommer un fait
+    CRIER l'instrument au lieu de le rendre aveugle."""
+    i = texte.find(cle)
+    exige(i >= 0, f"clé introuvable dans le miroir : {cle}")
+    # ⚠️ Le bloc peut s'ouvrir sur `{` (objet) OU sur `[` (tableau) : `horsM2`
+    # est une LISTE d'objets. Ne chercher que `{` tombait sur l'accolade du
+    # PREMIER élément et ne lisait qu'un montant sur quatre. Attrapé par
+    # `exige()` plutôt qu'en comparant trois prix contre un en silence.
+    candidats = [p for p in (texte.find("{", i), texte.find("[", i)) if p >= 0]
+    exige(bool(candidats), f"{cle} : ouvrant introuvable")
+    debut = min(candidats)
+    ouvrant = texte[debut]
+    fermant = "}" if ouvrant == "{" else "]"
+    profondeur, fin = 0, None
+    for j in range(debut, len(texte)):
+        if texte[j] == ouvrant:
+            profondeur += 1
+        elif texte[j] == fermant:
+            profondeur -= 1
+            if profondeur == 0:
+                fin = j
+                break
+    exige(fin is not None, f"{cle} : {fermant!r} de fermeture introuvable")
+    valeurs = [int(x) for x in re.findall(champ + r":\s*(\d+)", texte[debut:fin])]
+    exige(
+        len(valeurs) == attendu,
+        f"{cle}.{champ} : {len(valeurs)} montants lus, {attendu} attendus. "
+        f"Corriger le lecteur AVANT de conclure.",
+    )
+    return valeurs
+
+
 def compare(nom, fiche, site):
     if fiche == site:
         print(f"  ✓ {nom:22} {fiche}")
@@ -148,6 +189,28 @@ def controler(texte_fiche, texte_miroir):
             colonne_de_table(texte_fiche, "## 🛏️ Matelas", 1, 5), mat[0::2])
     compare("Matelas recto-verso",
             colonne_de_table(texte_fiche, "## 🛏️ Matelas", 2, 5), mat[1::2])
+
+    # ── Non-textile, ajouté le 12/11/2026 avec la page « fin de chantier ».
+    #
+    # 🔴 POURQUOI C'EST ICI ET PAS « PLUS TARD » : la carte recZDqdhlyktcK63J
+    #    reproche nommément à cet instrument d'avoir affiché vert en ne
+    #    couvrant que les tables de prix, pendant que cinq divergences hors
+    #    table passaient sous son radar — « un contrôle qui couvre 3 écarts
+    #    sur 8 donne une fausse assurance ». Publier huit prix de plus sans
+    #    les brancher ici referait exactement ça.
+    compare("Nettoyage général €/m²",
+            colonne_de_table(texte_fiche, "## 🧹 Nettoyage général", 2, 3),
+            champ_du_miroir(texte_miroir, "NETTOYAGE_GENERAL", "prixM2", 3))
+    compare("Cuisine (forfait)",
+            colonne_de_table(texte_fiche, "### 🆕 LA CUISINE EST UN FORFAIT", 1, 1),
+            champ_du_miroir(texte_miroir, "horsM2", "prix", 4)[:1])
+    compare("Pièces d'eau",
+            colonne_de_table(texte_fiche, "### 🚽 Les pièces d'eau", 1, 3),
+            champ_du_miroir(texte_miroir, "horsM2", "prix", 4)[1:])
+    compare("Plancher d'intervention",
+            [int(re.search(r"LE PLANCHER D'INTERVENTION\s*:\s*\*\*(\d+)\s*€",
+                           texte_fiche).group(1))],
+            champ_du_miroir(texte_miroir, "NETTOYAGE_GENERAL", "plancher", 1))
 
     # Forfaits : un montant isolé de chaque côté.
     for nom, motif_fiche, cle in [

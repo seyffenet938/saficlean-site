@@ -66,6 +66,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/", priority: 1, changeFrequency: "weekly" },
     { path: "/reserver", priority: 0.9, changeFrequency: "monthly" },
     { path: "/tarifs", priority: 0.9, changeFrequency: "monthly" },
+    // Page de SITUATION (après travaux / fin de chantier / déménagement).
+    // Priorité 0.9 : c'est la seule famille non-textile que le relevé du
+    // 11/11 place en rang ① (1 k-10 k/mois à 0,76-0,99 €), et elle entre
+    // dans un sitemap qu'on vient d'alléger de 35 URLs pour lui faire place.
+    { path: "/fin-de-chantier", priority: 0.9, changeFrequency: "monthly" },
     { path: "/zones", priority: 0.8, changeFrequency: "monthly" },
     { path: "/canape", priority: 0.8, changeFrequency: "monthly" },
     { path: "/matelas", priority: 0.8, changeFrequency: "monthly" },

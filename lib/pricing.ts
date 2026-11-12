@@ -339,6 +339,150 @@ export const DEPLACEMENT = {
 } as const
 
 /**
+ * ════════════════════════════════════════════════════════════════════
+ *  🧹 NETTOYAGE GÉNÉRAL — le non-textile, au m², par niveau de salissure
+ * ════════════════════════════════════════════════════════════════════
+ *
+ * Miroir de `30_TARIFS` §Nettoyage général (v5.3, arbitré par Seyffe le
+ * 24/10/2026 ; cuisine et pièces d'eau re-dérivées en v5.25 le 10/11).
+ * Collationné contre la fiche v5.27 le 12/11/2026.
+ *
+ * 🔑 UNE SEULE UNITÉ POUR TOUT LE NON-TEXTILE : LE MÈTRE CARRÉ, PAR
+ *    NIVEAU DE SALISSURE. Deux questions suffisent à chiffrer n'importe
+ *    quelle situation — combien de m², et dans quel état.
+ *
+ * 🔴 ET ÇA NE S'APPELLE JAMAIS « MÉNAGE » DEVANT UN PARTICULIER.
+ *    Règle `30_TARIFS#le-mot`, v5.21 du 29/10, confirmée et PRÉCISÉE le
+ *    12/11 (carte `recYFmFx9zYWJSqJD`) : le mot se règle par
+ *    l'INTERLOCUTEUR, pas par la place qu'il occupe dans la page.
+ *    Titre, accroche, question posée au visiteur, devis — devant un
+ *    particulier ⛔ PARTOUT ; devant un pro ✅ partout. Le motif est
+ *    mécanique : le mot importe son unité au premier contact, là où la
+ *    comparaison à 25-49 €/h se fige quand on est à ~96 €/h.
+ *    ⚠️ Le ① seul est de l'entretien ; les ② et ③ sont de la remise en
+ *    état — mot juste pour NOMMER un cran, mauvais mot d'accroche
+ *    (`remise en état appartement` = 10-100 recherches/mois).
+ */
+export const NETTOYAGE_GENERAL = {
+  /**
+   * ⚠️ PLAT, pas dégressif. Ne pas confondre avec `PRICING.moquette`,
+   * qui est dégressive par surface et porte la règle du mieux-disant.
+   * Ici le prix suit l'ÉTAT, pas la taille.
+   */
+  niveaux: [
+    {
+      id: "entretien",
+      rang: "①",
+      titre: "Entretien",
+      prixM2: 5,
+      critere: "le logement était tenu — on remet en ordre, on ne décrasse pas",
+      pour: "surfaces déjà tenues, remise en ordre",
+    },
+    {
+      id: "remise-a-blanc",
+      rang: "②",
+      titre: "Remise à blanc",
+      prixM2: 8,
+      critere:
+        "le logement n'était plus tenu — du gras en cuisine, du calcaire en salle de bain, des plinthes noires",
+      pour: "entre deux occupants, préparation avant arrivée",
+    },
+    {
+      id: "lourd",
+      rang: "③",
+      titre: "Lourd",
+      prixM2: 12,
+      critere: "poussière de plâtre, résidus, traces — ou très encrassé",
+      pour: "après travaux, fin de chantier, après déménagement",
+    },
+  ],
+  /**
+   * 🔴 LE PLANCHER. En dessous, on ne se déplace pas. Repère marché IDF
+   * relevé le 24/10/2026 : la norme publiée est 125 à 180 € TTC.
+   *
+   * 🔑 CONSÉQUENCE MÉCANIQUE, et elle se dit au client : ce plancher
+   *    atteint d'office `DEPLACEMENT.offertDes`. Sur cette famille le
+   *    déplacement est donc TOUJOURS inclus — ce n'est pas une offre,
+   *    c'est l'effet de deux règles qui se croisent.
+   */
+  plancher: 150,
+  /**
+   * 🔴 CE QUI SORT DU MÈTRE CARRÉ. Même motif pour les trois : bien plus
+   * de temps par m² qu'une chambre (dégraissage, hotte, joints,
+   * détartrage). Leur SURFACE ne compte pas dans l'assiette du m² —
+   * c'est la règle, pas un arrondi.
+   */
+  horsM2: [
+    { id: "cuisine", label: "Cuisine", prix: 70, couvre: "dégraissage, hotte, plaques, placards, joints" },
+    {
+      id: "salle-de-bain",
+      label: "Salle de bain",
+      precision: "avec baignoire",
+      prix: 65,
+      couvre: "sol, plinthes, parois, évier, robinetterie, détartrage des joints, VMC, meuble",
+    },
+    {
+      id: "salle-d-eau",
+      label: "Salle d'eau",
+      precision: "douche et évier, sans baignoire",
+      prix: 50,
+      couvre: "même contenu, sans la baignoire",
+    },
+    { id: "wc", label: "WC séparé", prix: 50, couvre: "cuvette, abattant, détartrage, sol, lave-mains, VMC" },
+  ],
+  /**
+   * ⚠️ CE QUI S'AJOUTE, EN LIGNES SÉPARÉES, JAMAIS FONDU DANS LE M².
+   *
+   * 🔴 LA VITRERIE ET LES VOLETS NE SE VENDENT JAMAIS SEULS. Ils
+   *    s'ajoutent à un chantier. Motif mesuré : le marché du geste nu est
+   *    relevé à 16-24 €/h quand notre plancher maison est à ~110 €/h, et
+   *    `nettoyage vitres` vaut 0,11 € du clic — du volume sans acheteurs
+   *    (`recherche-mots-cles` §3).
+   *
+   * 📌 La vitrerie se vend PAR PAQUET et pas au m² : à 8 €/m² seul, une
+   *    fenêtre de 0,8 m² tombait à 6,40 €, sous tout plancher imaginable.
+   *    Trou trouvé le 28/10 sur un devis réel, et le paquet est RELEVÉ
+   *    (Proprex IDF publie « vitres — 69 € jusqu'à cinq »).
+   */
+  ajouts: [
+    {
+      id: "vitrerie",
+      label: "Vitrerie",
+      prix: "69 € jusqu'à 5 vitres, puis 8 €/m²",
+      jamaisSeul: true,
+    },
+    { id: "volets", label: "Volets — roulant, battant, persienne", prix: "35 € petit · 55 € grand", jamaisSeul: true },
+    {
+      id: "murs-plafonds",
+      label: "Murs et plafonds — lessivage",
+      prix: "12 €/m²",
+      jamaisSeul: false,
+      /** `sur_devis_au_dela: true` dans l'artefact : aucun prix écrit au-delà. */
+      surDevisAuDela: true,
+    },
+    { id: "sols-durs", label: "Sols durs — marbre, carrelage, PVC, béton", prix: "au niveau ③", jamaisSeul: false },
+  ],
+  /**
+   * ⛔ CE QUI N'EST PAS SUR CETTE PAGE, ET POURQUOI — à relire avant d'y toucher.
+   *
+   * · DÉBARRAS (50 €/m³, minimum 150 €) : le prix existe dans la fiche,
+   *   LE GESTE N'EST PAS OUTILLÉ. CLAUDE.md §0.3 — on ne promet pas un
+   *   service non réalisé. Ni affiché, ni réservable.
+   * · LOCATION DE MATÉRIEL : 🔒 coût interne, ABSORBÉE DANS LE PRIX.
+   *   Arbitrage Seyffe du 24/10 — « la location tu l'affiche pas au
+   *   devis, c'est pour nous ». Le générateur de l'artefact l'exclut et
+   *   la NOMME dans `ancres_internes_non_publiees` pour que personne ne
+   *   « répare l'oubli ». Ne jamais l'écrire sur une page publique.
+   * · CRÉDIT D'IMPÔT / SAP : CLAUDE.md §0.4, désactivé jusqu'à
+   *   l'agrément. Et mesuré le 11/11 : `crédit d'impôt nettoyage` ne
+   *   renvoie AUCUNE donnée — ce n'est pas une porte d'entrée.
+   * · TEXTILE : il garde sa grille à l'article et n'est JAMAIS noyé dans
+   *   le m², sinon on brade le geste le mieux maîtrisé de l'entreprise.
+   *   La page renvoie vers /canape, /matelas, /tapis, /moquette.
+   */
+} as const
+
+/**
  * Prix d'un chantier de moquette. Renvoie `null` sous le seuil :
  * la grille TAPIS à l'article s'applique, et afficher un €/m² y serait
  * une sous-facturation (cf. 30_TARIFS v2.8).
