@@ -7,7 +7,13 @@ import { Phone, Ruler, Sparkles, Droplets, Square, Layers, Sofa, Check } from "l
 // espace — « 5€/m² » est illisible. Mélanger « 150€ » et « 5 €/m² » à dix
 // pixels l'un de l'autre se voyait à la relecture en production. On garde
 // donc la cohérence DANS la page, qui est celle que le visiteur voit.
-import { NETTOYAGE_GENERAL, DEPLACEMENT, formatPriceSpaced } from "@/lib/pricing"
+import {
+  NETTOYAGE_GENERAL,
+  DEPLACEMENT,
+  formatPriceSpaced,
+  basculeAuCranLourd,
+  prixPiece,
+} from "@/lib/pricing"
 import { SocialProof } from "@/components/sections/social-proof"
 import { Testimonials } from "@/components/sections/testimonials"
 import { WhySaficlean } from "@/components/sections/why-saficlean"
@@ -52,6 +58,19 @@ import { getReviews } from "@/lib/reviews"
  *    sont dérivés du marché, pas mesurés chez nous ». Donc : on publie la
  *    grille, on chiffre au téléphone, on confirme à la visite. Le tunnel
  *    de réservation ne sait pas chiffrer un m², et on ne lui demande pas.
+ *
+ * 🔴 LA RÈGLE DES QUATRE FORFAITS DÉPEND DU CRAN DEPUIS LE 12/11/2026,
+ *    et cette page est précisément sur le cran où elle s'inverse.
+ *    Arbitrage Seyffe (« au 3 rentre dans le m2 »), `30_TARIFS` v5.30
+ *    §pieces-deau : en ① et ② la cuisine et les pièces d'eau sortent du
+ *    m² au forfait ; en ③ — après travaux, le cran de cette page — elles
+ *    rentrent dans le m² et le forfait devient un MINIMUM par pièce.
+ *    ⛔ Jamais un forfait PLUS un m² : le plus élevé des deux.
+ *    📌 C'est sur la CUISINE que ça mord (6 à 9 m² courants, donc au m²
+ *    dès le ③), pas sur la salle de bain (4 à 5 m², qui reste au forfait).
+ *    ⚠️ La version publiée le 12/11 à 13 h disait la sortie du m² SANS
+ *    condition : elle annonçait 70 € là où on facture 108 €. Corrigé le
+ *    même jour. Ne pas « simplifier » en retirant la condition.
  *
  * ⚠️ AUCUN PRIX EN DUR ICI. Tout vient de `NETTOYAGE_GENERAL` dans
  *    `lib/pricing.ts`, qui est le miroir de `30_TARIFS` §Nettoyage
@@ -101,9 +120,10 @@ const ANCRES = [
 
 export default async function FinDeChantierPage() {
   const reviews = await getReviews()
-  const { niveaux, plancher, horsM2, ajouts } = NETTOYAGE_GENERAL
-  const cuisine = horsM2.find((h) => h.id === "cuisine")!
-  const piecesDeau = horsM2.filter((h) => h.id !== "cuisine")
+  const { niveaux, plancher, forfaitsPieces, ajouts } = NETTOYAGE_GENERAL
+  const cuisine = forfaitsPieces.find((h) => h.id === "cuisine")!
+  const piecesDeau = forfaitsPieces.filter((h) => h.id !== "cuisine")
+  const salleDeBain = forfaitsPieces.find((h) => h.id === "salle-de-bain")!
   const vitrerie = ajouts.find((a) => a.id === "vitrerie")!
   const volets = ajouts.find((a) => a.id === "volets")!
   const murs = ajouts.find((a) => a.id === "murs-plafonds")!
@@ -243,19 +263,36 @@ export default async function FinDeChantierPage() {
         </div>
       </section>
 
-      {/* ── Ce qui sort du m² ──────────────────────────────────── */}
+      {/* ── Cuisine et pièces d'eau ────────────────────────────── */}
+      {/*
+        🔴 CETTE SECTION A CHANGÉ DE RÈGLE LE 12/11/2026, et elle le dit
+        maintenant. Avant : « elles sortent du mètre carré », sans
+        condition. Depuis l'arbitrage de Seyffe (« au 3 rentre dans le
+        m2 », `30_TARIFS` v5.30 §pieces-deau) la règle DÉPEND DU CRAN —
+        et cette page cible exactement le cran où elle s'inverse, le ③.
+        L'écrire sans condition ici annonçait 70 € pour une cuisine de
+        9 m² après travaux, qui se facture 108 €.
+      */}
       <section id="cuisine" className="scroll-mt-16 bg-muted/30 px-4 py-12">
         <div className="container mx-auto max-w-4xl">
           <h2 className="mb-3 flex items-center gap-3 text-2xl font-bold text-foreground md:text-3xl">
             <Sparkles className="h-8 w-8 text-primary" />
-            La cuisine et les pièces d&apos;eau sortent du mètre carré
+            La cuisine et les pièces d&apos;eau ont un minimum
           </h2>
+          <p className="mb-4 text-muted-foreground">
+            Après travaux, ces pièces se comptent comme le reste du logement,
+            au mètre — avec un minimum, parce qu&apos;une salle de bain pleine
+            de poussière de plâtre ne se fait jamais en dix minutes. Ce qui
+            coûte, là, c&apos;est la surface : toute la faïence à reprendre,
+            le sol à décaper.
+          </p>
           <p className="mb-6 text-muted-foreground">
-            Elles sont au forfait, et leur surface ne compte pas dans le calcul
-            au m². Le motif est simple : dégraissage, hotte, plaques, joints,
-            détartrage — c&apos;est bien plus de temps par mètre carré
-            qu&apos;une chambre. Les compter deux fois serait une erreur dans
-            votre sens ou dans le nôtre ; on les sort une bonne fois.
+            Sur un logement simplement à remettre en ordre ou à remettre à
+            blanc, c&apos;est l&apos;inverse : le forfait s&apos;applique seul
+            et la surface de la pièce ne compte pas dans le m². Dans les deux
+            cas, <strong className="text-foreground">jamais un forfait plus
+            un mètre carré</strong> : on retient le plus élevé des deux, et une
+            pièce n&apos;est jamais comptée deux fois.
           </p>
 
           <div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -265,18 +302,14 @@ export default async function FinDeChantierPage() {
                   <tr className="border-b border-border bg-muted/50">
                     <th className="px-4 py-3 font-semibold text-foreground">Pièce</th>
                     <th className="px-4 py-3 font-semibold text-foreground">Ce que ça couvre</th>
-                    <th className="px-4 py-3 text-right font-semibold text-foreground">Prix</th>
+                    <th className="px-4 py-3 text-right font-semibold text-foreground">Minimum</th>
+                    <th className="px-4 py-3 text-right font-semibold text-foreground">
+                      Passe au m&sup2; au-delà de
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-border">
-                    <td className="px-4 py-4 align-top font-semibold text-foreground">{cuisine.label}</td>
-                    <td className="px-4 py-4 align-top text-sm text-muted-foreground">{cuisine.couvre}</td>
-                    <td className="whitespace-nowrap px-4 py-4 text-right align-top text-lg font-bold text-primary">
-                      {formatPriceSpaced(cuisine.prix)}
-                    </td>
-                  </tr>
-                  {piecesDeau.map((p) => (
+                  {[cuisine, ...piecesDeau].map((p) => (
                     <tr key={p.id} className="border-b border-border last:border-0">
                       <td className="px-4 py-4 align-top">
                         <span className="font-semibold text-foreground">{p.label}</span>
@@ -288,16 +321,38 @@ export default async function FinDeChantierPage() {
                       <td className="whitespace-nowrap px-4 py-4 text-right align-top text-lg font-bold text-primary">
                         {formatPriceSpaced(p.prix)}
                       </td>
+                      {/*
+                        Seuil DÉRIVÉ du forfait, jamais recopié de la fiche :
+                        forfait ÷ le €/m² du cran lourd. Voir
+                        `basculeAuCranLourd` dans lib/pricing.ts.
+                      */}
+                      <td className="whitespace-nowrap px-4 py-4 text-right align-top text-sm text-muted-foreground">
+                        {basculeAuCranLourd(p.prix).toLocaleString("fr-FR")} m&sup2;
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
+          {/*
+            🔑 CE PARAGRAPHE EXISTE PARCE QUE LA RÈGLE MORD SUR LA CUISINE,
+            pas sur les pièces d'eau — `30_TARIFS` v5.30 : une salle de bain
+            francilienne fait 4 à 5 m² et reste à son minimum, une cuisine
+            fait couramment 6 à 9 m² et passe donc au m². Le taire serait
+            annoncer un prix qu'on ne facture pas. La surface d'exemple est
+            celle de la fiche ; le prix, lui, est CALCULÉ.
+          */}
           <p id="pieces-deau" className="mt-4 scroll-mt-24 text-sm text-muted-foreground">
-            Ces forfaits valent pour une pièce de taille courante. Si la vôtre
-            sort de l&apos;ordinaire, c&apos;est la visite qui le dit — et on
-            vous l&apos;annonce avant de commencer.
+            En pratique, une salle de bain reste presque toujours à son
+            minimum : il faudrait qu&apos;elle dépasse{" "}
+            {basculeAuCranLourd(salleDeBain.prix).toLocaleString("fr-FR")} m²
+            pour basculer. La cuisine, elle, est souvent au-dessus du seuil —
+            une cuisine de 9 m² après travaux se compte{" "}
+            {formatPriceSpaced(prixPiece(cuisine.prix, "lourd", 9).prix)} et non{" "}
+            {formatPriceSpaced(cuisine.prix)}. C&apos;est la visite qui relève
+            la surface, et le chiffre vous est annoncé avant qu&apos;on
+            commence.
           </p>
         </div>
       </section>

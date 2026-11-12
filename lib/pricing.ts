@@ -407,12 +407,32 @@ export const NETTOYAGE_GENERAL = {
    */
   plancher: 150,
   /**
-   * 🔴 CE QUI SORT DU MÈTRE CARRÉ. Même motif pour les trois : bien plus
-   * de temps par m² qu'une chambre (dégraissage, hotte, joints,
-   * détartrage). Leur SURFACE ne compte pas dans l'assiette du m² —
-   * c'est la règle, pas un arrondi.
+   * 🔴 LES QUATRE FORFAITS DE PIÈCE — ET LEUR RÈGLE DÉPEND DU CRAN
+   *    DEPUIS LE 12/11/2026 (arbitrage Seyffe, « au 3 rentre dans le m2 »,
+   *    `30_TARIFS` v5.30 §pieces-deau).
+   *
+   * · En ① et ② : la pièce SORT du m². Sa surface ne compte pas dans
+   *   l'assiette, on facture le forfait. Motif : à ces crans une pièce
+   *   d'eau se chiffre par ses ÉQUIPEMENTS — baignoire, joints, VMC — et
+   *   un four reste un four dans un logement tenu.
+   * · En ③ : elle RENTRE dans le m², et le forfait devient un PLANCHER
+   *   par pièce. Motif : après travaux ce qui coûte redevient de la
+   *   SURFACE — poussière de plâtre sur toute la faïence, sol à décaper.
+   *
+   * ⛔ JAMAIS un forfait PLUS un m² : c'est l'un OU l'autre, le plus
+   *    élevé des deux. C'est une application de `recouvrement` — deux
+   *    lignes décrivent le même mètre carré, et c'est le mieux-disant
+   *    POUR NOUS qui tranche (l'inverse du plafond de `mieux-disant`).
+   *
+   * 🔑 SANS LE PLANCHER LA RÈGLE SOUS-FACTURERAIT CE QUE LE FORFAIT
+   *    PROTÉGEAIT : un WC de 1,5 m² au ③ donnerait 18 € au lieu de 50.
+   *    Le forfait protège la PETITE pièce, le m² la GRANDE.
+   *
+   * ⚠️ Les seuils de bascule ne sont PAS écrits ici : ils se DÉRIVENT
+   *    (`basculeAuCranLourd`), parce qu'un seuil recopié se désynchronise
+   *    du forfait dont il sort. La fiche les publie arrondis à 0,1 m².
    */
-  horsM2: [
+  forfaitsPieces: [
     { id: "cuisine", label: "Cuisine", prix: 70, couvre: "dégraissage, hotte, plaques, placards, joints" },
     {
       id: "salle-de-bain",
@@ -481,6 +501,45 @@ export const NETTOYAGE_GENERAL = {
    *   La page renvoie vers /canape, /matelas, /tapis, /moquette.
    */
 } as const
+
+/** Le €/m² d'un cran, lu dans la grille — pas recopié. */
+function prixM2DuCran(cranId: "entretien" | "remise-a-blanc" | "lourd"): number {
+  return NETTOYAGE_GENERAL.niveaux.find((n) => n.id === cranId)!.prixM2
+}
+
+/**
+ * 🔴 PRIX D'UNE PIÈCE AU FORFAIT, SELON LE CRAN — la règle du 12/11/2026.
+ *
+ * En ① et ② le forfait s'applique et la surface sort de l'assiette du m².
+ * En ③ la pièce rentre dans le m², sans jamais descendre sous son forfait.
+ * ⛔ Jamais les deux : c'est le plus élevé des deux, pas une addition.
+ *
+ * `m2` est optionnel parce que la page publique ne connaît pas la surface
+ * (elle ne prend pas de réservation) : sans surface on renvoie le forfait,
+ * qui est le prix plancher et donc ce qu'on peut annoncer sans mentir.
+ */
+export function prixPiece(
+  forfait: number,
+  cranId: "entretien" | "remise-a-blanc" | "lourd",
+  m2?: number,
+): { prix: number; auM2: boolean } {
+  if (cranId !== "lourd" || m2 === undefined) return { prix: forfait, auM2: false }
+  const auM2 = m2 * prixM2DuCran("lourd")
+  return auM2 > forfait ? { prix: auM2, auM2: true } : { prix: forfait, auM2: false }
+}
+
+/**
+ * Surface au-delà de laquelle une pièce bascule au m² en ③.
+ *
+ * 🔑 DÉRIVÉE, JAMAIS SAISIE : c'est forfait ÷ €/m² du ③. Un seuil recopié
+ * se désynchronise le jour où le forfait ou le €/m² bouge — et il bougera,
+ * le NIVEAU des quatre forfaits est encore ouvert dans la fiche (v5.30).
+ * Arrondi à 0,1 m², ce qui redonne exactement les trois seuils publiés par
+ * la fiche : 65 € → 5,4 m² · 50 € → 4,2 m² · 70 € → 5,8 m².
+ */
+export function basculeAuCranLourd(forfait: number): number {
+  return Math.round((forfait / prixM2DuCran("lourd")) * 10) / 10
+}
 
 /**
  * Prix d'un chantier de moquette. Renvoie `null` sous le seuil :

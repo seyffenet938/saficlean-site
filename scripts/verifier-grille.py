@@ -109,6 +109,31 @@ def bloc_du_miroir(texte, cle, attendu):
     return valeurs
 
 
+def bascules_de_la_fiche(texte):
+    """Les couples (forfait, seuil de bascule) de la table du cran ③.
+
+    Lecteur à part parce que ses valeurs ne sont pas des entiers : un seuil
+    s'écrit « au-delà de **5,4 m²** ». `colonne_de_table` ne lit que des
+    montants entiers — l'y faire passer aurait rendu 54, ou rien."""
+    i = texte.find("| Ligne | Forfait | Bascule au ")
+    exige(i >= 0, "table des bascules du ③ introuvable dans la fiche")
+    lignes = []
+    for ligne in texte[i:].split("\n")[2:]:
+        if not ligne.startswith("|"):
+            break
+        cols = [c.strip() for c in ligne.strip().strip("|").split("|")]
+        if len(cols) < 3:
+            break
+        mf = re.search(r"(\d+)\s*€", cols[1])
+        mb = re.search(r"(\d+)[,.](\d+)\s*m", cols[2])
+        exige(
+            mf is not None and mb is not None,
+            f"ligne de bascule illisible : {ligne.strip()!r}",
+        )
+        lignes.append((int(mf.group(1)), float(f"{mb.group(1)}.{mb.group(2)}")))
+    return lignes
+
+
 def champ_du_miroir(texte, cle, champ, attendu):
     """Valeurs du champ NOMMÉ `champ` dans le bloc `cle` de pricing.ts.
 
@@ -122,7 +147,8 @@ def champ_du_miroir(texte, cle, champ, attendu):
     CRIER l'instrument au lieu de le rendre aveugle."""
     i = texte.find(cle)
     exige(i >= 0, f"clé introuvable dans le miroir : {cle}")
-    # ⚠️ Le bloc peut s'ouvrir sur `{` (objet) OU sur `[` (tableau) : `horsM2`
+    # ⚠️ Le bloc peut s'ouvrir sur `{` (objet) OU sur `[` (tableau) :
+    # `forfaitsPieces`
     # est une LISTE d'objets. Ne chercher que `{` tombait sur l'accolade du
     # PREMIER élément et ne lisait qu'un montant sur quatre. Attrapé par
     # `exige()` plutôt qu'en comparant trois prix contre un en silence.
@@ -203,14 +229,40 @@ def controler(texte_fiche, texte_miroir):
             champ_du_miroir(texte_miroir, "NETTOYAGE_GENERAL", "prixM2", 3))
     compare("Cuisine (forfait)",
             colonne_de_table(texte_fiche, "### 🆕 LA CUISINE EST UN FORFAIT", 1, 1),
-            champ_du_miroir(texte_miroir, "horsM2", "prix", 4)[:1])
+            champ_du_miroir(texte_miroir, "forfaitsPieces", "prix", 4)[:1])
     compare("Pièces d'eau",
             colonne_de_table(texte_fiche, "### 🚽 Les pièces d'eau", 1, 3),
-            champ_du_miroir(texte_miroir, "horsM2", "prix", 4)[1:])
+            champ_du_miroir(texte_miroir, "forfaitsPieces", "prix", 4)[1:])
     compare("Plancher d'intervention",
             [int(re.search(r"LE PLANCHER D'INTERVENTION\s*:\s*\*\*(\d+)\s*€",
                            texte_fiche).group(1))],
             champ_du_miroir(texte_miroir, "NETTOYAGE_GENERAL", "plancher", 1))
+
+    # 🔴 CONTRÔLE 14 — LES BASCULES DU CRAN ③, AJOUTÉ LE 12/11/2026.
+    #
+    # La règle de sortie du m² DÉPEND DU CRAN depuis l'arbitrage de Seyffe
+    # (« au 3 rentre dans le m2 », fiche v5.30) : en ① et ② la pièce est au
+    # forfait, en ③ elle rentre dans le m² avec le forfait pour plancher.
+    # Le seuil de bascule n'est donc pas un prix de plus, c'est un QUOTIENT
+    # — forfait ÷ le €/m² du ③ — et la page le DÉRIVE au lieu de le recopier.
+    #
+    # 🔑 Ce que ce contrôle attrape, et aucun autre : la fiche publie les
+    #    quatre seuils en clair (5,4 · 4,2 · 4,2 · 5,8). Le jour où un
+    #    forfait ou le €/m² du ③ bouge, la fiche gardera ses anciens seuils
+    #    et la page en affichera de nouveaux, sans qu'une seule table de
+    #    prix diverge. C'est exactement la panne hors table que la carte
+    #    recZDqdhlyktcK63J reproche à cet instrument.
+    prix_m2_lourd = champ_du_miroir(texte_miroir, "NETTOYAGE_GENERAL", "prixM2", 3)[2]
+    lignes_bascule = bascules_de_la_fiche(texte_fiche)
+    exige(
+        len(lignes_bascule) == 4,
+        f"Bascules ③ : {len(lignes_bascule)} lignes lues, 4 attendues.",
+    )
+    compare(
+        "Bascules au cran ③ (dérivées du forfait)",
+        [b for _, b in lignes_bascule],
+        [round(f / prix_m2_lourd, 1) for f, _ in lignes_bascule],
+    )
 
     # Forfaits : un montant isolé de chaque côté.
     for nom, motif_fiche, cle in [
