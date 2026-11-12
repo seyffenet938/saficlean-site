@@ -51,7 +51,13 @@ const JAMAIS_EXPLOREES_VILLES = new Set([
   "vincennes",
 ])
 
-/** Les 5 départements jamais explorés. `paris`, lui, l'a été : il reste. */
+/**
+ * Les 5 départements jamais explorés — et c'est la TOTALITÉ de
+ * `DEPARTEMENTS_PAGES`, parce que `paris` porte `page: false` : la page
+ * `/zones/paris` n'existe pas. Le filtre ci-dessous vide donc la section,
+ * ce qui est juste : les 5 pages de département qui existent sont
+ * exactement les 5 que le relevé nomme comme jamais demandées au serveur.
+ */
 const JAMAIS_EXPLOREES_DEPARTEMENTS = new Set([
   "hauts-de-seine", "seine-saint-denis", "val-d-oise", "val-de-marne", "yvelines",
 ])
