@@ -6,6 +6,16 @@ import Link from "next/link"
 import { Menu, X, Phone, ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
+/**
+ * 🔑 DEUX GROUPES, ET LA SÉPARATION N'EST PAS COSMÉTIQUE.
+ *
+ * Au-dessus : ce qui se vend À L'ARTICLE et se réserve en ligne.
+ * En dessous : ce qui se vend AU MÈTRE CARRÉ et passe par une visite.
+ * Mesuré au Keyword Planner le 11/11/2026 (`recherche-mots-cles` §1) : la
+ * frontière qui compte n'est pas textile / non-textile, c'est le GESTE
+ * ISOLÉ contre le PROBLÈME ENTIER. Les mettre sur la même liste ferait
+ * lire « fin de chantier » comme un septième article à l'unité.
+ */
 const services = [
   { label: "Canape", href: "/canape" },
   { label: "Matelas", href: "/matelas" },
@@ -14,6 +24,16 @@ const services = [
   { label: "Moquette", href: "/moquette" },
   { label: "Interieur Auto", href: "/auto" },
 ]
+
+/**
+ * ⚠️ CE LIEN EST AUSSI UN GESTE D'INDEXATION, pas seulement de navigation.
+ * Relevé Search Console du 10/11 : Google n'explore pas ce qu'il ne juge
+ * pas assez lié — `/tarifs` est la page la plus liée du site (10 liens
+ * depuis l'accueil). La navbar est rendue sur les ~60 pages du site :
+ * c'est le lien interne le plus fort dont on dispose, et une page neuve
+ * en a besoin pour sortir de la file.
+ */
+const situations = [{ label: "Fin de chantier", href: "/fin-de-chantier" }]
 
 const navLinks = [
   { label: "Accueil", href: "/" },
@@ -82,7 +102,7 @@ export function Navbar() {
                 onMouseEnter={() => setServicesOpen(true)}
                 onMouseLeave={() => setServicesOpen(false)}
               >
-                <div className="min-w-[200px] rounded-lg border bg-background p-2 shadow-lg">
+                <div className="min-w-[220px] rounded-lg border bg-background p-2 shadow-lg">
                   {services.map((service) => (
                     <Link
                       key={service.href}
@@ -90,6 +110,19 @@ export function Navbar() {
                       className="block rounded-md px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
                     >
                       {service.label}
+                    </Link>
+                  ))}
+                  <div className="my-2 border-t" />
+                  <p className="px-4 pb-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Logement complet
+                  </p>
+                  {situations.map((s) => (
+                    <Link
+                      key={s.href}
+                      href={s.href}
+                      className="block rounded-md px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-muted hover:text-primary"
+                    >
+                      {s.label}
                     </Link>
                   ))}
                 </div>
@@ -181,6 +214,19 @@ export function Navbar() {
                       className="block rounded-lg px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
                     >
                       {service.label}
+                    </Link>
+                  ))}
+                  <p className="border-t px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Logement complet
+                  </p>
+                  {situations.map((s) => (
+                    <Link
+                      key={s.href}
+                      href={s.href}
+                      onClick={() => setMobileOpen(false)}
+                      className="block rounded-lg px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-primary"
+                    >
+                      {s.label}
                     </Link>
                   ))}
                 </div>

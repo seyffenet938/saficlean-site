@@ -9,6 +9,10 @@ const serviceLinks = [
   { label: "Tapis", href: "/tapis" },
   { label: "Moquette", href: "/moquette" },
   { label: "Nettoyage Auto", href: "/auto" },
+  // Au m² et sur visite, pas à l'article : la navbar les sépare en deux
+  // groupes. Ici la liste est courte et plate, on le laisse en clair dans
+  // le libellé plutôt que d'ajouter un intertitre pour une seule ligne.
+  { label: "Fin de chantier et apres travaux", href: "/fin-de-chantier" },
   { label: "Zones desservies", href: "/zones" },
 ]
 
