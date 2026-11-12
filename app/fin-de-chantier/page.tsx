@@ -1,7 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Phone, Ruler, Sparkles, Droplets, Square, Layers, Sofa, Check } from "lucide-react"
-import { NETTOYAGE_GENERAL, DEPLACEMENT, formatPrice } from "@/lib/pricing"
+// ⚠️ `formatPriceSpaced` et non `formatPrice` sur CETTE page, alors que
+// /tarifs emploie la version collée. Motif : ici les forfaits (70 €) et les
+// prix au m² (5 €/m²) tombent dans le même écran, et le m² ne passe pas sans
+// espace — « 5€/m² » est illisible. Mélanger « 150€ » et « 5 €/m² » à dix
+// pixels l'un de l'autre se voyait à la relecture en production. On garde
+// donc la cohérence DANS la page, qui est celle que le visiteur voit.
+import { NETTOYAGE_GENERAL, DEPLACEMENT, formatPriceSpaced } from "@/lib/pricing"
 import { SocialProof } from "@/components/sections/social-proof"
 import { Testimonials } from "@/components/sections/testimonials"
 import { WhySaficlean } from "@/components/sections/why-saficlean"
@@ -211,7 +217,7 @@ export default async function FinDeChantierPage() {
               <p className="mb-1 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                 Plancher d&apos;intervention
               </p>
-              <p className="text-2xl font-bold text-foreground">{formatPrice(plancher)}</p>
+              <p className="text-2xl font-bold text-foreground">{formatPriceSpaced(plancher)}</p>
               <p className="mt-2 text-sm text-muted-foreground">
                 En dessous, on ne se déplace pas. C&apos;est dit avant, jamais au
                 moment de payer.
@@ -228,8 +234,8 @@ export default async function FinDeChantierPage() {
               </p>
               <p className="text-2xl font-bold text-foreground">Inclus</p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Il est offert dès {formatPrice(DEPLACEMENT.offertDes)} de
-                prestation, et ce chantier commence à {formatPrice(plancher)} :
+                Il est offert dès {formatPriceSpaced(DEPLACEMENT.offertDes)} de
+                prestation, et ce chantier commence à {formatPriceSpaced(plancher)} :
                 sur cette prestation il est donc toujours compris.
               </p>
             </div>
@@ -267,7 +273,7 @@ export default async function FinDeChantierPage() {
                     <td className="px-4 py-4 align-top font-semibold text-foreground">{cuisine.label}</td>
                     <td className="px-4 py-4 align-top text-sm text-muted-foreground">{cuisine.couvre}</td>
                     <td className="whitespace-nowrap px-4 py-4 text-right align-top text-lg font-bold text-primary">
-                      {formatPrice(cuisine.prix)}
+                      {formatPriceSpaced(cuisine.prix)}
                     </td>
                   </tr>
                   {piecesDeau.map((p) => (
@@ -280,7 +286,7 @@ export default async function FinDeChantierPage() {
                       </td>
                       <td className="px-4 py-4 align-top text-sm text-muted-foreground">{p.couvre}</td>
                       <td className="whitespace-nowrap px-4 py-4 text-right align-top text-lg font-bold text-primary">
-                        {formatPrice(p.prix)}
+                        {formatPriceSpaced(p.prix)}
                       </td>
                     </tr>
                   ))}
